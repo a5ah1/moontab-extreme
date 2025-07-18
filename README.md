@@ -89,14 +89,9 @@ Link Stacker follows a modular architecture with clear separation between the re
 
 ## 🤝 Contributing
 
-Contributions are welcome! When contributing:
+This extension is developed primarily for personal use and shared openly under the MIT license. While you're welcome to fork the project and make your own modifications, please note that active development and feature requests are limited to maintaining functionality for the original use case.
 
-- Maintain the vanilla JavaScript approach (no frameworks or build tools)
-- Follow existing code patterns and conventions
-- Test your changes across all themes and responsive breakpoints
-- Respect user privacy – no external services or tracking
-
-Please open an issue first to discuss major changes.
+If you encounter bugs or compatibility issues, feel free to open an issue - but please understand that enhancements beyond the current scope may not be implemented.
 
 ## 🔐 Privacy
 
