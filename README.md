@@ -1,6 +1,6 @@
 # Link Stacker
 
-A privacy-focused, Trello-inspired new tab page for Chrome
+A privacy-focused, highly customizable new tab page for Chrome
 
 [![Version](https://img.shields.io/badge/version-0.2.2-blue.svg)](manifest.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -24,7 +24,12 @@ Built with vanilla JavaScript and zero external dependencies, Link Stacker prior
 
 ## 📸 Screenshots
 
-*Screenshots coming soon*
+[![Link Stacker screenshots](screenshots/screenshots-github.jpeg)](screenshots/screenshots-github.jpeg)
+
+Top left: the example/default set of columns, links, and dividers with the light theme.  
+Top right: the default dark theme.  
+Bottom left: a customized theme and background.  
+Bottom right: the Appearance panel in the options page.
 
 ## 🚀 Installation
 
@@ -32,7 +37,7 @@ Built with vanilla JavaScript and zero external dependencies, Link Stacker prior
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/[username]/link-stacker.git
+   git clone https://github.com/a5ah1/link-stacker.git
    cd link-stacker
    ```
 
@@ -106,6 +111,11 @@ Your privacy is our priority:
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Contributors
+
+- **Claude** <noreply@anthropic.com> - AI assistant for development and documentation
+- **Grok** <grok@x.ai> - AI assistant for initial development work
 
 ## 🙏 Acknowledgments
 

@@ -290,15 +290,16 @@ Available CSS variables for theming:
 - Review the advanced usage section for customization tips
 
 **Community:**
-- GitHub Issues for bug reports and feature requests
+- [GitHub Repository](https://github.com/a5ah1/link-stacker) for source code and documentation
+- [GitHub Issues](https://github.com/a5ah1/link-stacker/issues) for bug reports and feature requests
 - Community discussions for usage questions
 - Share your custom themes and CSS with others
 
 ### Contributing
 
 Link Stacker is open source and welcomes contributions:
-- Report bugs and suggest features
-- Submit pull requests for improvements
+- [Report bugs and suggest features](https://github.com/a5ah1/link-stacker/issues) on GitHub
+- [Submit pull requests](https://github.com/a5ah1/link-stacker/pulls) for improvements
 - Share custom themes and CSS snippets
 - Help improve documentation
 
@@ -315,6 +316,8 @@ Current version: 0.2.2
 Link Stacker is a Chrome extension designed for power users who want complete control over their new tab experience. It transforms your new tab page into a customizable, Trello-inspired dashboard where you can organize links into columns, apply custom themes, and create your own CSS styling.
 
 Built with vanilla JavaScript and following Chrome Manifest V3 standards, Link Stacker prioritizes privacy, security, and user customization. All data is stored locally, and the extension includes comprehensive import/export functionality for easy backup and sharing.
+
+**Source Code:** [GitHub Repository](https://github.com/a5ah1/link-stacker)
 
 This Chrome extension uses the following third-party libraries, bundled in the /vendor directory. We thank their creators!
 
