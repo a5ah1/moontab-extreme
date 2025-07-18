@@ -116,6 +116,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Claude** <noreply@anthropic.com> - AI assistant for development and documentation
 - **Grok** <grok@x.ai> - AI assistant for initial development work
+- **Public Domain Review** - for finding [the project's icon image](https://publicdomainreview.org/essay/stuffed-ox-dummy-tree-artificial-rock-deception-in-the-work-of-richard-and-cherry-kearton/)
 
 ## 🙏 Acknowledgments
 
