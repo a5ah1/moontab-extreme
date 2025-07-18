@@ -1,0 +1,40 @@
+# Claude Code specific files
+.claude/
+CLAUDE.md
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.backup
+
+# Development/testing files
+node_modules/
+.npm
+.eslintcache
+*.orig
+
+# Local configuration files
+.env
+.env.local
+.env.*.local

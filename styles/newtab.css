@@ -1,0 +1,259 @@
+/* Link Stacker New Tab Styles */
+
+/* CSS Variables - defined by theme manager or user custom CSS */
+
+/* Theme styles - colors, backgrounds, visual styling only */
+body {
+  background-color: var(--page-bg-color, var(--link-item-bg-color));
+  background-image: var(--bg-image, none);
+  background-position: var(--bg-position, center);
+  background-size: var(--bg-size, cover);
+  background-repeat: var(--bg-repeat, no-repeat);
+  background-attachment: fixed;
+  color: var(--text-primary);
+}
+
+/* Board container scrollbar styling */
+.board-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.board-container::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+  border-radius: 4px;
+}
+
+.board-container::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
+  border-radius: 4px;
+}
+
+.board-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+
+/* Individual column styling */
+.column {
+  background: var(--column-bg-color);
+  border: 1px solid var(--column-border-color);
+  border-radius: var(--column-radius);
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: box-shadow 0.2s ease;
+}
+
+.column:hover {
+  background: var(--column-bg-hover-color, var(--column-bg-color));
+  color: var(--column-text-hover-color, var(--text-primary));
+  box-shadow: 0 4px 12px var(--shadow-hover);
+}
+
+/* Column header styling */
+.column-header {
+  border-bottom: 1px solid var(--column-border-color);
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.column-title {
+  color: var(--column-title-color, var(--text-primary));
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Links container scrollbar styling */
+.links-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.links-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.links-container::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
+  border-radius: 3px;
+}
+
+/* Link card styling */
+.link-card {
+  background: var(--link-item-bg-color);
+  border: 1px solid var(--link-item-border-color);
+  border-radius: var(--link-item-radius);
+  transition: all 0.2s ease;
+}
+
+.link-card:hover {
+  background: var(--link-item-bg-hover-color, var(--link-item-bg-color));
+  color: var(--link-hover-color, var(--text-primary));
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.link-card:hover .link-title {
+  color: var(--link-title-hover-color, var(--link-hover-color, var(--link-title-color, var(--text-primary))));
+}
+
+.link-card:hover .link-url {
+  color: var(--link-url-hover-color, var(--link-hover-color, var(--link-url-color, var(--text-secondary))));
+}
+
+
+.link-content {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+.link-icon {
+  border-radius: 2px;
+}
+
+
+.link-title {
+  color: var(--link-title-color, var(--text-primary));
+  transition: color 0.2s ease;
+}
+
+.link-url {
+  color: var(--link-url-color, var(--text-secondary));
+  transition: color 0.2s ease;
+}
+
+
+/* Button styling */
+.btn {
+  border: 1px solid var(--link-item-border-color);
+  border-radius: var(--link-item-radius);
+  background: var(--link-item-bg-color);
+  color: var(--btn-text-color, var(--text-primary));
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: var(--btn-bg-hover-color, var(--link-item-bg-hover-color, var(--link-item-bg-color)));
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: var(--btn-primary-text-color, white);
+  border-color: var(--accent-color);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover-color);
+  color: var(--btn-primary-text-hover-color, white);
+  border-color: var(--accent-hover-color);
+}
+
+
+
+
+
+
+/* Settings button styling */
+.settings-btn {
+  border-radius: 999px;
+  background: var(--settings-btn-bg-color, var(--column-bg-color));
+  border: 1px solid var(--column-border-color);
+  color: var(--settings-btn-text-color, var(--text-secondary));
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px var(--settings-btn-shadow, var(--shadow));
+}
+
+.settings-btn:hover {
+  background: var(--settings-btn-bg-hover-color, var(--link-item-bg-hover-color, var(--link-item-bg-color)));
+  color: var(--settings-btn-text-hover-color, var(--text-primary));
+}
+
+
+
+/* Loading state styling */
+.loading {
+  background: var(--loading-bg-color, var(--link-item-bg-color));
+}
+
+.loading-spinner {
+  border: 3px solid var(--link-item-border-color);
+  border-top-color: var(--loading-spinner-color, var(--accent-color));
+  border-radius: 50%;
+}
+
+.loading p {
+  color: var(--text-secondary);
+}
+
+
+/* Empty state styling */
+.empty-state {
+  background: var(--empty-state-bg-color, var(--link-item-bg-color));
+}
+
+
+.empty-content svg {
+  color: var(--empty-state-icon-color, var(--text-muted));
+}
+
+.empty-content h2 {
+  color: var(--empty-state-title-color, var(--text-primary));
+}
+
+.empty-content p {
+  color: var(--empty-state-text-color, var(--text-secondary));
+}
+
+
+
+
+/* Divider styling - unboxed, same level as column background */
+.divider-item {
+  background: none;
+  border: none;
+  border-radius: var(--divider-radius);
+  box-shadow: none;
+  padding: 12px 0 8px 0;
+  margin: 8px 0;
+  cursor: default;
+  transition: none;
+}
+
+.divider-item:hover {
+  background: none;
+  box-shadow: none;
+}
+
+.divider-item:first-child {
+  margin-top: 0;
+}
+
+.divider-title {
+  font-weight: 600;
+  font-size: calc(14rem / 16);
+  color: var(--divider-title-color, var(--text-secondary));
+  text-align: left;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--divider-border-color);
+  padding-bottom: 8px;
+  transition: color 0.2s ease;
+}
+
+/* Empty divider (horizontal rule effect) */
+.divider-item .divider-title:empty {
+  display: block;
+  padding: 0;
+  border-bottom: 1px solid var(--divider-border-color);
+  height: 1px;
+  margin: 8px 16px;
+}
+
+/* Responsive design - styling only */
+@media (max-width: 768px) {
+  .quick-settings {
+    width: calc(100vw - 40px);
+    right: 20px;
+  }
+}

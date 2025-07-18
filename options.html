@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Stacker Settings</title>
+  <link rel="stylesheet" href="vendor/animate/animate.min.css">
+  <link rel="stylesheet" href="styles/options.css">
+</head>
+
+<body class="theme-light options-page">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>
+        <img src="assets/icons/icon48.png" alt="Link Stacker" width="24" height="24" class="header-icon">
+        Link Stacker Settings
+      </h1>
+      <div class="header-actions">
+        <button id="open-new-tab-btn" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+            <path d="m21 3-9 9" />
+            <path d="M15 3h6v6" />
+          </svg>
+          Open New Tab
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="tab-nav">
+    <div class="tab-nav-content">
+      <ul class="tab-menu">
+        <li>
+          <a href="#content" class="tab-link active" data-panel="content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-columns3-icon lucide-columns-3">
+              <rect width="18" height="18" x="3" y="3" rx="2" />
+              <path d="M9 3v18" />
+              <path d="M15 3v18" />
+            </svg>
+            Content
+          </a>
+        </li>
+        <li>
+          <a href="#appearance" class="tab-link" data-panel="appearance">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette-icon lucide-palette">
+              <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z" />
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+              <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+            </svg>
+            Appearance
+          </a>
+        </li>
+        <li>
+          <a href="#general" class="tab-link" data-panel="general">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cog-icon lucide-cog">
+              <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+              <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+              <path d="M12 2v2" />
+              <path d="M12 22v-2" />
+              <path d="m17 20.66-1-1.73" />
+              <path d="M11 10.27 7 3.34" />
+              <path d="m20.66 17-1.73-1" />
+              <path d="m3.34 7 1.73 1" />
+              <path d="M14 12h8" />
+              <path d="M2 12h2" />
+              <path d="m20.66 7-1.73 1" />
+              <path d="m3.34 17 1.73-1" />
+              <path d="m17 3.34-1 1.73" />
+              <path d="m11 13.73-4 6.93" />
+            </svg>
+            General
+          </a>
+        </li>
+        <li>
+          <a href="#help" class="tab-link" data-panel="help">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-help-circle-icon lucide-help-circle">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <path d="M12 17h.01" />
+            </svg>
+            Help
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main layout -->
+  <div class="main-layout">
+    <!-- Content area -->
+    <main class="content">
+      <!-- Content Panel -->
+      <div id="content-panel" class="panel active">
+        <div class="panel-header">
+          <div class="panel-header-content">
+            <h2>Content Management</h2>
+            <p>Organize your columns and links</p>
+          </div>
+          <div class="panel-actions">
+            <div id="save-status-content" class="save-status">
+              <svg class="save-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+              <span class="save-text">Saved</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <!-- Advanced options toggle -->
+          <div class="advanced-options-toggle">
+            <label class="setting-label small">
+              <input type="checkbox" id="show-advanced-options-setting">
+              Show advanced options
+            </label>
+          </div>
+
+          <!-- Add column section -->
+          <div class="section">
+            <div class="section-header">
+              <h3>Columns</h3>
+              <div class="section-actions">
+                <button id="collapse-all-btn" class="btn btn-secondary btn-compact">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-up-icon lucide-chevrons-down-up">
+                    <path d="m7 20 5-5 5 5" />
+                    <path d="m7 4 5 5 5-5" />
+                  </svg>
+                  Collapse All
+                </button>
+                <button id="expand-all-btn" class="btn btn-secondary btn-compact">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down">
+                    <path d="m7 15 5 5 5-5" />
+                    <path d="m7 9 5-5 5 5" />
+                  </svg>
+                  Expand All
+                </button>
+              </div>
+            </div>
+
+            <!-- Columns list -->
+            <div id="columns-list" class="columns-list">
+              <!-- Columns will be dynamically inserted here -->
+
+              <!-- Empty state for when no columns exist -->
+              <div id="empty-columns-placeholder" class="empty-columns-placeholder" style="display: none;">
+                <p>No columns yet. Add your first column to get started!</p>
+                <button id="add-first-column-btn" class="btn btn-primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  Add First Column
+                </button>
+              </div>
+
+              <!-- Add column section (shown when columns exist) -->
+              <div id="add-column-section" class="add-column-section" style="display: none;">
+                <button id="add-column-options-btn" class="btn btn-primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  Add Column
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance Panel -->
+      <div id="appearance-panel" class="panel">
+        <div class="panel-header">
+          <div class="panel-header-content">
+            <h2>Appearance</h2>
+            <p>Customize the look and feel</p>
+          </div>
+          <div class="panel-actions">
+            <div id="save-status-appearance" class="save-status">
+              <svg class="save-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+              <span class="save-text">Saved</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <!-- Theme section -->
+          <div class="section">
+            <h3>Theme</h3>
+            <div class="theme-selector">
+              <label class="theme-option">
+                <input type="radio" name="theme" value="light">
+                <div class="theme-preview theme-light-preview">
+                  <div class="theme-bg"></div>
+                  <div class="theme-accent"></div>
+                </div>
+                <span>Light</span>
+              </label>
+              <label class="theme-option">
+                <input type="radio" name="theme" value="dark">
+                <div class="theme-preview theme-dark-preview">
+                  <div class="theme-bg"></div>
+                  <div class="theme-accent"></div>
+                </div>
+                <span>Dark</span>
+              </label>
+              <label class="theme-option">
+                <input type="radio" name="theme" value="browser">
+                <div class="theme-preview theme-browser-preview">
+                  <div class="theme-bg"></div>
+                  <div class="theme-accent"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="theme-browser-icon">
+                    <path d="M12 17v4" />
+                    <path d="m14.305 7.53.923-.382" />
+                    <path d="m15.228 4.852-.923-.383" />
+                    <path d="m16.852 3.228-.383-.924" />
+                    <path d="m16.852 8.772-.383.923" />
+                    <path d="m19.148 3.228.383-.924" />
+                    <path d="m19.53 9.696-.382-.924" />
+                    <path d="m20.772 4.852.924-.383" />
+                    <path d="m20.772 7.148.924.383" />
+                    <path d="M22 13v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" />
+                    <path d="M8 21h8" />
+                    <circle cx="18" cy="6" r="3" />
+                  </svg>
+                </div>
+                <span>Browser</span>
+              </label>
+              <label class="theme-option">
+                <input type="radio" name="theme" value="custom">
+                <div class="theme-preview theme-custom-preview">
+                  <div class="theme-bg"></div>
+                  <div class="theme-accent"></div>
+                </div>
+                <span>Custom</span>
+              </label>
+            </div>
+          </div>
+
+
+          <!-- Custom CSS section -->
+          <div id="custom-css-section" class="section hidden">
+            <div class="section-header">
+              <h3>Custom CSS</h3>
+              <div class="css-actions">
+                <button id="css-preview-btn" class="btn btn-secondary">Preview</button>
+                <button id="css-reset-btn" class="btn btn-secondary">Reset</button>
+              </div>
+            </div>
+            <div class="css-editor-container">
+              <div id="css-editor" class="css-editor"></div>
+            </div>
+            <!-- CSS variables help will be inserted here via template -->
+          </div>
+
+          <!-- Background section -->
+          <div class="section">
+            <h3>Background</h3>
+
+            <div class="background-layout">
+              <!-- Background Color -->
+              <div class="form-group background-color-group">
+                <label>
+                  <input type="checkbox" id="page-background-enabled" class="color-checkbox">
+                  Background Color
+                </label>
+                <p class="form-help">Set a solid background color for the page. Works with any theme.</p>
+                <div class="color-input-group">
+                  <input type="color" id="page-background-color" value="#ffffff" disabled>
+                  <button id="clear-page-background-btn" class="btn btn-secondary btn-sm">Clear</button>
+                </div>
+              </div>
+
+              <!-- Background Image -->
+              <div class="form-group background-image-group">
+                <label>Background Image</label>
+                <p class="form-help">Upload a background image and customize its display properties.</p>
+                <div class="background-controls">
+                  <div class="background-preview" id="background-preview">
+                    <div class="background-placeholder">
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21,15 16,10 5,21"></polyline>
+                      </svg>
+                      <p>No background image</p>
+                    </div>
+                  </div>
+                  <div class="background-settings">
+                    <div class="background-actions">
+                      <input type="file" id="background-upload" accept="image/*" hidden>
+                      <button id="upload-background-btn" class="btn btn-secondary">
+                        Upload Image
+                      </button>
+                      <button id="remove-background-btn" class="btn btn-secondary" disabled>
+                        Remove
+                      </button>
+                    </div>
+
+                    <div class="background-options" id="background-options">
+                      <div class="form-group">
+                        <label>Background Size</label>
+                        <select id="background-size">
+                          <option value="cover">Cover (Fill)</option>
+                          <option value="contain">Contain (Fit)</option>
+                          <option value="auto">Auto (Original)</option>
+                          <option value="custom">Custom Size</option>
+                        </select>
+                      </div>
+
+                      <!-- Custom size inputs (initially hidden) -->
+                      <div class="form-group custom-size-group" id="custom-size-group" style="display: none;">
+                        <div class="custom-size-inputs">
+                          <div class="custom-size-input">
+                            <label>Width</label>
+                            <input type="text" id="background-width" placeholder="e.g. 100px, 50vw, 10rem">
+                          </div>
+                          <div class="custom-size-input">
+                            <label>Height</label>
+                            <input type="text" id="background-height" placeholder="e.g. 100px, 50vh, 10rem">
+                          </div>
+                        </div>
+                        <p class="form-help">Accepts CSS units: px, em, rem, vw, vh, %, etc.</p>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Background Repeat</label>
+                        <select id="background-repeat">
+                          <option value="no-repeat">No Repeat</option>
+                          <option value="repeat">Repeat</option>
+                          <option value="repeat-x">Repeat Horizontal</option>
+                          <option value="repeat-y">Repeat Vertical</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Background Position</label>
+                        <select id="background-position">
+                          <option value="center">Center</option>
+                          <option value="top">Top</option>
+                          <option value="bottom">Bottom</option>
+                          <option value="left">Left</option>
+                          <option value="right">Right</option>
+                          <option value="top left">Top Left</option>
+                          <option value="top right">Top Right</option>
+                          <option value="bottom left">Bottom Left</option>
+                          <option value="bottom right">Bottom Right</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column Animations section -->
+          <div class="section">
+            <h3>Column Animations</h3>
+            <p class="section-description">Add optional entrance animations to columns when the new tab page loads.</p>
+
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="column-animation-enabled">
+                Enable Column Animations
+              </label>
+              <p class="form-help">Add CSS animations to columns when the page loads. Automatically disabled if reduced motion is preferred.</p>
+            </div>
+
+            <div id="column-animation-controls" class="animation-controls">
+              <div class="animation-layout">
+                <div class="animation-basic-controls">
+                  <div class="form-group">
+                    <label for="column-animation-style">Animation Style</label>
+                    <select id="column-animation-style">
+                      <option value="fadeIn">Fade In</option>
+                      <option value="bounceIn">Bounce In</option>
+                      <option value="bounceInDown">Bounce In Down</option>
+                      <option value="bounceInUp">Bounce In Up</option>
+                      <option value="fadeInDown">Fade In Down</option>
+                      <option value="fadeInUp">Fade In Up</option>
+                      <option value="flipInX">Flip In X</option>
+                      <option value="flipInY">Flip In Y</option>
+                      <option value="zoomIn">Zoom In</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="column-animation-mode">Animation Mode</label>
+                    <select id="column-animation-mode">
+                      <option value="uniform">Uniform (All columns start together)</option>
+                      <option value="sequential">Sequential (Staggered timing)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="animation-timing-section">
+                  <h4>Timing Controls</h4>
+                  <div class="animation-timing-controls">
+                    <div class="animation-timing-input">
+                      <label for="column-animation-duration">Duration</label>
+                      <div class="input-with-unit">
+                        <input type="number" id="column-animation-duration" min="0.1" max="2.0" step="0.1" value="0.2">
+                        <span class="input-unit">seconds</span>
+                      </div>
+                      <p class="form-help">How long each animation takes</p>
+                    </div>
+
+                    <div class="animation-timing-input">
+                      <label for="column-animation-delay">Initial Delay</label>
+                      <div class="input-with-unit">
+                        <input type="number" id="column-animation-delay" min="0" max="0.5" step="0.1" value="0">
+                        <span class="input-unit">seconds</span>
+                      </div>
+                      <p class="form-help">Delay before first animation starts</p>
+                    </div>
+
+                    <div class="animation-timing-input" id="stagger-delay-group">
+                      <label for="column-animation-stagger">Stagger Delay</label>
+                      <div class="input-with-unit">
+                        <input type="number" id="column-animation-stagger" min="0.1" max="0.5" step="0.1" value="0.2">
+                        <span class="input-unit">seconds</span>
+                      </div>
+                      <p class="form-help">Delay between each column in sequential mode</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group advanced-option">
+                <label>
+                  <input type="checkbox" id="column-animation-stylesheet-only">
+                  Stylesheet Only Mode
+                </label>
+                <p class="form-help">Load only the animation stylesheet without applying programmatic animations. Allows advanced users to control animations via custom CSS classes.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Light Theme CSS Customization -->
+          <div id="light-theme-css-section" class="section hidden">
+            <div class="section-header">
+              <h3>Light Theme Customization</h3>
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="light-css-enabled">
+                Custom CSS for Light Theme
+              </label>
+              <p class="form-help">Add custom CSS to enhance the light theme</p>
+            </div>
+            <div id="light-css-controls" class="css-controls">
+              <div class="css-editor-container">
+                <div id="light-css-editor" class="css-editor"></div>
+              </div>
+              <!-- CSS variables help will be inserted here via template -->
+            </div>
+          </div>
+
+          <!-- Dark Theme CSS Customization -->
+          <div id="dark-theme-css-section" class="section hidden">
+            <div class="section-header">
+              <h3>Dark Theme Customization</h3>
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="dark-css-enabled">
+                Custom CSS for Dark Theme
+              </label>
+              <p class="form-help">Add custom CSS to enhance the dark theme</p>
+            </div>
+            <div id="dark-css-controls" class="css-controls">
+              <div class="css-editor-container">
+                <div id="dark-css-editor" class="css-editor"></div>
+              </div>
+              <!-- CSS variables help will be inserted here via template -->
+            </div>
+          </div>
+
+          <!-- Browser Theme CSS Customization -->
+          <div id="browser-theme-css-section" class="section hidden">
+            <div class="section-header">
+              <h3>Browser Theme Customization</h3>
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="browser-css-enabled">
+                Custom CSS for Browser Theme
+              </label>
+              <p class="form-help">Add custom CSS to enhance the browser theme (follows system preference)</p>
+            </div>
+            <div id="browser-css-controls" class="css-controls">
+              <div class="css-editor-container">
+                <div id="browser-css-editor" class="css-editor"></div>
+              </div>
+              <!-- CSS variables help will be inserted here via template -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- General Panel -->
+      <div id="general-panel" class="panel">
+        <div class="panel-header">
+          <div class="panel-header-content">
+            <h2>General Settings</h2>
+            <p>Configure global options</p>
+          </div>
+          <div class="panel-actions">
+            <div id="save-status-general" class="save-status">
+              <svg class="save-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+              <span class="save-text">Saved</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <!-- Left Column -->
+          <div class="general-layout">
+            <div class="general-left">
+              <!-- Display options -->
+              <div class="section section-compact">
+                <div class="section-header">
+                  <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="section-icon">
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg>
+                    Display Options
+                  </h3>
+                  <p class="section-subtitle">Control what's shown in your new tab page</p>
+                </div>
+
+                <div class="settings-grid">
+                  <div class="setting-group">
+                    <label class="setting-label">
+                      <input type="checkbox" id="show-icons-setting" checked>
+                      <div class="setting-content">
+                        <span class="setting-title">Website icons</span>
+                        <span class="setting-description">Display favicons next to link titles</span>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div class="setting-group">
+                    <label class="setting-label">
+                      <input type="checkbox" id="show-urls-setting" checked>
+                      <div class="setting-content">
+                        <span class="setting-title">Website URLs</span>
+                        <span class="setting-description">Display abbreviated URLs below link titles</span>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div class="setting-group">
+                    <label class="setting-label">
+                      <input type="checkbox" id="show-column-headers-setting" checked>
+                      <div class="setting-content">
+                        <span class="setting-title">Column headings</span>
+                        <span class="setting-description">Display column titles above link collections</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Storage info -->
+              <div class="section section-compact">
+                <div class="section-header">
+                  <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="section-icon">
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                    Storage Information
+                  </h3>
+                  <p class="section-subtitle">Monitor your extension's data usage</p>
+                </div>
+
+                <div class="storage-info">
+                  <!-- Storage metrics will be populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="general-right">
+              <!-- Content Backup & Restore -->
+              <div class="section">
+                <div class="section-header">
+                  <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="section-icon">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7,10 12,15 17,10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Content Backup & Restore
+                  </h3>
+                  <p class="section-subtitle">Manage your links and columns only</p>
+                </div>
+
+                <div class="backup-section">
+                  <p class="section-note">Export or import just your content organization. Does not include themes, custom CSS, or appearance settings.</p>
+
+                  <div class="data-actions">
+                    <div class="action-group">
+                      <button id="export-content-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7,10 12,15 17,10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export Links & Columns
+                      </button>
+                      <p class="action-description">Download only your content organization as ZIP</p>
+                    </div>
+
+                    <div class="action-group">
+                      <input type="file" id="import-content-file" accept=".zip,.json" hidden>
+                      <button id="import-content-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="17,8 12,3 7,8"></polyline>
+                          <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Import Links & Columns
+                      </button>
+                      <p class="action-description">Restore content from a ZIP or JSON file</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Appearance Backup & Restore -->
+              <div class="section">
+                <div class="section-header">
+                  <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="section-icon">
+                      <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z" />
+                      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+                      <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+                      <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+                      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+                    </svg>
+                    Appearance Backup & Restore
+                  </h3>
+                  <p class="section-subtitle">Manage themes and styling only</p>
+                </div>
+
+                <div class="backup-section">
+                  <p class="section-note">Export or import just your appearance settings including themes, custom CSS, backgrounds, and display preferences. Does not include content organization.</p>
+
+                  <div class="data-actions">
+                    <div class="action-group">
+                      <button id="export-appearance-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7,10 12,15 17,10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export Appearance
+                      </button>
+                      <p class="action-description">Download only your themes and styling as ZIP</p>
+                    </div>
+
+                    <div class="action-group">
+                      <input type="file" id="import-appearance-file" accept=".zip,.json" hidden>
+                      <button id="import-appearance-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="17,8 12,3 7,8"></polyline>
+                          <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Import Appearance
+                      </button>
+                      <p class="action-description">Restore appearance from a ZIP or JSON file</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Complete Theme Management -->
+              <div class="section">
+                <div class="section-header">
+                  <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="section-icon">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7,10 12,15 17,10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Complete Theme Management
+                  </h3>
+                  <p class="section-subtitle">Full backup and restore operations</p>
+                </div>
+
+                <div class="backup-section backup-warning">
+                  <div class="warning-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                      <path d="M12 9v4" />
+                      <path d="M12 17h.01" />
+                    </svg>
+                    Complete Replacement
+                  </div>
+                  <p class="section-note">These operations affect everything including all content, themes, custom CSS, backgrounds, and settings. Consider backing up your current data first!</p>
+
+                  <div class="data-actions">
+                    <div class="action-group">
+                      <button id="export-everything-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7,10 12,15 17,10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export Everything
+                      </button>
+                      <p class="action-description">Download complete theme package with all settings as ZIP</p>
+                    </div>
+
+                    <div class="action-group">
+                      <input type="file" id="import-everything-file" accept=".zip,.json" hidden>
+                      <button id="import-everything-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="17,8 12,3 7,8"></polyline>
+                          <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Import Everything
+                      </button>
+                      <p class="action-description">Restore complete theme package from ZIP or JSON (replaces all settings)</p>
+                    </div>
+
+                    <div class="action-group action-danger">
+                      <button id="reset-all-btn" class="btn btn-danger">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="3,6 5,6 21,6"></polyline>
+                          <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
+                        </svg>
+                        Clear All Data
+                      </button>
+                      <p class="action-description">Reset to default settings (cannot be undone)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help Panel -->
+      <div id="help-panel" class="panel">
+        <div class="panel-header">
+          <div class="panel-header-content">
+            <h2>Help & Support</h2>
+            <p>Documentation and troubleshooting</p>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <!-- Content will be added here -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Templates -->
+  <template id="column-options-template">
+    <div class="column-item" data-column-id="">
+      <div class="column-header-bar" role="button" tabindex="0">
+        <div class="column-handle-section">
+          <div class="drag-handle" title="Drag to reorder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grip-vertical-icon lucide-grip-vertical">
+              <circle cx="9" cy="12" r="1" />
+              <circle cx="9" cy="5" r="1" />
+              <circle cx="9" cy="19" r="1" />
+              <circle cx="15" cy="12" r="1" />
+              <circle cx="15" cy="5" r="1" />
+              <circle cx="15" cy="19" r="1" />
+            </svg>
+          </div>
+          <div class="expand-chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+        </div>
+        <div class="column-title">
+          <input type="text" class="column-name-inline" maxlength="40" spellcheck="false">
+          <span class="column-link-count">(0 links)</span>
+        </div>
+        <div class="column-quick-actions">
+          <button class="btn-icon-round delete-column-options-btn" title="Delete Column" aria-label="Delete Column">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="column-content">
+        <div class="form-row advanced-field column-custom-classes-row" style="display: none;">
+          <div class="input-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code-icon lucide-code">
+              <path d="m16 18 6-6-6-6" />
+              <path d="m8 6-6 6 6 6" />
+            </svg>
+            <input type="text" class="column-custom-classes-input" placeholder="Custom CSS classes (space-separated)">
+          </div>
+        </div>
+        <div class="links-section">
+          <div class="links-list">
+            <!-- Links will be inserted here -->
+          </div>
+          <div class="empty-links-placeholder">
+            <p>No items yet</p>
+            <div class="empty-actions">
+              <button class="btn btn-secondary add-first-link-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
+                  <path d="M5 12h14" />
+                  <path d="M12 5v14" />
+                </svg>
+                Add first link
+              </button>
+              <button class="btn btn-tertiary add-first-divider-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-divide-icon lucide-divide">
+                  <circle cx="12" cy="6" r="1" />
+                  <line x1="5" x2="19" y1="12" y2="12" />
+                  <circle cx="12" cy="18" r="1" />
+                </svg>
+                Add divider
+              </button>
+            </div>
+          </div>
+          <div class="add-link-section">
+            <button class="btn btn-secondary btn-compact add-link-options-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+              Add link
+            </button>
+            <button class="btn btn-tertiary btn-compact add-divider-options-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-divide-icon lucide-divide">
+                <circle cx="12" cy="6" r="1" />
+                <line x1="5" x2="19" y1="12" y2="12" />
+                <circle cx="12" cy="18" r="1" />
+              </svg>
+              Add divider
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="link-options-template">
+    <div class="link-item" data-link-id="">
+      <div class="link-header-bar" role="button" tabindex="0">
+        <div class="link-handle-section">
+          <div class="drag-handle" title="Drag to reorder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grip-vertical-icon lucide-grip-vertical">
+              <circle cx="9" cy="12" r="1" />
+              <circle cx="9" cy="5" r="1" />
+              <circle cx="9" cy="19" r="1" />
+              <circle cx="15" cy="12" r="1" />
+              <circle cx="15" cy="5" r="1" />
+              <circle cx="15" cy="19" r="1" />
+            </svg>
+          </div>
+          <div class="expand-chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+        </div>
+        <div class="link-preview">
+          <img class="link-icon-preview" src="" alt="" width="16" height="16">
+          <div class="link-title-container">
+            <div class="link-loading-spinner hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle-icon lucide-loader-circle">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+            </div>
+            <span class="link-title-preview"></span>
+            <div class="link-status-indicator hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+              </svg>
+              <span class="status-text"></span>
+            </div>
+          </div>
+        </div>
+        <div class="link-quick-actions">
+          <button class="btn-icon-round refresh-link-btn" title="Refresh title and icon" aria-label="Refresh title and icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-cw-icon lucide-refresh-cw">
+              <path d="m3 12 3-3 3 3" />
+              <path d="M6 9V6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3" />
+              <path d="m21 12-3 3-3-3" />
+              <path d="M18 15v3a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-3" />
+            </svg>
+          </button>
+          <button class="btn-icon-round delete-link-options-btn" title="Delete Link" aria-label="Delete Link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="link-details">
+        <div class="form-row">
+          <input type="url" class="link-url-options-input" placeholder="Enter URL (required)" required>
+        </div>
+        <div class="form-row form-row-split">
+          <input type="text" class="link-title-options-input" placeholder="Custom title (optional)" maxlength="80">
+          <div class="icon-controls">
+            <div class="favicon-toggle">
+              <button type="button" class="btn btn-secondary btn-compact favicon-mode-btn" data-mode="url" title="Use URL favicon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code-icon lucide-code">
+                  <path d="m16 18 6-6-6-6" />
+                  <path d="m8 6-6 6 6 6" />
+                </svg>
+              </button>
+              <button type="button" class="btn btn-secondary btn-compact favicon-mode-btn" data-mode="upload" title="Upload custom favicon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload-icon lucide-upload">
+                  <path d="M12 3v12" />
+                  <path d="m17 8-5-5-5 5" />
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                </svg>
+              </button>
+              <button type="button" class="btn btn-danger btn-compact favicon-remove-btn" title="Remove custom favicon" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+                  <path d="m3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                  <line x1="10" x2="10" y1="11" y2="17" />
+                  <line x1="14" x2="14" y1="11" y2="17" />
+                </svg>
+              </button>
+            </div>
+            <input type="url" class="icon-url-input" placeholder="Icon Domain">
+            <div class="favicon-drop-zone">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus">
+                <path d="M16 5h6" />
+                <path d="M19 2v6" />
+                <path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5" />
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                <circle cx="9" cy="9" r="2" />
+              </svg>
+              <span>Drop image here or click to select</span>
+            </div>
+            <div class="favicon-upload-status">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <path d="m9 11 3 3L22 4" />
+              </svg>
+              <span class="upload-status-text">Custom icon uploaded</span>
+              <span class="upload-size-text"></span>
+            </div>
+            <input type="file" class="icon-file-input" accept="image/*" hidden>
+          </div>
+        </div>
+        <div class="form-row advanced-field" style="display: none;">
+          <div class="input-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code-icon lucide-code">
+              <path d="m16 18 6-6-6-6" />
+              <path d="m8 6-6 6 6 6" />
+            </svg>
+            <input type="text" class="link-custom-classes-input" placeholder="Custom CSS classes (space-separated)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="divider-options-template">
+    <div class="divider-item" data-divider-id="">
+      <div class="divider-header-bar" role="button" tabindex="0">
+        <div class="divider-handle-section">
+          <div class="drag-handle" title="Drag to reorder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grip-vertical-icon lucide-grip-vertical">
+              <circle cx="9" cy="12" r="1" />
+              <circle cx="9" cy="5" r="1" />
+              <circle cx="9" cy="19" r="1" />
+              <circle cx="15" cy="12" r="1" />
+              <circle cx="15" cy="5" r="1" />
+              <circle cx="15" cy="19" r="1" />
+            </svg>
+          </div>
+          <div class="expand-chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+        </div>
+        <div class="divider-preview">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">
+            <path d="M5 12h14" />
+          </svg>
+          <div class="divider-title-preview">New Divider</div>
+        </div>
+        <div class="divider-quick-actions">
+          <button class="btn-icon-round delete-divider-options-btn" title="Delete Divider" aria-label="Delete Divider">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="divider-details">
+        <div class="form-row">
+          <input type="text" class="form-input divider-title-options-input" placeholder="Enter divider title (leave blank for a simple divider line)">
+        </div>
+        <div class="form-row advanced-field" style="display: none;">
+          <div class="input-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code-icon lucide-code">
+              <path d="m16 18 6-6-6-6" />
+              <path d="m8 6-6 6 6 6" />
+            </svg>
+            <input type="text" class="divider-custom-classes-input" placeholder="Custom CSS classes (space-separated)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Preview modal -->
+  <template id="preview-modal-template">
+    <div class="modal-overlay">
+      <div class="modal modal-large">
+        <div class="modal-header">
+          <h3>Theme Preview</h3>
+          <button class="modal-close-btn" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <iframe id="preview-frame" src="newtab.html"></iframe>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- CSS Variables Help Template -->
+  <template id="css-variables-help-template">
+    <div class="css-help">
+      <details>
+        <summary>Available CSS Variables</summary>
+        <div class="css-variables">
+          <p class="css-variables-notice">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+            Click on a CSS variable to copy it
+          </p>
+
+          <div class="css-variables-grid">
+            <div class="css-variable-section">
+              <h3>Base Styles</h3>
+              <dl>
+                <dt><code class="variable-code">--base-font-size</code></dt>
+                <dd>Base font size (falls back to 16px)</dd>
+                <dt><code class="variable-code">--ui-scale</code></dt>
+                <dd>UI scale factor (falls back to 1)</dd>
+                <dt><code class="variable-code">--page-bg-color</code></dt>
+                <dd>Overall page background color</dd>
+                <dt><code class="variable-code">--text-primary</code></dt>
+                <dd>Main text color</dd>
+                <dt><code class="variable-code">--text-secondary</code></dt>
+                <dd>Secondary text color</dd>
+                <dt><code class="variable-code">--text-muted</code></dt>
+                <dd>Muted text color</dd>
+              </dl>
+            </div>
+
+            <div class="css-variable-section">
+              <h3>Columns</h3>
+              <dl>
+                <dt><code class="variable-code">--column-bg-color</code></dt>
+                <dd>Background color of columns</dd>
+                <dt><code class="variable-code">--column-bg-hover-color</code></dt>
+                <dd>Column background on hover (falls back to --column-bg-color)</dd>
+                <dt><code class="variable-code">--column-border-color</code></dt>
+                <dd>Border color for columns</dd>
+                <dt><code class="variable-code">--column-radius</code></dt>
+                <dd>Corner radius for columns</dd>
+                <dt><code class="variable-code">--column-title-color</code></dt>
+                <dd>Column title text color (falls back to --text-primary)</dd>
+                <dt><code class="variable-code">--column-text-hover-color</code></dt>
+                <dd>Column text on hover (falls back to --text-primary)</dd>
+              </dl>
+            </div>
+
+            <div class="css-variable-section">
+              <h3>Link Items</h3>
+              <dl>
+                <dt><code class="variable-code">--link-item-bg-color</code></dt>
+                <dd>Background color of individual links</dd>
+                <dt><code class="variable-code">--link-item-bg-hover-color</code></dt>
+                <dd>Background color when hovering over links</dd>
+                <dt><code class="variable-code">--link-item-border-color</code></dt>
+                <dd>Border color for links</dd>
+                <dt><code class="variable-code">--link-item-radius</code></dt>
+                <dd>Corner radius for links</dd>
+                <dt><code class="variable-code">--link-title-color</code></dt>
+                <dd>Link title text color (falls back to --text-primary)</dd>
+                <dt><code class="variable-code">--link-title-hover-color</code></dt>
+                <dd>Link title hover color (falls back to --link-title-color)</dd>
+                <dt><code class="variable-code">--link-url-color</code></dt>
+                <dd>Link URL text color (falls back to --text-secondary)</dd>
+                <dt><code class="variable-code">--link-url-hover-color</code></dt>
+                <dd>Link URL hover color (falls back to --link-url-color)</dd>
+                <dt><code class="variable-code">--link-hover-color</code></dt>
+                <dd>Text color when hovering over links</dd>
+              </dl>
+            </div>
+
+            <div class="css-variable-section">
+              <h3>Dividers</h3>
+              <dl>
+                <dt><code class="variable-code">--divider-title-color</code></dt>
+                <dd>Divider title text color (falls back to --text-secondary)</dd>
+                <dt><code class="variable-code">--divider-border-color</code></dt>
+                <dd>Border color for dividers</dd>
+                <dt><code class="variable-code">--divider-radius</code></dt>
+                <dd>Corner radius for dividers</dd>
+              </dl>
+            </div>
+
+            <div class="css-variable-section">
+              <h3>Buttons</h3>
+              <dl>
+                <dt><code class="variable-code">--accent-color</code></dt>
+                <dd>Primary button color</dd>
+                <dt><code class="variable-code">--accent-hover-color</code></dt>
+                <dd>Primary button hover color</dd>
+                <dt><code class="variable-code">--btn-bg-hover-color</code></dt>
+                <dd>General button background on hover (falls back to --link-item-bg-hover-color)</dd>
+                <dt><code class="variable-code">--btn-text-color</code></dt>
+                <dd>General button text (falls back to --text-primary)</dd>
+                <dt><code class="variable-code">--btn-primary-text-color</code></dt>
+                <dd>Primary button text (falls back to white)</dd>
+                <dt><code class="variable-code">--btn-primary-text-hover-color</code></dt>
+                <dd>Primary button text on hover (falls back to white)</dd>
+              </dl>
+            </div>
+
+            <div class="css-variable-section">
+              <h3>Settings Button</h3>
+              <dl>
+                <dt><code class="variable-code">--settings-btn-bg-color</code></dt>
+                <dd>Settings button background (falls back to --column-bg-color)</dd>
+                <dt><code class="variable-code">--settings-btn-bg-hover-color</code></dt>
+                <dd>Settings button background on hover (falls back to --link-item-bg-hover-color)</dd>
+                <dt><code class="variable-code">--settings-btn-text-color</code></dt>
+                <dd>Settings button text (falls back to --text-secondary)</dd>
+                <dt><code class="variable-code">--settings-btn-text-hover-color</code></dt>
+                <dd>Settings button text on hover (falls back to --text-primary)</dd>
+                <dt><code class="variable-code">--settings-btn-shadow</code></dt>
+                <dd>Settings button shadow (falls back to --shadow)</dd>
+              </dl>
+            </div>
+
+            <div class="css-variable-section">
+              <h3>Loading</h3>
+              <dl>
+                <dt><code class="variable-code">--loading-bg-color</code></dt>
+                <dd>Loading screen background (falls back to --link-item-bg-color)</dd>
+                <dt><code class="variable-code">--loading-spinner-color</code></dt>
+                <dd>Loading spinner color (falls back to --accent-color)</dd>
+              </dl>
+            </div>
+
+
+            <div class="css-variable-section">
+              <h3>Visual Effects</h3>
+              <dl>
+                <dt><code class="variable-code">--shadow</code></dt>
+                <dd>Default shadow color</dd>
+                <dt><code class="variable-code">--shadow-hover</code></dt>
+                <dd>Hover shadow color</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </template>
+
+  <!-- Confirmation modal -->
+  <template id="confirm-modal-template">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title"></h3>
+          <button class="modal-close-btn" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-message"></p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button class="btn btn-danger modal-confirm-btn">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Import backup prompt modal -->
+  <template id="import-backup-modal-template">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Backup Before Import</h3>
+          <button class="modal-close-btn" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="import-backup-content">
+            <div class="backup-warning">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="warning-icon">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                <path d="M12 9v4" />
+                <path d="m12 17 .01 0" />
+              </svg>
+              <div class="backup-message">
+                <h4>Import will replace your current data</h4>
+                <p class="backup-description"></p>
+                <p class="backup-recommendation">We recommend backing up your current data before proceeding.</p>
+              </div>
+            </div>
+            <div class="import-file-info">
+              <div class="file-details">
+                <h5>Import File:</h5>
+                <div class="file-name"></div>
+                <div class="file-size"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button class="btn btn-primary modal-backup-btn">Backup & Import</button>
+          <button class="btn btn-secondary modal-proceed-btn">Import Without Backup</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Import result modal -->
+  <template id="import-result-modal-template">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Import Complete</h3>
+        </div>
+        <div class="modal-body">
+          <div class="import-result-content">
+            <div class="import-success">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="success-icon">
+                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              <div class="success-message">
+                <h4>Import Successful!</h4>
+                <p class="import-summary"></p>
+              </div>
+            </div>
+            <div class="import-details">
+              <h5>Import Details:</h5>
+              <div class="import-stats">
+                <div class="stat-item">
+                  <span class="stat-label">Columns:</span>
+                  <span class="stat-value" id="imported-columns">0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Links:</span>
+                  <span class="stat-value" id="imported-links">0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Settings:</span>
+                  <span class="stat-value" id="imported-settings">0</span>
+                </div>
+                <div class="stat-item" id="custom-favicons-stat" style="display: none;">
+                  <span class="stat-label">Custom Favicons:</span>
+                  <span class="stat-value" id="imported-custom-favicons">0</span>
+                </div>
+                <div class="stat-item" id="background-image-stat" style="display: none;">
+                  <span class="stat-label">Background Image:</span>
+                  <span class="stat-value" id="imported-background-image">No</span>
+                </div>
+              </div>
+              <div class="favicon-changes" style="display: none;">
+                <h5>Favicon Changes:</h5>
+                <div class="favicon-stats">
+                  <div class="favicon-item removed" style="display: none;">
+                    <span class="favicon-icon">🚫</span>
+                    <span class="favicon-text">Non-Google favicon URLs skipped: <span id="favicons-removed">0</span></span>
+                  </div>
+                  <div class="favicon-item kept" style="display: none;">
+                    <span class="favicon-icon">✅</span>
+                    <span class="favicon-text">Google favicon URLs kept: <span id="favicons-kept">0</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary modal-ok-btn">OK</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- External Libraries (load first) -->
+  <script src="vendor/jszip/jszip.min.js"></script>
+  <script src="scripts/debug.js"></script>
+  <script src="vendor/sortable/sortable.js"></script>
+  <script src="vendor/ace/ace.js"></script>
+  <script src="vendor/ace/ext-language_tools.js"></script>
+  <script src="vendor/marked/marked.min.js"></script>
+
+  <!-- Core Scripts -->
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/storage.js"></script>
+  <script src="scripts/theme-manager.js"></script>
+
+  <!-- Manager Components -->
+  <script src="options/UIManager.js"></script>
+  <script src="options/LinkProcessor.js"></script>
+  <script src="options/ZipExportManager.js"></script>
+  <script src="options/DataManager.js"></script>
+  <script src="options/AppearanceManager.js"></script>
+  <script src="options/ContentManager.js"></script>
+  <script src="options/HelpManager.js"></script>
+
+  <!-- Main Application -->
+  <script src="options.js"></script>
+</body>
+
+</html>
