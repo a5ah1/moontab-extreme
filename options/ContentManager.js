@@ -341,7 +341,9 @@ class ContentManager {
   }
 
   /**
-   * Setup link form handlers with debounced saving and title fetching
+   * Setup link form handlers with unified event system for both temporary and saved links
+   * This single method handles all link input events, eliminating the need for separate
+   * temporary vs saved link event handlers.
    */
   setupLinkFormHandlers(link, linkEl) {
     const urlInput = linkEl.querySelector('.link-url-options-input');
@@ -351,93 +353,83 @@ class ContentManager {
     const titlePreview = linkEl.querySelector('.link-title-preview');
     const iconPreview = linkEl.querySelector('.link-icon-preview');
 
-    let titleFetchTimeout = null;
+    let domainFetchTimeout = null;
     let saveTimeout = null;
-    
-    // Helper function for debounced saving with validation
+
+    // Helper function for debounced saving
+    // Works for both temporary (triggers conversion) and saved links (triggers storage update)
     const debouncedSave = (property, value) => {
       if (saveTimeout) {
         clearTimeout(saveTimeout);
       }
-      
-      // Save if the link is not temporary (existing links have undefined isTemporary or false)
-      const shouldSave = !link.isTemporary;
-      
-      if (shouldSave) {
-        saveTimeout = setTimeout(() => {
-          // Update the link property first
-          link[property] = value;
-          // Force update the property and trigger save
+
+      saveTimeout = setTimeout(() => {
+        // Update the link property
+        link[property] = value;
+
+        if (link.isTemporary) {
+          // For temporary links, trigger conversion to permanent
+          this.handleTemporaryLinkSave(link);
+        } else {
+          // For saved links, force update the property and trigger save
           this.forceLinkPropertyUpdate(link.id, property, value);
-        }, 500);
-      }
+        }
+      }, 500);
     };
-    
+
     urlInput.addEventListener('input', async () => {
       const url = urlInput.value.trim();
-      
+
       // Clear previous timeouts
-      if (titleFetchTimeout) {
-        clearTimeout(titleFetchTimeout);
+      if (domainFetchTimeout) {
+        clearTimeout(domainFetchTimeout);
       }
       if (saveTimeout) {
         clearTimeout(saveTimeout);
       }
-      
+
       // Get status indicator elements
       const statusIndicator = linkEl.querySelector('.link-status-indicator');
       const statusText = linkEl.querySelector('.status-text');
-      
+
       // Always update validation status immediately to prevent stale states
       this.linkProcessor.updateLinkStatusIndicator(url, urlInput, statusIndicator, statusText);
-      
-      // Update preview text immediately (but not the link object yet)
+
+      // Update local link object immediately
+      link.url = url;
+
+      // Update preview text immediately
       titlePreview.textContent = titleInput.value || this.linkProcessor.extractDomainFromUrl(url) || 'New Link';
-      
-      // Validate URL and handle fetching
+
+      // Validate URL and handle domain extraction
       if (url && this.linkProcessor.isValidUrl(url)) {
-        // Debounce the title and icon fetching (wait 500ms after user stops typing)
-        titleFetchTimeout = setTimeout(async () => {
-          // Create a temporary link object with the new URL for fetching
-          const tempLink = { ...link, url: url };
-          await this.linkProcessor.fetchPageTitleAndIcon(tempLink, titleInput, titlePreview, iconPreview, linkEl);
+        // Debounce the domain extraction and icon preview (wait 500ms after user stops typing)
+        domainFetchTimeout = setTimeout(async () => {
+          await this.linkProcessor.fetchPageTitleAndIcon(link, titleInput, titlePreview, iconPreview, linkEl);
         }, 500);
       }
-      
-      // For temporary links, update immediately
-      if (link.isTemporary) {
-        link.url = url;
-      } else {
-        // For saved links, debounce the update
-        debouncedSave('url', url);
-      }
-    });
 
-    urlInput.addEventListener('blur', () => {
-      if (link.isTemporary) {
-        this.handleTemporaryLinkSave(link);
-      }
+      // Debounced save for both temporary and saved links
+      debouncedSave('url', url);
     });
 
     titleInput.addEventListener('input', () => {
       const title = titleInput.value.trim();
-      
+
+      // Update local link object immediately
+      link.title = title;
+
       // Update preview immediately
       titlePreview.textContent = title || this.linkProcessor.extractDomainFromUrl(link.url) || 'New Link';
-      
-      // For temporary links, update immediately
-      if (link.isTemporary) {
-        link.title = title;
-      } else {
-        // For saved links, debounce the update
-        debouncedSave('title', title);
-      }
+
+      // Debounced save for both temporary and saved links
+      debouncedSave('title', title);
     });
 
     iconUrlInput.addEventListener('input', () => {
       const customDomain = iconUrlInput.value.trim();
       let newOverride = '';
-      
+
       if (customDomain) {
         newOverride = this.linkProcessor.constructGoogleFaviconUrl(customDomain);
         if (!newOverride) {
@@ -446,23 +438,20 @@ class ContentManager {
           return;
         }
       }
-      
+
       iconUrlInput.classList.remove('invalid');
-      
+
+      // Update local link object immediately
+      link.iconUrlOverride = newOverride;
+
       // Update icon preview immediately
-      const tempLink = { ...link, iconUrlOverride: newOverride };
-      this.linkProcessor.setLinkIcon(iconPreview, tempLink);
-      
-      // For temporary links, update immediately
-      if (link.isTemporary) {
-        link.iconUrlOverride = newOverride;
-      } else {
-        // For saved links, debounce the update
-        debouncedSave('iconUrlOverride', newOverride);
-      }
-      
+      this.linkProcessor.setLinkIcon(iconPreview, link);
+
       // Update UI
-      this.linkProcessor.updateFaviconModeUI(linkEl, tempLink);
+      this.linkProcessor.updateFaviconModeUI(linkEl, link);
+
+      // Debounced save for both temporary and saved links
+      debouncedSave('iconUrlOverride', newOverride);
     });
 
     // Custom CSS classes input handling with validation
@@ -472,24 +461,22 @@ class ContentManager {
 
       customClassesInput.addEventListener('input', () => {
         const classes = customClassesInput.value.trim();
-        
+
         // Validate CSS classes
         const isValid = this.validateCssClasses(classes);
-        
+
         // Update visual feedback
         if (isValid || classes === '') {
           customClassesInput.classList.remove('invalid');
         } else {
           customClassesInput.classList.add('invalid');
         }
-        
-        // For temporary links, update immediately
-        if (link.isTemporary) {
-          link.customClasses = classes;
-        } else {
-          // For saved links, debounce the update
-          debouncedSave('customClasses', classes);
-        }
+
+        // Update local link object immediately
+        link.customClasses = classes;
+
+        // Debounced save for both temporary and saved links
+        debouncedSave('customClasses', classes);
       });
     }
   }
@@ -1558,14 +1545,15 @@ class ContentManager {
 
   /**
    * Handle saving of temporary link
+   * Simplified: just converts the temporary link to permanent without replacing event listeners
    */
   async handleTemporaryLinkSave(tempLink) {
     // Allow saving with empty URL (will show warning in UI)
     // Allow saving with invalid URL (will show warning in UI)
     // Only block saving if URL contains dangerous content
-    
+
     const url = tempLink.url ? tempLink.url.trim() : '';
-    
+
     // Check for dangerous URLs that should block saving
     if (url && this.linkProcessor.isDangerousUrl(url)) {
       this.uiManager.showError('URL contains potentially dangerous content and cannot be saved.');
@@ -1585,11 +1573,14 @@ class ContentManager {
 
       if (!column) return;
 
+      // Store the old temporary ID before changing it
+      const oldTempId = tempLink.id;
+
       // Generate a permanent ID and convert the temporary link
       const permanentId = generateUUID();
       tempLink.id = permanentId;
       delete tempLink.isTemporary;
-      
+
       // Ensure the link has all required properties
       if (!tempLink.hasOwnProperty('iconDataUri')) {
         tempLink.iconDataUri = null;
@@ -1598,13 +1589,13 @@ class ContentManager {
         tempLink.iconUrlOverride = null;
       }
 
-      // Update the DOM element
-      const linkEl = document.querySelector(`[data-link-id^="temp_"]`);
-      if (linkEl && linkEl.dataset.linkId.startsWith('temp_')) {
+      // Update the DOM element's data attribute
+      const linkEl = document.querySelector(`[data-link-id="${oldTempId}"]`);
+      if (linkEl) {
         linkEl.dataset.linkId = permanentId;
-        
-        // Update the action buttons to use the new saved link ID
-        this.updateLinkEventListeners(linkEl, tempLink);
+
+        // Update action buttons (delete and refresh) to use the new permanent ID
+        this.updateActionButtonListeners(linkEl, tempLink);
       }
 
       this.markDirty();
@@ -1632,27 +1623,29 @@ class ContentManager {
   }
 
   /**
-   * Update event listeners for a saved link
+   * Update action button listeners for a saved link
+   * Only updates delete and refresh buttons - input handlers remain unchanged
+   * since they work for both temporary and permanent links
    */
-  updateLinkEventListeners(linkEl, savedLink) {
+  updateActionButtonListeners(linkEl, savedLink) {
     const deleteBtn = linkEl.querySelector('.delete-link-options-btn');
     const refreshBtn = linkEl.querySelector('.refresh-link-btn');
-    
+
     if (deleteBtn) {
       // Remove old event listener and add new one
       const newDeleteBtn = deleteBtn.cloneNode(true);
       deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
-      
+
       newDeleteBtn.addEventListener('click', () => {
         this.confirmDeleteLink(savedLink.id, savedLink.title || this.linkProcessor.extractDomainFromUrl(savedLink.url));
       });
     }
-    
+
     if (refreshBtn) {
       // Remove old event listener and add new one
       const newRefreshBtn = refreshBtn.cloneNode(true);
       refreshBtn.parentNode.replaceChild(newRefreshBtn, refreshBtn);
-      
+
       newRefreshBtn.addEventListener('click', async () => {
         if (savedLink.url && this.linkProcessor.isValidUrl(savedLink.url)) {
           const titleInput = linkEl.querySelector('.link-title-options-input');
@@ -1662,42 +1655,6 @@ class ContentManager {
         }
       });
     }
-    
-    // Re-attach normal input handlers
-    const urlInput = linkEl.querySelector('.link-url-options-input');
-    const titleInput = linkEl.querySelector('.link-title-options-input');
-    const iconUrlInput = linkEl.querySelector('.icon-url-input');
-    const titlePreview = linkEl.querySelector('.link-title-preview');
-    const iconPreview = linkEl.querySelector('.link-icon-preview');
-
-    // Remove the temporary link event listeners and add normal ones
-    urlInput.replaceWith(urlInput.cloneNode(true));
-    titleInput.replaceWith(titleInput.cloneNode(true));
-    iconUrlInput.replaceWith(iconUrlInput.cloneNode(true));
-
-    // Get the new elements after replacement
-    const newUrlInput = linkEl.querySelector('.link-url-options-input');
-    const newTitleInput = linkEl.querySelector('.link-title-options-input');
-    const newIconUrlInput = linkEl.querySelector('.icon-url-input');
-
-    // Add normal event listeners with proper auto-save integration
-    newUrlInput.addEventListener('input', () => {
-      savedLink.url = newUrlInput.value;
-      titlePreview.textContent = newTitleInput.value || this.linkProcessor.extractDomainFromUrl(newUrlInput.value);
-      this.markDirty();
-    });
-
-    newTitleInput.addEventListener('input', () => {
-      savedLink.title = newTitleInput.value;
-      titlePreview.textContent = newTitleInput.value || this.linkProcessor.extractDomainFromUrl(newUrlInput.value);
-      this.markDirty();
-    });
-
-    newIconUrlInput.addEventListener('input', () => {
-      savedLink.iconUrlOverride = newIconUrlInput.value;
-      this.linkProcessor.setLinkIcon(iconPreview, savedLink);
-      this.markDirty();
-    });
   }
 
   /**

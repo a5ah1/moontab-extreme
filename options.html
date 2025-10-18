@@ -954,7 +954,7 @@
                 </svg>
               </button>
             </div>
-            <input type="url" class="icon-url-input" placeholder="Icon Domain">
+            <input type="url" class="icon-url-input" placeholder="example.com or example.com/path/">
             <div class="favicon-drop-zone">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus">
                 <path d="M16 5h6" />
@@ -1362,8 +1362,16 @@
   <script src="options/LinkProcessor.js"></script>
   <script src="options/ZipExportManager.js"></script>
   <script src="options/DataManager.js"></script>
+
+  <!-- Appearance Sub-Managers (loaded before AppearanceManager) -->
+  <script src="options/ThemeSelector.js"></script>
+  <script src="options/CSSEditorManager.js"></script>
+  <script src="options/BackgroundManager.js"></script>
+  <script src="options/AnimationManager.js"></script>
   <script src="options/AppearanceManager.js"></script>
+
   <script src="options/ContentManager.js"></script>
+  <script src="options/GeneralManager.js"></script>
   <script src="options/HelpManager.js"></script>
 
   <!-- Main Application -->

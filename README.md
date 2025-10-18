@@ -2,7 +2,7 @@
 
 A privacy-focused, highly customizable new tab page for Chrome
 
-[![Version](https://img.shields.io/badge/version-0.2.2-blue.svg)](manifest.json)
+[![Version](https://img.shields.io/badge/version-0.2.3-blue.svg)](manifest.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
@@ -51,7 +51,7 @@ Bottom right: the Appearance panel in the options page.
 
 ### From Chrome Web Store
 
-*Coming soon*
+[Install Link Stacker from the Chrome Web Store](https://chromewebstore.google.com/detail/link-stacker/peabiommmpphfnncadocemodpakhjlbg)
 
 ## 📖 Usage
 
@@ -105,7 +105,8 @@ Your privacy is our priority:
 - ✅ All data stored locally on your device
 - ✅ No user accounts or cloud sync
 - ✅ No analytics or tracking
-- ✅ No external API calls (except optional favicon fetching)
+- ✅ Minimal external requests (only optional favicon fetching)
+- ✅ Link titles use domain names (no page content fetching)
 - ✅ Open source for complete transparency
 
 ## 📄 License

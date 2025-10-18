@@ -305,7 +305,7 @@ Link Stacker is open source and welcomes contributions:
 
 ### Version Information
 
-Current version: 0.2.2
+Current version: 0.2.3
 - Chrome Manifest V3 compatible
 - Regular updates and improvements
 - Backward compatibility maintained
@@ -381,4 +381,4 @@ Copyright (c) 2019 All contributors to Sortable
 
 ---
 
-*Last updated: Version 0.2.2*
+*Last updated: Version 0.2.3*

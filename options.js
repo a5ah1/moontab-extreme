@@ -18,6 +18,7 @@ class OptionsApp {
     this.dataManager = null;
     this.appearanceManager = null;
     this.contentManager = null;
+    this.generalManager = null;
     this.helpManager = null;
 
     this.init();
@@ -46,7 +47,7 @@ class OptionsApp {
       // Setup panels through managers
       this.contentManager.setupContentPanel();
       this.appearanceManager.setupAppearancePanel();
-      this.setupGeneralPanel();
+      this.generalManager.setupGeneralPanel();
       this.helpManager.setupHelpPanel();
 
       // Setup header actions
@@ -95,12 +96,15 @@ class OptionsApp {
 
     // Initialize ContentManager (depends on all previous managers)
     this.contentManager = new ContentManager(
-      this.data, 
-      this.templates, 
-      this.uiManager, 
-      this.linkProcessor, 
+      this.data,
+      this.templates,
+      this.uiManager,
+      this.linkProcessor,
       this.markDirty.bind(this)
     );
+
+    // Initialize GeneralManager (depends on DataManager)
+    this.generalManager = new GeneralManager(this.data, this.dataManager, this.markDirty.bind(this));
 
     // Initialize HelpManager (depends on UIManager only)
     this.helpManager = new HelpManager(this.uiManager);
@@ -181,40 +185,10 @@ class OptionsApp {
 
     // Notify managers about panel switch
     this.appearanceManager.onPanelSwitch(panelId);
+    this.generalManager.onPanelSwitch(panelId);
     this.helpManager.onPanelSwitch(panelId);
   }
 
-  /**
-   * Setup general panel (settings, data management)
-   */
-  setupGeneralPanel() {
-    // Icon visibility setting
-    const showIconsToggle = document.getElementById('show-icons-setting');
-    showIconsToggle.checked = this.data.showIcons !== undefined ? this.data.showIcons : true;
-
-    showIconsToggle.addEventListener('change', () => {
-      this.updateIconVisibility(showIconsToggle.checked);
-    });
-
-    // URL visibility setting
-    const showUrlsToggle = document.getElementById('show-urls-setting');
-    showUrlsToggle.checked = this.data.showUrls !== undefined ? this.data.showUrls : true;
-
-    showUrlsToggle.addEventListener('change', () => {
-      this.updateUrlVisibility(showUrlsToggle.checked);
-    });
-
-    // Column headers visibility setting
-    const showColumnHeadersToggle = document.getElementById('show-column-headers-setting');
-    showColumnHeadersToggle.checked = this.data.showColumnHeaders !== undefined ? this.data.showColumnHeaders : true;
-
-    showColumnHeadersToggle.addEventListener('change', () => {
-      this.updateColumnHeaderVisibility(showColumnHeadersToggle.checked);
-    });
-
-    // Data management
-    this.dataManager.setupDataManagement();
-  }
 
   /**
    * Setup header actions
@@ -238,32 +212,6 @@ class OptionsApp {
     // Auto-save is triggered by the markDirty method below
   }
 
-  /**
-   * Update icon visibility
-   * @param {boolean} showIcons - Whether to show icons
-   */
-  updateIconVisibility(showIcons) {
-    this.data.showIcons = showIcons;
-    this.markDirty();
-  }
-
-  /**
-   * Update URL visibility
-   * @param {boolean} showUrls - Whether to show URLs
-   */
-  updateUrlVisibility(showUrls) {
-    this.data.showUrls = showUrls;
-    this.markDirty();
-  }
-
-  /**
-   * Update column header visibility
-   * @param {boolean} showColumnHeaders - Whether to show column headers
-   */
-  updateColumnHeaderVisibility(showColumnHeaders) {
-    this.data.showColumnHeaders = showColumnHeaders;
-    this.markDirty();
-  }
 
   /**
    * Open new tab with current (saved) settings
@@ -350,31 +298,6 @@ class OptionsApp {
     }
   }
 
-  /**
-   * Save general settings only
-   */
-  async saveGeneral() {
-    try {
-      // Only save general settings
-      const generalData = {
-        showIcons: this.data.showIcons,
-        showUrls: this.data.showUrls,
-        version: this.data.version
-      };
-      
-      // Update storage with current general settings while preserving other settings
-      const currentData = await StorageManager.load();
-      const updatedData = { ...currentData, ...generalData };
-      
-      await StorageManager.save(updatedData);
-      this.markClean();
-      this.dataManager.updateStorageInfo();
-
-    } catch (error) {
-      console.error('Failed to save general settings:', error);
-      this.uiManager.showError('Failed to save general settings. Please try again.');
-    }
-  }
 
   /**
    * Mark data as dirty (needs saving)

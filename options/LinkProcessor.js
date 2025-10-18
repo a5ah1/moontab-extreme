@@ -165,7 +165,9 @@ class LinkProcessor {
   }
 
   /**
-   * Fetch page title and icon with improved approach
+   * Set domain as default title and update icon preview
+   * Note: We extract the domain name as the default title instead of fetching
+   * from the page to avoid CORS errors and respect user privacy.
    */
   async fetchPageTitleAndIcon(link, titleInput, titlePreview, iconPreview, linkEl) {
     if (!link.url || !this.isValidUrl(link.url)) {
@@ -176,18 +178,17 @@ class LinkProcessor {
     if (!fetchUrl.match(/^[a-zA-Z]+:\/\//) && this.isValidUrl(fetchUrl)) {
       fetchUrl = 'https://' + fetchUrl;
     }
-    // Use fetchUrl instead of link.url for domain extraction and fetching
 
-    // Show loading spinner
+    // Show loading spinner briefly
     const spinner = linkEl.querySelector('.link-loading-spinner');
     if (spinner) {
       spinner.classList.remove('hidden');
     }
 
     try {
-      // Extract domain immediately as fallback
+      // Extract domain as default title
       const domain = this.extractDomainFromUrl(fetchUrl);
-      
+
       // Set domain as title if no title exists
       if (domain && !titleInput.value.trim()) {
         titleInput.value = domain;
@@ -200,33 +201,53 @@ class LinkProcessor {
         this.setGoogleFaviconPreview({ ...link, url: fetchUrl }, iconPreview);
       }
 
-      // Try to fetch the actual page title (async, may fail due to CORS)
-      this.tryFetchPageTitle({ ...link, url: fetchUrl }, titleInput, titlePreview).finally(() => {
-        this.uiManager.hideFetchingSpinner(spinner);
-      });
-
-    } catch (error) {
+    } finally {
+      // Hide spinner
       this.uiManager.hideFetchingSpinner(spinner);
     }
   }
 
   /**
-   * Validate and construct Google favicon URL from custom domain
-   * @param {string} customDomain - User-input domain
+   * Validate and construct Google favicon URL from custom domain/URL
+   * Accepts domains, domain+path, or full URLs
+   * @param {string} customInput - User-input domain, path, or URL (e.g., "icloud.com", "icloud.com/notes/", "https://icloud.com/notes/")
    * @param {number} size - Icon size (default 32 for high DPI)
    * @returns {string|null} Constructed URL or null if invalid
    */
-  constructGoogleFaviconUrl(customDomain, size = 32) {
-    if (!customDomain || typeof customDomain !== 'string') return null;
-    
-    // Basic domain validation (hostname format)
-    const domainRegex = /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/;
-    if (!domainRegex.test(customDomain)) {
+  constructGoogleFaviconUrl(customInput, size = 32) {
+    if (!customInput || typeof customInput !== 'string') return null;
+
+    const input = customInput.trim();
+    if (!input) return null;
+
+    try {
+      // Add protocol if missing for URL parsing
+      let testUrl = input;
+      if (!testUrl.match(/^[a-zA-Z]+:\/\//)) {
+        testUrl = 'https://' + testUrl;
+      }
+
+      // Parse as URL to extract hostname and pathname
+      const urlObj = new URL(testUrl);
+
+      // Combine hostname and pathname (e.g., "icloud.com/notes/")
+      let domainPath = urlObj.hostname;
+      if (urlObj.pathname && urlObj.pathname !== '/') {
+        domainPath += urlObj.pathname;
+      }
+
+      // Basic hostname validation - must have at least a second-level domain
+      const hostnameParts = urlObj.hostname.split('.');
+      if (hostnameParts.length < 2 || hostnameParts[hostnameParts.length - 1].length < 2) {
+        return null;
+      }
+
+      // Construct Google favicon URL
+      return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domainPath)}&sz=${size}`;
+    } catch (e) {
+      // Invalid URL format
       return null;
     }
-    
-    // Construct safe URL
-    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(customDomain)}&sz=${size}`;
   }
 
   /**
@@ -236,62 +257,15 @@ class LinkProcessor {
     try {
       const url = new URL(link.url);
       const domain = url.hostname;
-      
+
       // Use Google's favicon service for preview (32px for better quality in options)
       const googleFaviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
       iconPreview.src = googleFaviconUrl;
-      
+
       // Don't save this as iconUrlOverride since frontend defaults to Google API anyway
-      
+
     } catch (error) {
       // Ignore error, let default icon handling work
-    }
-  }
-
-  /**
-   * Try to fetch the actual page title (may fail due to CORS)
-   */
-  async tryFetchPageTitle(link, titleInput, titlePreview) {
-    let fetchUrl = link.url;
-    if (!fetchUrl.match(/^[a-zA-Z]+:\/\//) && this.isValidUrl(fetchUrl)) {
-      fetchUrl = 'https://' + fetchUrl;
-    }
-    // Use fetchUrl in the fetch call
-
-    // Only try if title is empty or just the domain
-    const currentTitle = titleInput.value.trim();
-    const domain = this.extractDomainFromUrl(fetchUrl);
-    
-    if (currentTitle && currentTitle !== domain) {
-      return;
-    }
-
-    try {
-      const response = await fetch(fetchUrl, {
-        mode: 'cors',
-        method: 'GET',
-        headers: {
-          'Accept': 'text/html,application/xhtml+xml',
-        }
-      });
-
-      if (response.ok) {
-        const html = await response.text();
-        const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-        
-        if (titleMatch && titleMatch[1]) {
-          const fetchedTitle = titleMatch[1].trim();
-          
-          // Only update if we still have the domain or empty title
-          if (!titleInput.value.trim() || titleInput.value.trim() === domain) {
-            titleInput.value = fetchedTitle;
-            link.title = fetchedTitle;
-            titlePreview.textContent = fetchedTitle;
-          }
-        }
-      }
-    } catch (corsError) {
-      // CORS errors are expected and harmless - silently ignore
     }
   }
 

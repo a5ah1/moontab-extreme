@@ -249,7 +249,7 @@ class NewTabApp {
     const linkTitle = linkEl.querySelector('.link-title');
     const linkUrl = linkEl.querySelector('.link-url');
 
-    linkContent.href = link.url;
+    linkContent.href = this.normalizeUrl(link.url);
     linkTitle.innerHTML = sanitizeText(link.title || this.extractDomainFromUrl(link.url));
     linkUrl.textContent = this.formatUrlForDisplay(link.url);
 
@@ -420,6 +420,29 @@ class NewTabApp {
     return classArray
       .filter(className => className && validClassRegex.test(className))
       .join(' ');
+  }
+
+  /**
+   * Normalize URL by adding https:// if no protocol is specified
+   * Allows any user-specified protocol (http, ftp, custom, etc.)
+   * @param {string} url - URL
+   * @returns {string} Normalized URL with protocol
+   */
+  normalizeUrl(url) {
+    if (!url) return url;
+
+    // Handle edge case: starts with :// (missing protocol)
+    if (url.startsWith('://')) {
+      return 'https' + url;
+    }
+
+    // If URL contains ://, assume user specified a protocol
+    if (url.includes('://')) {
+      return url;
+    }
+
+    // Otherwise, add https://
+    return 'https://' + url;
   }
 
   /**
