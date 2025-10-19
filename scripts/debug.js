@@ -1,5 +1,5 @@
 /**
- * Debug utilities for Link Stacker
+ * Debug utilities for Moontab Extreme
  */
 
 // Log JSZip loading status (disabled for production)

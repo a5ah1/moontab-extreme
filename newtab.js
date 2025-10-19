@@ -1,5 +1,5 @@
 /**
- * New Tab Page - Link Stacker
+ * New Tab Page - Moontab Extreme
  * Simplified read-only view with settings access
  */
 
@@ -34,10 +34,10 @@ class NewTabApp {
         const height = (this.data.backgroundHeight && this.data.backgroundHeight.trim()) ? this.data.backgroundHeight.trim() : 'auto';
         effectiveBackgroundSize = `${width} ${height}`;
       }
-      
+
       // Check if we're in empty state (no columns)
       const isEmptyState = this.data.columns.length === 0;
-      
+
       // Initialize theme manager
       if (isEmptyState) {
         // Empty state: force browser theme and bypass custom CSS
@@ -111,8 +111,8 @@ class NewTabApp {
    */
   loadTemplates() {
     this.templates.column = document.getElementById('column-template');
+    this.templates.group = document.getElementById('group-template');
     this.templates.link = document.getElementById('link-template');
-    this.templates.divider = document.getElementById('divider-template');
   }
 
   /**
@@ -194,12 +194,12 @@ class NewTabApp {
       titleEl.textContent = column.name;
     }
 
-    // Render items (links and dividers)
-    const linksContainer = columnEl.querySelector('.links-container');
-    if (column.items && column.items.length > 0) {
-      column.items.forEach(item => {
-        const itemElement = this.createItemElement(item);
-        linksContainer.appendChild(itemElement);
+    // Render groups
+    const groupsContainer = columnEl.querySelector('.groups-container');
+    if (column.groups && column.groups.length > 0) {
+      column.groups.forEach(group => {
+        const groupElement = this.createGroupElement(group);
+        groupsContainer.appendChild(groupElement);
       });
     }
 
@@ -207,16 +207,51 @@ class NewTabApp {
   }
 
   /**
-   * Create an item element (link or divider)
-   * @param {Object} item - Item data
-   * @returns {Element} Item element
+   * Create a group element
+   * @param {Object} group - Group data
+   * @returns {Element} Group element
    */
-  createItemElement(item) {
-    if (item.type === 'divider') {
-      return this.createDividerElement(item);
-    } else {
-      return this.createLinkElement(item);
+  createGroupElement(group) {
+    const template = this.templates.group.content.cloneNode(true);
+    const groupEl = template.querySelector('.group');
+
+    // Set group data
+    groupEl.dataset.groupId = group.id;
+
+    // Apply custom CSS classes if present and valid
+    if (group.customClasses && typeof group.customClasses === 'string') {
+      const customClasses = this.sanitizeCssClasses(group.customClasses);
+      if (customClasses) {
+        customClasses.split(/\s+/).forEach(className => {
+          if (className) {
+            groupEl.classList.add(className);
+          }
+        });
+      }
     }
+
+    // Handle group header visibility
+    const headerEl = groupEl.querySelector('.group-header');
+    const titleEl = groupEl.querySelector('.group-title');
+
+    if (group.title && this.data.showGroupHeaders !== false) {
+      // Show header with title
+      titleEl.innerHTML = sanitizeText(group.title);
+    } else {
+      // Hide header if no title or showGroupHeaders is false
+      headerEl.remove();
+    }
+
+    // Render links
+    const linksContainer = groupEl.querySelector('.group-links');
+    if (group.links && group.links.length > 0) {
+      group.links.forEach(link => {
+        const linkElement = this.createLinkElement(link);
+        linksContainer.appendChild(linkElement);
+      });
+    }
+
+    return groupEl;
   }
 
   /**
@@ -257,40 +292,6 @@ class NewTabApp {
     this.setLinkIcon(linkIcon, link);
 
     return linkEl;
-  }
-
-  /**
-   * Create a divider element
-   * @param {Object} divider - Divider data
-   * @returns {Element} Divider element
-   */
-  createDividerElement(divider) {
-    const template = this.templates.divider.content.cloneNode(true);
-    const dividerEl = template.querySelector('.divider-item');
-
-    // Set divider data
-    dividerEl.dataset.dividerId = divider.id;
-
-    // Apply custom CSS classes if present and valid
-    if (divider.customClasses && typeof divider.customClasses === 'string') {
-      const customClasses = this.sanitizeCssClasses(divider.customClasses);
-      if (customClasses) {
-        customClasses.split(/\s+/).forEach(className => {
-          if (className) {
-            dividerEl.classList.add(className);
-          }
-        });
-      }
-    }
-
-    // Set title (can be empty for horizontal rule effect)
-    const titleEl = dividerEl.querySelector('.divider-title');
-    if (divider.title) {
-      titleEl.innerHTML = sanitizeText(divider.title);
-    }
-    // Note: Empty divider titles are styled by CSS to show as horizontal rules
-
-    return dividerEl;
   }
 
   /**
@@ -385,25 +386,20 @@ class NewTabApp {
   }
 
   /**
-   * Find item by ID
-   * @param {string} itemId - Item ID
-   * @returns {Object|null} Item object or null
-   */
-  findItemById(itemId) {
-    for (const column of this.data.columns) {
-      const item = column.items.find(i => i.id === itemId);
-      if (item) return item;
-    }
-    return null;
-  }
-
-  /**
-   * Find link by ID (legacy method for backward compatibility)
+   * Find link by ID
    * @param {string} linkId - Link ID
    * @returns {Object|null} Link object or null
    */
   findLinkById(linkId) {
-    return this.findItemById(linkId);
+    for (const column of this.data.columns) {
+      if (column.groups) {
+        for (const group of column.groups) {
+          const link = group.links.find(l => l.id === linkId);
+          if (link) return link;
+        }
+      }
+    }
+    return null;
   }
 
   /**
@@ -413,10 +409,10 @@ class NewTabApp {
    */
   sanitizeCssClasses(classes) {
     if (!classes || typeof classes !== 'string') return '';
-    
+
     const classArray = classes.trim().split(/\s+/);
     const validClassRegex = /^[a-zA-Z_][\w\-]*$/;
-    
+
     return classArray
       .filter(className => className && validClassRegex.test(className))
       .join(' ');
@@ -475,7 +471,7 @@ class NewTabApp {
       }
       const parsed = new URL(testUrl);
       let hostname = parsed.hostname;
-      
+
       // Remove "www." if it's the only subdomain
       if (hostname.startsWith('www.')) {
         const withoutWww = hostname.substring(4);
@@ -484,7 +480,7 @@ class NewTabApp {
           hostname = withoutWww;
         }
       }
-      
+
       return hostname + (parsed.pathname !== '/' ? parsed.pathname : '');
     } catch {
       return url;
@@ -503,7 +499,7 @@ class NewTabApp {
         animateLink.href = chrome.runtime.getURL('vendor/animate/animate.min.css');
         animateLink.id = 'animate-css-link';
         document.head.appendChild(animateLink);
-        
+
         // Wait for stylesheet to load
         await new Promise((resolve, reject) => {
           animateLink.onload = resolve;
@@ -516,7 +512,7 @@ class NewTabApp {
         const script = document.createElement('script');
         script.src = 'scripts/column-animations.js';
         document.head.appendChild(script);
-        
+
         // Wait for script to load
         await new Promise((resolve, reject) => {
           script.onload = resolve;

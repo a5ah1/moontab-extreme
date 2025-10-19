@@ -1,11 +1,13 @@
 /**
- * Storage management for Link Stacker
+ * Storage management for Moontab Extreme
  * Handles versioned data schema and Chrome storage operations
  */
 
-const STORAGE_VERSION = 1;
-const STORAGE_KEY = 'linkStackerData';
+const STORAGE_VERSION = 2;
+const STORAGE_KEY = 'moontabExtremeData';
 const STORAGE_WARNING_THRESHOLD = 4 * 1024 * 1024; // 4MB
+const MAX_GROUPS_PER_COLUMN = 50;
+const MAX_LINKS_PER_GROUP = 200;
 
 /**
  * Default data structure
@@ -16,97 +18,112 @@ const DEFAULT_DATA = {
     {
       id: generateUUID(),
       name: 'Example Column 1',
-      items: [
+      groups: [
         {
-          type: 'link',
           id: generateUUID(),
-          url: 'https://www.google.com',
-          title: 'Google',
-          iconDataUri: null,
-          customClasses: ''
-        },
-        {
-          type: 'link',
-          id: generateUUID(),
-          url: 'https://mail.google.com',
-          title: 'Gmail',
-          iconDataUri: null,
-          iconUrlOverride: 'https://www.google.com/s2/favicons?domain=google.com&sz=32',
-          customClasses: ''
-        },
-        {
-          type: 'link',
-          id: generateUUID(),
-          url: 'https://bbc.com/news',
-          title: 'BBC News',
-          iconDataUri: null,
-          customClasses: ''
-        },
-        {
-          type: 'link',
-          id: generateUUID(),
-          url: 'https://x.com',
-          title: 'X.com',
-          iconDataUri: null,
-          customClasses: ''
+          title: '',
+          customClasses: '',
+          links: [
+            {
+              id: generateUUID(),
+              url: 'https://www.google.com',
+              title: 'Google',
+              iconDataUri: null,
+              iconUrlOverride: null,
+              customClasses: ''
+            },
+            {
+              id: generateUUID(),
+              url: 'https://mail.google.com',
+              title: 'Gmail',
+              iconDataUri: null,
+              iconUrlOverride: 'https://www.google.com/s2/favicons?domain=google.com&sz=32',
+              customClasses: ''
+            },
+            {
+              id: generateUUID(),
+              url: 'https://bbc.com/news',
+              title: 'BBC News',
+              iconDataUri: null,
+              iconUrlOverride: null,
+              customClasses: ''
+            },
+            {
+              id: generateUUID(),
+              url: 'https://x.com',
+              title: 'X.com',
+              iconDataUri: null,
+              iconUrlOverride: null,
+              customClasses: ''
+            }
+          ]
         }
       ]
     },
     {
       id: generateUUID(),
       name: 'Example Column 2',
-      items: [
+      groups: [
         {
-          type: 'link',
           id: generateUUID(),
-          url: 'https://github.com',
-          title: 'GitHub',
-          iconDataUri: null,
-          customClasses: ''
+          title: 'Developer Resources',
+          customClasses: '',
+          links: [
+            {
+              id: generateUUID(),
+              url: 'https://github.com',
+              title: 'GitHub',
+              iconDataUri: null,
+              iconUrlOverride: null,
+              customClasses: ''
+            },
+            {
+              id: generateUUID(),
+              url: 'https://news.ycombinator.com',
+              title: 'Hacker News',
+              iconDataUri: null,
+              iconUrlOverride: null,
+              customClasses: ''
+            }
+          ]
         },
         {
-          type: 'link',
           id: generateUUID(),
-          url: 'https://news.ycombinator.com',
-          title: 'Hacker News',
-          iconDataUri: null,
-          customClasses: ''
+          title: 'Archives',
+          customClasses: '',
+          links: [
+            {
+              id: generateUUID(),
+              url: 'https://archive.org',
+              title: 'The Internet Archive',
+              iconDataUri: null,
+              iconUrlOverride: null,
+              customClasses: ''
+            },
+            {
+              id: generateUUID(),
+              url: 'https://gutenberg.org',
+              title: 'Project Gutenberg',
+              iconDataUri: null,
+              iconUrlOverride: null,
+              customClasses: ''
+            }
+          ]
         },
         {
-          type: 'divider',
-          id: generateUUID(),
-          title: 'Example Divider',
-          customClasses: ''
-        },
-        {
-          type: 'link',
-          id: generateUUID(),
-          url: 'https://archive.org',
-          title: 'The Internet Archive',
-          iconDataUri: null,
-          customClasses: ''
-        },
-        {
-          type: 'link',
-          id: generateUUID(),
-          url: 'https://gutenberg.org',
-          title: 'Project Gutenberg',
-          iconDataUri: null,
-          customClasses: ''
-        },
-        {
-          type: 'divider',
           id: generateUUID(),
           title: 'Just for fun',
-          customClasses: ''
-        },
-        {
-          type: 'link',
-          id: generateUUID(),
-          url: 'https://www.cameronsworld.net/',
-          title: 'Cameron\'s World',
-          iconDataUri: null,
-          customClasses: ''
+          customClasses: '',
+          links: [
+            {
+              id: generateUUID(),
+              url: 'https://www.cameronsworld.net/',
+              title: 'Cameron\'s World',
+              iconDataUri: null,
+              iconUrlOverride: null,
+              customClasses: ''
+            }
+          ]
         }
       ]
     }
@@ -130,6 +147,7 @@ const DEFAULT_DATA = {
   showIcons: true,
   showUrls: true,
   showColumnHeaders: true,
+  showGroupHeaders: true,
   showAdvancedOptions: false,
   // Column animations settings
   columnAnimationEnabled: false,
@@ -174,7 +192,7 @@ class StorageManager {
    * @param {Object} data - Data to save
    * @returns {Promise<void>}
    */
-  static save = debounce(async function(data) {
+  static save = debounce(async function (data) {
     try {
       // Ensure version is set
       data.version = STORAGE_VERSION;
@@ -198,7 +216,7 @@ class StorageManager {
   static async saveImmediate(data) {
     try {
       console.log('🔍 StorageManager: Immediate save starting...');
-      
+
       // Ensure version is set
       data.version = STORAGE_VERSION;
 
@@ -214,52 +232,20 @@ class StorageManager {
   }
 
   /**
-   * Migrate data from older versions
+   * Migrate data from older versions (for future use)
    * @param {Object} data - Data to migrate
    * @returns {Object} Migrated data
    */
   static migrate(data) {
-    // If no version, assume version 1
+    // Ensure version is set
     if (!data.version) {
-      data.version = 1;
-    }
-
-    // Migrate backgroundColor to pageBackgroundColor
-    if (data.backgroundColor && data.pageBackgroundColor === null) {
-      console.log('Migrating backgroundColor to pageBackgroundColor:', data.backgroundColor);
-      data.pageBackgroundColor = data.backgroundColor;
-    }
-    
-    // Clean up old backgroundColor property
-    if (data.hasOwnProperty('backgroundColor')) {
-      delete data.backgroundColor;
-    }
-
-    // Migrate links to items structure
-    if (data.columns && Array.isArray(data.columns)) {
-      data.columns.forEach(column => {
-        if (column && column.links && !column.items) {
-          console.log('Migrating column links to items:', column.name);
-          column.items = column.links.map(link => ({
-            type: 'link',
-            ...link
-          }));
-          delete column.links;
-        } else if (column && !column.items) {
-          // Ensure all columns have items array
-          column.items = [];
-        }
-        
-        // Ensure all columns have customClasses field
-        if (column && column.customClasses === undefined) {
-          column.customClasses = '';
-        }
-      });
+      data.version = STORAGE_VERSION;
     }
 
     // Ensure all required fields exist
     const requiredFields = {
       showColumnHeaders: true,
+      showGroupHeaders: true,
       showAdvancedOptions: false,
       showIcons: true,
       showUrls: true,
@@ -287,10 +273,9 @@ class StorageManager {
       }
     });
 
-    // Future migrations would go here
-    // if (data.version === 1) {
-    //   // Migrate from v1 to v2
-    //   data = this.migrateV1ToV2(data);
+    // Future version migrations would go here
+    // if (data.version === 2) {
+    //   data = this.migrateV2ToV3(data);
     // }
 
     return data;
@@ -356,14 +341,14 @@ class StorageManager {
   static async importData(jsonString) {
     try {
       console.log('🔍 Import Debug: Starting import process');
-      
+
       // Check storage quota before parsing
       const jsonSize = new TextEncoder().encode(jsonString).length;
       console.log('🔍 Import Debug: JSON size:', jsonSize, 'bytes');
-      
+
       const usage = await StorageManager.checkStorageUsage();
       console.log('🔍 Import Debug: Current storage usage:', usage.bytes, 'bytes');
-      
+
       if (usage.bytes + jsonSize > chrome.storage.local.QUOTA_BYTES) {
         throw new Error('Import would exceed storage limit');
       }
@@ -436,7 +421,14 @@ class ColumnManager {
     const newColumn = {
       id: generateUUID(),
       name: name || 'New Column',
-      items: [],
+      groups: [
+        {
+          id: generateUUID(),
+          title: '',
+          customClasses: '',
+          links: []
+        }
+      ],
       customClasses: ''
     };
 
@@ -499,159 +491,261 @@ class ColumnManager {
 }
 
 /**
- * Item operations (links and dividers)
+ * Group operations
  */
-class ItemManager {
+class GroupManager {
 
   /**
-   * Add a new link to a column
+   * Add a new group to a column
    * @param {string} columnId - Column ID
-   * @param {Object} linkData - Link data
-   * @returns {Promise<Object>} New link object
+   * @param {Object} groupData - Group data (optional)
+   * @returns {Promise<Object>} New group object
    */
-  static async addLink(columnId, linkData) {
+  static async addGroup(columnId, groupData = {}) {
     const data = await StorageManager.load();
     const column = data.columns.find(c => c.id === columnId);
 
     if (!column) throw new Error('Column not found');
 
-    // Validate link data
-    if (!isValidUrl(linkData.url)) throw new Error('Invalid URL');
-    if (linkData.iconDataUri && !isValidImageDataUri(linkData.iconDataUri)) throw new Error('Invalid icon');
+    // Check group limit
+    if (column.groups && column.groups.length >= MAX_GROUPS_PER_COLUMN) {
+      throw new Error(`Maximum ${MAX_GROUPS_PER_COLUMN} groups per column`);
+    }
 
-    const newLink = {
-      type: 'link',
+    const newGroup = {
       id: generateUUID(),
-      url: linkData.url,
-      title: linkData.title || '',
-      iconDataUri: linkData.iconDataUri || null,
-      customClasses: linkData.customClasses || ''
+      title: groupData.title || '',
+      customClasses: groupData.customClasses || '',
+      links: []
     };
 
-    column.items.push(newLink);
+    column.groups.push(newGroup);
     await StorageManager.save(data);
 
-    return newLink;
+    return newGroup;
   }
 
   /**
-   * Add a new divider to a column
+   * Update a group
    * @param {string} columnId - Column ID
-   * @param {Object} dividerData - Divider data
-   * @returns {Promise<Object>} New divider object
-   */
-  static async addDivider(columnId, dividerData) {
-    const data = await StorageManager.load();
-    const column = data.columns.find(c => c.id === columnId);
-
-    if (!column) throw new Error('Column not found');
-
-    // Validate divider data
-    if (dividerData.title && typeof dividerData.title !== 'string') throw new Error('Invalid divider title');
-    if (dividerData.customClasses && !/^[a-zA-Z_][\w\- ]*$/.test(dividerData.customClasses)) throw new Error('Invalid custom classes');
-
-    const newDivider = {
-      type: 'divider',
-      id: generateUUID(),
-      title: dividerData.title || '',
-      customClasses: dividerData.customClasses || ''
-    };
-
-    column.items.push(newDivider);
-    await StorageManager.save(data);
-
-    return newDivider;
-  }
-
-  /**
-   * Update an item (link or divider)
-   * @param {string} columnId - Column ID
-   * @param {string} itemId - Item ID
+   * @param {string} groupId - Group ID
    * @param {Object} updates - Fields to update
    * @returns {Promise<void>}
    */
-  static async updateItem(columnId, itemId, updates) {
+  static async updateGroup(columnId, groupId, updates) {
     const data = await StorageManager.load();
     const column = data.columns.find(c => c.id === columnId);
 
     if (column) {
-      const item = column.items.find(i => i.id === itemId);
-      if (item) {
-        Object.assign(item, updates);
+      const group = column.groups.find(g => g.id === groupId);
+      if (group) {
+        Object.assign(group, updates);
         await StorageManager.save(data);
       }
     }
   }
 
   /**
-   * Update a link (legacy method for backward compatibility)
+   * Delete a group
    * @param {string} columnId - Column ID
+   * @param {string} groupId - Group ID
+   * @returns {Promise<void>}
+   */
+  static async deleteGroup(columnId, groupId) {
+    const data = await StorageManager.load();
+    const column = data.columns.find(c => c.id === columnId);
+
+    if (column) {
+      column.groups = column.groups.filter(g => g.id !== groupId);
+
+      // Ensure at least one group exists
+      if (column.groups.length === 0) {
+        column.groups.push({
+          id: generateUUID(),
+          title: '',
+          customClasses: '',
+          links: []
+        });
+      }
+
+      await StorageManager.save(data);
+    }
+  }
+
+  /**
+   * Reorder groups within a column
+   * @param {string} columnId - Column ID
+   * @param {Array<string>} groupIds - Array of group IDs in new order
+   * @returns {Promise<void>}
+   */
+  static async reorderGroups(columnId, groupIds) {
+    const data = await StorageManager.load();
+    const column = data.columns.find(c => c.id === columnId);
+
+    if (column) {
+      const newGroups = [];
+      groupIds.forEach(id => {
+        const group = column.groups.find(g => g.id === id);
+        if (group) newGroups.push(group);
+      });
+
+      column.groups = newGroups;
+      await StorageManager.save(data);
+    }
+  }
+}
+
+/**
+ * Link operations (now within groups)
+ */
+class LinkManager {
+
+  /**
+   * Add a new link to a group
+   * @param {string} columnId - Column ID
+   * @param {string} groupId - Group ID
+   * @param {Object} linkData - Link data
+   * @returns {Promise<Object>} New link object
+   */
+  static async addLink(columnId, groupId, linkData) {
+    const data = await StorageManager.load();
+    const column = data.columns.find(c => c.id === columnId);
+
+    if (!column) throw new Error('Column not found');
+
+    const group = column.groups.find(g => g.id === groupId);
+    if (!group) throw new Error('Group not found');
+
+    // Check links per group limit
+    if (group.links.length >= MAX_LINKS_PER_GROUP) {
+      throw new Error(`Maximum ${MAX_LINKS_PER_GROUP} links per group`);
+    }
+
+    // Validate link data
+    if (!isValidUrl(linkData.url)) throw new Error('Invalid URL');
+    if (linkData.iconDataUri && !isValidImageDataUri(linkData.iconDataUri)) throw new Error('Invalid icon');
+
+    const newLink = {
+      id: generateUUID(),
+      url: linkData.url,
+      title: linkData.title || '',
+      iconDataUri: linkData.iconDataUri || null,
+      iconUrlOverride: linkData.iconUrlOverride || null,
+      customClasses: linkData.customClasses || ''
+    };
+
+    group.links.push(newLink);
+    await StorageManager.save(data);
+
+    return newLink;
+  }
+
+  /**
+   * Update a link
+   * @param {string} columnId - Column ID
+   * @param {string} groupId - Group ID
    * @param {string} linkId - Link ID
    * @param {Object} updates - Fields to update
    * @returns {Promise<void>}
    */
-  static async updateLink(columnId, linkId, updates) {
-    return this.updateItem(columnId, linkId, updates);
-  }
-
-  /**
-   * Delete an item (link or divider)
-   * @param {string} columnId - Column ID
-   * @param {string} itemId - Item ID
-   * @returns {Promise<void>}
-   */
-  static async deleteItem(columnId, itemId) {
+  static async updateLink(columnId, groupId, linkId, updates) {
     const data = await StorageManager.load();
     const column = data.columns.find(c => c.id === columnId);
 
     if (column) {
-      column.items = column.items.filter(i => i.id !== itemId);
-      await StorageManager.save(data);
+      const group = column.groups.find(g => g.id === groupId);
+      if (group) {
+        const link = group.links.find(l => l.id === linkId);
+        if (link) {
+          Object.assign(link, updates);
+          await StorageManager.save(data);
+        }
+      }
     }
   }
 
   /**
-   * Delete a link (legacy method for backward compatibility)
+   * Delete a link
    * @param {string} columnId - Column ID
+   * @param {string} groupId - Group ID
    * @param {string} linkId - Link ID
    * @returns {Promise<void>}
    */
-  static async deleteLink(columnId, linkId) {
-    return this.deleteItem(columnId, linkId);
-  }
-
-  /**
-   * Reorder items within a column
-   * @param {string} columnId - Column ID
-   * @param {Array<string>} itemIds - Array of item IDs in new order
-   * @returns {Promise<void>}
-   */
-  static async reorderItems(columnId, itemIds) {
+  static async deleteLink(columnId, groupId, linkId) {
     const data = await StorageManager.load();
     const column = data.columns.find(c => c.id === columnId);
 
     if (column) {
-      const newItems = [];
-      itemIds.forEach(id => {
-        const item = column.items.find(i => i.id === id);
-        if (item) newItems.push(item);
-      });
-
-      column.items = newItems;
-      await StorageManager.save(data);
+      const group = column.groups.find(g => g.id === groupId);
+      if (group) {
+        group.links = group.links.filter(l => l.id !== linkId);
+        await StorageManager.save(data);
+      }
     }
   }
 
   /**
-   * Reorder links within a column (legacy method for backward compatibility)
+   * Reorder links within a group
    * @param {string} columnId - Column ID
+   * @param {string} groupId - Group ID
    * @param {Array<string>} linkIds - Array of link IDs in new order
    * @returns {Promise<void>}
    */
-  static async reorderLinks(columnId, linkIds) {
-    return this.reorderItems(columnId, linkIds);
+  static async reorderLinks(columnId, groupId, linkIds) {
+    const data = await StorageManager.load();
+    const column = data.columns.find(c => c.id === columnId);
+
+    if (column) {
+      const group = column.groups.find(g => g.id === groupId);
+      if (group) {
+        const newLinks = [];
+        linkIds.forEach(id => {
+          const link = group.links.find(l => l.id === id);
+          if (link) newLinks.push(link);
+        });
+
+        group.links = newLinks;
+        await StorageManager.save(data);
+      }
+    }
   }
 
+  /**
+   * Move a link from one group to another
+   * @param {string} fromColumnId - Source column ID
+   * @param {string} fromGroupId - Source group ID
+   * @param {string} linkId - Link ID to move
+   * @param {string} toColumnId - Destination column ID
+   * @param {string} toGroupId - Destination group ID
+   * @returns {Promise<void>}
+   */
+  static async moveLink(fromColumnId, fromGroupId, linkId, toColumnId, toGroupId) {
+    const data = await StorageManager.load();
+
+    const fromColumn = data.columns.find(c => c.id === fromColumnId);
+    const toColumn = data.columns.find(c => c.id === toColumnId);
+
+    if (!fromColumn || !toColumn) throw new Error('Column not found');
+
+    const fromGroup = fromColumn.groups.find(g => g.id === fromGroupId);
+    const toGroup = toColumn.groups.find(g => g.id === toGroupId);
+
+    if (!fromGroup || !toGroup) throw new Error('Group not found');
+
+    const linkIndex = fromGroup.links.findIndex(l => l.id === linkId);
+    if (linkIndex === -1) throw new Error('Link not found');
+
+    // Check limit in destination group
+    if (toGroup.links.length >= MAX_LINKS_PER_GROUP) {
+      throw new Error(`Maximum ${MAX_LINKS_PER_GROUP} links per group`);
+    }
+
+    // Move the link
+    const [link] = fromGroup.links.splice(linkIndex, 1);
+    toGroup.links.push(link);
+
+    await StorageManager.save(data);
+  }
 }
 
 /**
@@ -765,6 +859,17 @@ class SettingsManager {
   }
 
   /**
+   * Toggle group header visibility
+   * @param {boolean} showGroupHeaders - Whether to show group headers
+   * @returns {Promise<void>}
+   */
+  static async updateGroupHeaderVisibility(showGroupHeaders) {
+    const data = await StorageManager.load();
+    data.showGroupHeaders = showGroupHeaders;
+    await StorageManager.save(data);
+  }
+
+  /**
    * Toggle advanced options visibility
    * @param {boolean} showAdvancedOptions - Whether to show advanced options
    * @returns {Promise<void>}
@@ -833,17 +938,16 @@ class SettingsManager {
   }
 }
 
-// Legacy alias for backward compatibility
-const LinkManager = ItemManager;
-
 // Export classes for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     StorageManager,
     ColumnManager,
-    ItemManager,
-    LinkManager, // Legacy alias
+    GroupManager,
+    LinkManager,
     SettingsManager,
-    DEFAULT_DATA
+    DEFAULT_DATA,
+    MAX_GROUPS_PER_COLUMN,
+    MAX_LINKS_PER_GROUP
   };
 }

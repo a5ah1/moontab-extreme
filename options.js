@@ -1,5 +1,5 @@
 /**
- * Options Page - Link Stacker
+ * Options Page - Moontab Extreme
  * Main controller that coordinates all manager components
  */
 
@@ -70,6 +70,7 @@ class OptionsApp {
    */
   loadTemplates() {
     this.templates.columnOptions = document.getElementById('column-options-template');
+    this.templates.groupOptions = document.getElementById('group-options-template');
     this.templates.linkOptions = document.getElementById('link-options-template');
     this.templates.dividerOptions = document.getElementById('divider-options-template');
     this.templates.previewModal = document.getElementById('preview-modal-template');
@@ -148,15 +149,15 @@ class OptionsApp {
   handleHashChange() {
     const hash = window.location.hash.slice(1); // Remove #
     const validPanels = ['content', 'appearance', 'general', 'help'];
-    
+
     // Default to 'content' if no hash or invalid hash
     const panelId = validPanels.includes(hash) ? hash : 'content';
-    
+
     // Update URL if needed (for default case)
     if (!hash || !validPanels.includes(hash)) {
       window.history.replaceState(null, '', '#content');
     }
-    
+
     this.switchPanel(panelId, false);
   }
 
@@ -248,11 +249,11 @@ class OptionsApp {
         columns: this.data.columns,
         version: this.data.version
       };
-      
+
       // Update storage with current content while preserving other settings
       const currentData = await StorageManager.load();
       const updatedData = { ...currentData, ...contentData };
-      
+
       await StorageManager.save(updatedData);
       this.markClean();
       this.dataManager.updateStorageInfo();
@@ -283,11 +284,11 @@ class OptionsApp {
         browserCssEnabled: this.data.browserCssEnabled,
         version: this.data.version
       };
-      
+
       // Update storage with current appearance while preserving other settings
       const currentData = await StorageManager.load();
       const updatedData = { ...currentData, ...appearanceData };
-      
+
       await StorageManager.save(updatedData);
       this.markClean();
       this.dataManager.updateStorageInfo();
@@ -304,15 +305,15 @@ class OptionsApp {
    */
   markDirty() {
     this.isDirty = true;
-    
+
     // Clear previous timeout
     if (this.autoSaveTimeout) {
       clearTimeout(this.autoSaveTimeout);
     }
-    
+
     // Show saving status
     this.uiManager.showSavingStatus();
-    
+
     // Schedule save after 1 second of no changes
     this.autoSaveTimeout = setTimeout(async () => {
       try {

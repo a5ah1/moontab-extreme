@@ -1,5 +1,5 @@
 /**
- * Help Manager - Link Stacker Options
+ * Help Manager - Moontab Extreme Options
  * Handles markdown loading, parsing, and TOC generation for the help panel
  */
 
@@ -16,7 +16,7 @@ class HelpManager {
   async setupHelpPanel() {
     const helpPanel = document.getElementById('help-panel');
     const panelBody = helpPanel.querySelector('.panel-body');
-    
+
     // Create help layout structure
     panelBody.innerHTML = `
       <div class="help-layout">
@@ -37,7 +37,7 @@ class HelpManager {
 
     // Load and render help content
     await this.loadHelpContent();
-    
+
     // Setup interactions
     this.setupInteractions();
   }
@@ -49,14 +49,14 @@ class HelpManager {
     try {
       const response = await fetch('help.md');
       const markdownContent = await response.text();
-      
+
       // Parse markdown to HTML
       const htmlContent = marked.parse(markdownContent);
-      
+
       // Generate TOC and render content
       this.generateTOC(htmlContent);
       this.renderContent(htmlContent);
-      
+
     } catch (error) {
       console.error('Failed to load help content:', error);
       this.renderError();
@@ -71,19 +71,19 @@ class HelpManager {
     // Create temporary element to parse HTML
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlContent;
-    
+
     // Find all headings
     const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
     this.tocItems = [];
-    
+
     headings.forEach((heading, index) => {
       const level = parseInt(heading.tagName.charAt(1));
       const text = heading.textContent.trim();
       const id = this.generateHeadingId(text, index);
-      
+
       // Add ID to heading for anchor linking
       heading.id = id;
-      
+
       // Store TOC item
       this.tocItems.push({
         level,
@@ -92,10 +92,10 @@ class HelpManager {
         element: heading
       });
     });
-    
+
     // Update original content with IDs
     this.helpContent = tempDiv.innerHTML;
-    
+
     // Render TOC
     this.renderTOC();
   }
@@ -113,7 +113,7 @@ class HelpManager {
       .replace(/\s+/g, '-')     // Replace spaces with hyphens
       .replace(/--+/g, '-')     // Replace multiple hyphens with single
       .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
-    
+
     return baseId || `heading-${index}`;
   }
 
@@ -122,14 +122,14 @@ class HelpManager {
    */
   renderTOC() {
     const tocNav = document.querySelector('.toc-nav');
-    
+
     if (this.tocItems.length === 0) {
       tocNav.innerHTML = '<p class="no-toc">No headings found</p>';
       return;
     }
-    
+
     let tocHtml = '<ul class="toc-list">';
-    
+
     this.tocItems.forEach(item => {
       const levelClass = `toc-level-${item.level}`;
       tocHtml += `
@@ -140,7 +140,7 @@ class HelpManager {
         </li>
       `;
     });
-    
+
     tocHtml += '</ul>';
     tocNav.innerHTML = tocHtml;
   }
@@ -152,7 +152,7 @@ class HelpManager {
   renderContent(htmlContent) {
     const contentDiv = document.getElementById('help-content');
     contentDiv.innerHTML = this.helpContent || htmlContent;
-    
+
     // Add click handlers to internal links
     this.setupInternalLinks();
   }
@@ -200,7 +200,7 @@ class HelpManager {
   setupInternalLinks() {
     const helpContent = document.getElementById('help-content');
     const links = helpContent.querySelectorAll('a[href^="#"]');
-    
+
     links.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -217,14 +217,14 @@ class HelpManager {
   scrollToSection(sectionId) {
     const targetElement = document.getElementById(sectionId);
     const helpWrapper = document.querySelector('.help-content-wrapper');
-    
+
     if (targetElement && helpWrapper) {
       const offsetTop = targetElement.offsetTop - 20; // Add some padding
       helpWrapper.scrollTo({
         top: offsetTop,
         behavior: 'smooth'
       });
-      
+
       // Update active TOC item
       this.updateActiveTOCItem(sectionId);
     }
@@ -254,13 +254,13 @@ class HelpManager {
     const observer = new IntersectionObserver(
       (entries) => {
         let visibleHeading = null;
-        
+
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             visibleHeading = entry.target;
           }
         });
-        
+
         if (visibleHeading) {
           this.updateActiveTOCItem(visibleHeading.id);
         }
@@ -290,7 +290,7 @@ class HelpManager {
     document.querySelectorAll('.toc-link').forEach(link => {
       link.classList.remove('active');
     });
-    
+
     // Add active class to current item
     const activeLink = document.querySelector(`[data-target="${activeId}"]`);
     if (activeLink) {

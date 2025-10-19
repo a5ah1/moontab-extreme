@@ -1,13 +1,13 @@
-# Link Stacker Help
+# Moontab Extreme Help
 
 ## Getting Started
 
-Welcome to Link Stacker! This Chrome extension replaces your new tab page with a customizable, Trello-inspired interface for organizing your links into columns.
+Welcome to Moontab Extreme! This Chrome extension replaces your new tab page with a customizable, Trello-inspired interface for organizing your links into columns.
 
 ### First Steps
 
-1. **Open a new tab** to see your Link Stacker dashboard
-2. **Click the settings icon** or go to `chrome://extensions/` and click "Options" next to Link Stacker
+1. **Open a new tab** to see your Moontab Extreme dashboard
+2. **Click the settings icon** or go to `chrome://extensions/` and click "Options" next to Moontab Extreme
 3. **Start adding columns** to organize your links
 4. **Customize the appearance** to match your preferences
 
@@ -46,12 +46,15 @@ Welcome to Link Stacker! This Chrome extension replaces your new tab page with a
 - **Drag & Drop**: Reorder links within columns
 - **URL Validation**: HTTPS URLs are required for external sites; localhost and IP addresses are also supported
 
-### Dividers
+### Groups
 
-Add visual separators within columns to group related links:
-- Click "Add Divider" to insert a separator
-- Optionally add a title to create a labeled section
-- Use custom classes for styling
+Organize links within columns using groups:
+- Groups are containers for related links within a column
+- Each group can have an optional title for organization
+- Click "Add Group" within any column to create a new group
+- Group titles are displayed as headers above the links (can be hidden globally)
+- Drag and drop groups to reorder them within columns
+- Use custom classes for advanced group styling
 
 ## Appearance Customization
 
@@ -95,14 +98,15 @@ For advanced users, the Custom theme allows complete visual control:
 ### Export Options
 
 **Content Export:**
-- Export only your columns and links
+- Export only your columns, groups, and links
 - Perfect for sharing collections or content-only backups
-- File format: `link-stacker-content-YYYY-MM-DD_HH-MM-SS.json`
+- Preserves group structure and organization
+- File format: `moontab-extreme-content-YYYY-MM-DD_HH-MM-SS.json`
 
 **Complete Theme Export:**
 - Export everything: content, themes, CSS, backgrounds, settings
 - Ideal for full backups or sharing complete setups
-- File format: `link-stacker-theme-YYYY-MM-DD_HH-MM-SS.json`
+- File format: `moontab-extreme-theme-YYYY-MM-DD_HH-MM-SS.json`
 
 ### Import Features
 
@@ -144,6 +148,12 @@ Monitor your extension's storage usage:
 - Toggle column title visibility
 - Useful for ultra-minimal layouts
 - Headers remain functional even when hidden
+
+**Group Headers:**
+- Toggle group title visibility globally
+- When enabled, shows group titles above links
+- When disabled, creates a clean, flat link layout
+- Groups without titles never show headers
 
 ### Accessibility Features
 
@@ -267,6 +277,15 @@ Available CSS variables for theming:
 - `--accent`: Accent color for links and buttons
 - `--border-color`: Border color for elements
 
+**Group-specific variables:**
+- `--group-spacing`: Spacing between groups
+- `--group-title-color`: Color of group titles
+- `--group-title-size`: Font size of group titles
+- `--group-title-weight`: Font weight of group titles
+- `--group-background`: Background color for groups
+- `--group-border`: Border styling for groups
+- `--group-padding`: Internal padding of groups
+
 ### Keyboard Shortcuts
 
 **Navigation:**
@@ -290,34 +309,34 @@ Available CSS variables for theming:
 - Review the advanced usage section for customization tips
 
 **Community:**
-- [GitHub Repository](https://github.com/a5ah1/link-stacker) for source code and documentation
-- [GitHub Issues](https://github.com/a5ah1/link-stacker/issues) for bug reports and feature requests
+- [GitHub Repository](https://github.com/a5ah1/moontab-extreme) for source code and documentation
+- [GitHub Issues](https://github.com/a5ah1/moontab-extreme/issues) for bug reports and feature requests
 - Community discussions for usage questions
 - Share your custom themes and CSS with others
 
 ### Contributing
 
-Link Stacker is open source and welcomes contributions:
-- [Report bugs and suggest features](https://github.com/a5ah1/link-stacker/issues) on GitHub
-- [Submit pull requests](https://github.com/a5ah1/link-stacker/pulls) for improvements
+Moontab Extreme is open source and welcomes contributions:
+- [Report bugs and suggest features](https://github.com/a5ah1/moontab-extreme/issues) on GitHub
+- [Submit pull requests](https://github.com/a5ah1/moontab-extreme/pulls) for improvements
 - Share custom themes and CSS snippets
 - Help improve documentation
 
 ### Version Information
 
-Current version: 0.2.3
+Current version: 0.4.0
 - Chrome Manifest V3 compatible
 - Regular updates and improvements
-- Backward compatibility maintained
-- Migration system for data structure changes
+- Group-based architecture for better organization
+- Three-level hierarchy: Columns → Groups → Links
 
 ## About This Extension
 
-Link Stacker is a Chrome extension designed for power users who want complete control over their new tab experience. It transforms your new tab page into a customizable, Trello-inspired dashboard where you can organize links into columns, apply custom themes, and create your own CSS styling.
+Moontab Extreme is a Chrome extension designed for power users who want complete control over their new tab experience. It transforms your new tab page into a customizable, Trello-inspired dashboard where you can organize links into columns, apply custom themes, and create your own CSS styling.
 
-Built with vanilla JavaScript and following Chrome Manifest V3 standards, Link Stacker prioritizes privacy, security, and user customization. All data is stored locally, and the extension includes comprehensive import/export functionality for easy backup and sharing.
+Built with vanilla JavaScript and following Chrome Manifest V3 standards, Moontab Extreme prioritizes privacy, security, and user customization. All data is stored locally, and the extension includes comprehensive import/export functionality for easy backup and sharing.
 
-**Source Code:** [GitHub Repository](https://github.com/a5ah1/link-stacker)
+**Source Code:** [GitHub Repository](https://github.com/a5ah1/moontab-extreme)
 
 This Chrome extension uses the following third-party libraries, bundled in the /vendor directory. We thank their creators!
 
@@ -381,4 +400,4 @@ Copyright (c) 2019 All contributors to Sortable
 
 ---
 
-*Last updated: Version 0.2.3*
+*Last updated: Version 0.4.0*

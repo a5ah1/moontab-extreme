@@ -1,5 +1,5 @@
 /**
- * Background Manager - Link Stacker Options
+ * Background Manager - Moontab Extreme Options
  * Handles page background color and background image uploads
  */
 

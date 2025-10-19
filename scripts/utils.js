@@ -1,5 +1,5 @@
 /**
- * Utility functions for Link Stacker
+ * Utility functions for Moontab Extreme
  */
 
 /**
@@ -21,18 +21,18 @@ function generateUUID() {
  */
 function isValidUrl(url) {
   if (!url || typeof url !== 'string') return false;
-  
+
   try {
     const urlObj = new URL(url);
     const protocol = urlObj.protocol;
-    
+
     // Only allow safe protocols - restricted for security
     const allowedProtocols = [
       'https:',
       'chrome:',
       'chrome-extension:'
     ];
-    
+
     // Disallow javascript and other script protocols
     const disallowedProtocols = [
       'javascript:',
@@ -44,12 +44,12 @@ function isValidUrl(url) {
       'ftps:',
       'file:'
     ];
-    
+
     // Check for disallowed protocols first
     if (disallowedProtocols.some(banned => url.toLowerCase().startsWith(banned))) {
       return false;
     }
-    
+
     // Check if protocol is in allowed list
     return allowedProtocols.includes(protocol);
   } catch {
@@ -74,11 +74,11 @@ function isValidImageDataUri(dataUri) {
  */
 function isValidUrlForImport(url) {
   if (!url || typeof url !== 'string') return false;
-  
+
   try {
     const urlObj = new URL(url);
     const protocol = urlObj.protocol;
-    
+
     // Allow safe protocols including http: for imports
     const allowedProtocols = [
       'https:',
@@ -86,7 +86,7 @@ function isValidUrlForImport(url) {
       'chrome:',
       'chrome-extension:'
     ];
-    
+
     // Disallow dangerous protocols
     const disallowedProtocols = [
       'javascript:',
@@ -94,12 +94,12 @@ function isValidUrlForImport(url) {
       'vbscript:',
       'view-source:'
     ];
-    
+
     // Check for disallowed protocols first
     if (disallowedProtocols.some(banned => url.toLowerCase().startsWith(banned))) {
       return false;
     }
-    
+
     // Check if protocol is in allowed list
     return allowedProtocols.includes(protocol);
   } catch {
@@ -141,21 +141,21 @@ function sanitizeText(text) {
  */
 function isValidBackgroundSettings(settings) {
   if (!settings || typeof settings !== 'object') return false;
-  
+
   const validSizes = ['auto', 'cover', 'contain', 'custom'];
   const validRepeats = ['repeat', 'no-repeat', 'repeat-x', 'repeat-y'];
   const validPositions = ['top', 'bottom', 'left', 'right', 'center'];
   const validUnitRegex = /^\d+(\.\d+)?(%|px|em|rem|vw|vh)$/;
-  
+
   return (
-    (!settings.backgroundSize || 
-     validSizes.includes(settings.backgroundSize) || 
-     validUnitRegex.test(settings.backgroundSize)) &&
-    (!settings.backgroundRepeat || 
-     validRepeats.includes(settings.backgroundRepeat)) &&
-    (!settings.backgroundPosition || 
-     validPositions.includes(settings.backgroundPosition) || 
-     validUnitRegex.test(settings.backgroundPosition))
+    (!settings.backgroundSize ||
+      validSizes.includes(settings.backgroundSize) ||
+      validUnitRegex.test(settings.backgroundSize)) &&
+    (!settings.backgroundRepeat ||
+      validRepeats.includes(settings.backgroundRepeat)) &&
+    (!settings.backgroundPosition ||
+      validPositions.includes(settings.backgroundPosition) ||
+      validUnitRegex.test(settings.backgroundPosition))
   );
 }
 
@@ -166,7 +166,7 @@ function isValidBackgroundSettings(settings) {
  */
 function sanitizeCSS(css) {
   if (!css || typeof css !== 'string') return '';
-  
+
   // Check CSS size limit (100KB)
   if (css.length > 100 * 1024) {
     console.warn('CSS exceeds size limit');
@@ -195,7 +195,7 @@ function sanitizeCSS(css) {
  */
 function validateImportData(data) {
   console.log('🔍 Validation Debug: Starting validation of data');
-  
+
   if (!data || typeof data !== 'object') {
     console.error('🔍 Validation Debug: Data is not an object');
     return false;
@@ -212,7 +212,7 @@ function validateImportData(data) {
     console.error('🔍 Validation Debug: Columns is not an array');
     return false;
   }
-  
+
   // Limit number of columns for security
   if (data.columns.length > 50) {
     console.error('🔍 Validation Debug: Too many columns:', data.columns.length);
@@ -223,7 +223,7 @@ function validateImportData(data) {
 
   for (const [columnIndex, column] of data.columns.entries()) {
     console.log('🔍 Validation Debug: Validating column', columnIndex, ':', column.name);
-    
+
     if (!column.id || typeof column.id !== 'string') {
       console.error('🔍 Validation Debug: Column missing or invalid ID');
       return false;
@@ -232,7 +232,7 @@ function validateImportData(data) {
       console.error('🔍 Validation Debug: Column missing or invalid name');
       return false;
     }
-    
+
     // Validate custom classes
     if (column.customClasses && typeof column.customClasses !== 'string') {
       console.error('🔍 Validation Debug: Column custom classes invalid type');
@@ -242,81 +242,106 @@ function validateImportData(data) {
       console.error('🔍 Validation Debug: Column custom classes invalid format');
       return false;
     }
-    
-    // Support both legacy 'links' and new 'items' structure
-    const items = column.items || column.links;
-    if (!Array.isArray(items)) {
-      console.error('🔍 Validation Debug: Column items/links is not an array');
-      return false;
-    }
-    
-    // Limit number of items per column for security
-    if (items.length > 100) {
-      console.error('🔍 Validation Debug: Too many items in column:', items.length);
+
+    // Validate groups structure
+    if (!Array.isArray(column.groups)) {
+      console.error('🔍 Validation Debug: Column groups is not an array');
       return false;
     }
 
-    console.log('🔍 Validation Debug: Validating', items.length, 'items in column');
+    // Limit number of groups per column for security
+    if (column.groups.length > 100) {
+      console.error('🔍 Validation Debug: Too many groups in column:', column.groups.length);
+      return false;
+    }
 
-    for (const [itemIndex, item] of items.entries()) {
-      if (!item.id || typeof item.id !== 'string') {
-        console.error('🔍 Validation Debug: Item', itemIndex, 'missing or invalid ID');
+    console.log('🔍 Validation Debug: Validating', column.groups.length, 'groups in column');
+
+    for (const [groupIndex, group] of column.groups.entries()) {
+      if (!group.id || typeof group.id !== 'string') {
+        console.error('🔍 Validation Debug: Group', groupIndex, 'missing or invalid ID');
         return false;
       }
-      
+
+      if (group.title !== undefined && typeof group.title !== 'string') {
+        console.error('🔍 Validation Debug: Group title invalid type');
+        return false;
+      }
+
+      if (group.title && group.title.length > 200) {
+        console.error('🔍 Validation Debug: Group title too long');
+        return false;
+      }
+
       // Validate custom classes
-      if (item.customClasses && typeof item.customClasses !== 'string') {
-        console.error('🔍 Validation Debug: Item custom classes invalid type');
+      if (group.customClasses && typeof group.customClasses !== 'string') {
+        console.error('🔍 Validation Debug: Group custom classes invalid type');
         return false;
       }
-      if (item.customClasses && !/^[a-zA-Z_][\w\- ]*$/.test(item.customClasses)) {
-        console.error('🔍 Validation Debug: Item custom classes invalid format');
+      if (group.customClasses && !/^[a-zA-Z_][\w\- ]*$/.test(group.customClasses)) {
+        console.error('🔍 Validation Debug: Group custom classes invalid format');
         return false;
       }
-      
-      if (item.type === 'link' || !item.type) {
-        // Validate link items
-        if (!item.url || typeof item.url !== 'string') {
-          console.error('🔍 Validation Debug: Link item missing or invalid URL');
+
+      // Validate links within group
+      if (!Array.isArray(group.links)) {
+        console.error('🔍 Validation Debug: Group links is not an array');
+        return false;
+      }
+
+      // Limit number of links per group for security
+      if (group.links.length > 300) {
+        console.error('🔍 Validation Debug: Too many links in group:', group.links.length);
+        return false;
+      }
+
+      for (const [linkIndex, link] of group.links.entries()) {
+        if (!link.id || typeof link.id !== 'string') {
+          console.error('🔍 Validation Debug: Link', linkIndex, 'missing or invalid ID');
           return false;
         }
-        
+
+        if (!link.url || typeof link.url !== 'string') {
+          console.error('🔍 Validation Debug: Link missing or invalid URL');
+          return false;
+        }
+
         // Use relaxed URL validation for imports (allow http:)
-        if (!isValidUrlForImport(item.url)) {
-          console.error('🔍 Validation Debug: Link item invalid URL:', item.url);
+        if (!isValidUrlForImport(link.url)) {
+          console.error('🔍 Validation Debug: Link invalid URL:', link.url);
           return false;
         }
-        
-        if (item.title && typeof item.title !== 'string') {
-          console.error('🔍 Validation Debug: Link item invalid title type');
+
+        if (link.title && typeof link.title !== 'string') {
+          console.error('🔍 Validation Debug: Link invalid title type');
           return false;
         }
-        if (item.iconDataUri && typeof item.iconDataUri !== 'string') {
-          console.error('🔍 Validation Debug: Link item invalid iconDataUri type');
+        if (link.iconDataUri && typeof link.iconDataUri !== 'string') {
+          console.error('🔍 Validation Debug: Link invalid iconDataUri type');
           return false;
         }
-        if (item.iconDataUri && !isValidImageDataUri(item.iconDataUri)) {
-          console.error('🔍 Validation Debug: Link item invalid iconDataUri format');
+        if (link.iconDataUri && !isValidImageDataUri(link.iconDataUri)) {
+          console.error('🔍 Validation Debug: Link invalid iconDataUri format');
           return false;
         }
-        if (item.iconUrlOverride && typeof item.iconUrlOverride !== 'string') {
-          console.error('🔍 Validation Debug: Link item invalid iconUrlOverride type');
+        if (link.iconUrlOverride && typeof link.iconUrlOverride !== 'string') {
+          console.error('🔍 Validation Debug: Link invalid iconUrlOverride type');
           return false;
         }
-        if (item.iconUrlOverride && (!isValidUrlForImport(item.iconUrlOverride) || !isValidImageUrl(item.iconUrlOverride))) {
-          console.error('🔍 Validation Debug: Link item invalid iconUrlOverride format');
+        if (link.iconUrlOverride && (!isValidUrlForImport(link.iconUrlOverride) || !isValidImageUrl(link.iconUrlOverride))) {
+          console.error('🔍 Validation Debug: Link invalid iconUrlOverride format');
           return false;
         }
-      } else if (item.type === 'divider') {
-        // Validate divider items
-        if (item.title && (typeof item.title !== 'string' || item.title.length > 100)) {
-          console.error('🔍 Validation Debug: Divider item invalid title');
+
+        // Validate custom classes
+        if (link.customClasses && typeof link.customClasses !== 'string') {
+          console.error('🔍 Validation Debug: Link custom classes invalid type');
           return false;
         }
-      } else {
-        // Unknown item type
-        console.error('🔍 Validation Debug: Unknown item type:', item.type);
-        return false;
+        if (link.customClasses && !/^[a-zA-Z_][\w\- ]*$/.test(link.customClasses)) {
+          console.error('🔍 Validation Debug: Link custom classes invalid format');
+          return false;
+        }
       }
     }
   }
@@ -352,6 +377,10 @@ function validateImportData(data) {
   }
   if (data.showColumnHeaders !== undefined && typeof data.showColumnHeaders !== 'boolean') {
     console.error('🔍 Validation Debug: Invalid showColumnHeaders type');
+    return false;
+  }
+  if (data.showGroupHeaders !== undefined && typeof data.showGroupHeaders !== 'boolean') {
+    console.error('🔍 Validation Debug: Invalid showGroupHeaders type');
     return false;
   }
   if (data.showAdvancedOptions !== undefined && typeof data.showAdvancedOptions !== 'boolean') {

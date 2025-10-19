@@ -1,5 +1,5 @@
 /**
- * Link Processor - Link Stacker Options
+ * Link Processor - Moontab Extreme Options
  * Handles URL processing, validation, title/icon fetching, and link status indicators
  */
 
@@ -37,16 +37,16 @@ class LinkProcessor {
    */
   isValidUrl(url) {
     if (!url || typeof url !== 'string') return false;
-    
+
     let testUrl = url.trim();
     if (!testUrl.match(/^[a-zA-Z]+:\/\//)) { // No protocol
       testUrl = 'https://' + testUrl;
     }
-    
+
     try {
       const urlObj = new URL(testUrl);
       const protocol = urlObj.protocol;
-      
+
       const allowedProtocols = [
         'https:',
         'http:',
@@ -58,32 +58,32 @@ class LinkProcessor {
         'ftp:',
         'ftps:'
       ];
-      
+
       // Check if protocol is allowed
       if (!allowedProtocols.includes(protocol)) {
         return false;
       }
-      
+
       // Special handling for localhost and local development
       const hostname = urlObj.hostname.toLowerCase();
-      if (hostname === 'localhost' || 
-          hostname === '127.0.0.1' || 
-          hostname === '::1' ||
-          hostname.match(/^127\./) ||
-          hostname.match(/^192\.168\./) ||
-          hostname.match(/^10\./) ||
-          hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./) ||
-          hostname.match(/^[a-zA-Z0-9-]+\.local$/)) {
+      if (hostname === 'localhost' ||
+        hostname === '127.0.0.1' ||
+        hostname === '::1' ||
+        hostname.match(/^127\./) ||
+        hostname.match(/^192\.168\./) ||
+        hostname.match(/^10\./) ||
+        hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./) ||
+        hostname.match(/^[a-zA-Z0-9-]+\.local$/)) {
         // Allow localhost and local network addresses
         return true;
       }
-      
+
       // Check hostname validity - require at least second-level domain for public URLs
       const hostnameParts = urlObj.hostname.split('.');
       if (hostnameParts.length < 2 || hostnameParts[hostnameParts.length - 1].length < 2) {
         return false;
       }
-      
+
       return true;
     } catch {
       return false;
@@ -95,9 +95,9 @@ class LinkProcessor {
    */
   isDangerousUrl(url) {
     if (!url || typeof url !== 'string') return false;
-    
+
     const lowerUrl = url.toLowerCase();
-    
+
     // Disallow dangerous protocols
     const dangerousProtocols = [
       'javascript:',
@@ -105,7 +105,7 @@ class LinkProcessor {
       'vbscript:',
       'view-source:'
     ];
-    
+
     return dangerousProtocols.some(banned => lowerUrl.startsWith(banned));
   }
 
@@ -121,10 +121,10 @@ class LinkProcessor {
       console.warn('Status indicator elements not found');
       return;
     }
-    
+
     // More robust empty URL detection
     const isEmpty = !url || typeof url !== 'string' || url.trim() === '';
-    
+
     if (isEmpty) {
       // Empty URL - show warning
       urlInput.classList.remove('invalid');
@@ -279,22 +279,22 @@ class LinkProcessor {
       const img = new Image();
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      
+
       img.onload = () => {
         // Set canvas size for 32x32 (2x for high DPI)
         canvas.width = 32;
         canvas.height = 32;
-        
+
         // Draw image scaled to 32x32
         ctx.drawImage(img, 0, 0, 32, 32);
-        
+
         // Convert to data URI
         const dataUri = canvas.toDataURL('image/png', 0.9);
         resolve(dataUri);
       };
-      
+
       img.onerror = () => reject(new Error('Failed to load image'));
-      
+
       // For SVG files, use original data URI
       if (file.type === 'image/svg+xml') {
         fileToDataUri(file).then(resolve).catch(reject);
@@ -333,11 +333,11 @@ class LinkProcessor {
       // Validate and potentially resize image
       const processedDataUri = await this.processIconImage(file);
       updateLinkProperty(linkId, 'iconDataUri', processedDataUri);
-      
+
       // Store the size of the processed image
       const processedSize = Math.round(processedDataUri.length * 0.75); // Approximate size of base64
       updateLinkProperty(linkId, 'iconSize', processedSize);
-      
+
       previewEl.src = processedDataUri;
 
       // Clear URL override when uploading custom icon
@@ -363,10 +363,10 @@ class LinkProcessor {
     updateLinkProperty(linkId, 'iconDataUri', '');
     updateLinkProperty(linkId, 'iconUrlOverride', '');
     updateLinkProperty(linkId, 'iconSize', 0);
-    
+
     const iconUrlInput = linkEl.querySelector('.icon-url-input');
     iconUrlInput.value = '';
-    
+
     // Update preview
     const iconPreview = linkEl.querySelector('.link-icon-preview');
     const link = columns.flatMap(col => col.items || []).filter(item => item && item.type === 'link').find(l => l && l.id === linkId);
@@ -389,10 +389,10 @@ class LinkProcessor {
     const iconUrlInput = linkEl.querySelector('.icon-url-input');
     const dropZone = linkEl.querySelector('.favicon-drop-zone');
     const uploadStatus = linkEl.querySelector('.favicon-upload-status');
-    
+
     // Reset all button states
     faviconModeButtons.forEach(btn => btn.classList.remove('active'));
-    
+
     // Set active mode
     if (link.iconDataUri) {
       const uploadBtn = linkEl.querySelector('.favicon-mode-btn[data-mode="upload"]');
@@ -402,7 +402,7 @@ class LinkProcessor {
       iconUrlInput.style.display = 'none';
       dropZone.style.display = 'none';
       uploadStatus.style.display = 'flex';
-      
+
       // Show size if available
       const sizeText = uploadStatus.querySelector('.upload-size-text');
       if (link.iconSize) {
@@ -410,7 +410,7 @@ class LinkProcessor {
       } else {
         sizeText.textContent = '';
       }
-      
+
       // Move remove button to the right of the status
       faviconRemoveBtn.style.display = 'block';
       uploadStatus.appendChild(faviconRemoveBtn);
@@ -426,7 +426,7 @@ class LinkProcessor {
       iconUrlInput.style.display = 'block';
       dropZone.style.display = 'none';
       uploadStatus.style.display = 'none';
-      
+
       // Move remove button back to favicon toggle
       faviconRemoveBtn.style.display = 'none';
       const faviconToggle = linkEl.querySelector('.favicon-toggle');
@@ -446,7 +446,7 @@ class LinkProcessor {
       iconUrlInput.style.display = 'block';
       dropZone.style.display = 'none';
       uploadStatus.style.display = 'none';
-      
+
       // Move remove button back to favicon toggle and hide it
       faviconRemoveBtn.style.display = 'none';
       const faviconToggle = linkEl.querySelector('.favicon-toggle');

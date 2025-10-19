@@ -1,4 +1,4 @@
-/* Link Stacker Skeleton CSS - Layout Foundation Only */
+/* Moontab Extreme Skeleton CSS - Layout Foundation Only */
 /* This file provides structural layout without colors/theming */
 /* User custom CSS will override this foundation while maintaining layout integrity */
 
@@ -85,16 +85,45 @@ body::-webkit-scrollbar {
   text-align: center;
 }
 
-/* Links container layout */
-.links-container {
+/* Groups container layout */
+.groups-container {
   flex: 1;
   padding: calc(8px * var(--ui-scale));
   overflow-y: auto;
   max-height: calc(100vh - calc(160px * var(--ui-scale)));
+  display: flex;
+  flex-direction: column;
+  gap: calc(16px * var(--ui-scale));
 }
 
-.links-container::-webkit-scrollbar {
+.groups-container::-webkit-scrollbar {
   width: calc(6px * var(--ui-scale));
+}
+
+/* Individual group layout */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8px * var(--ui-scale));
+}
+
+/* Group header layout */
+.group-header {
+  padding: calc(4px * var(--ui-scale)) 0;
+}
+
+.group-title {
+  font-size: calc(13rem / 16);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* Group links container layout */
+.group-links {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Link card layout */

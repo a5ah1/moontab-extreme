@@ -1,5 +1,5 @@
 /**
- * Data Manager - Link Stacker Options
+ * Data Manager - Moontab Extreme Options
  * Handles all data operations: import/export, backup/restore, validation, storage management
  */
 
@@ -28,7 +28,7 @@ class DataManager {
     const exportEverythingBtn = document.getElementById('export-everything-btn');
     const importEverythingBtn = document.getElementById('import-everything-btn');
     const importEverythingFile = document.getElementById('import-everything-file');
-    
+
     // Reset functionality
     const resetBtn = document.getElementById('reset-all-btn');
 
@@ -97,8 +97,8 @@ class DataManager {
       .replace(/:/g, '-')
       .replace(/\.\d{3}Z$/, '')
       .replace('T', '_');
-    
-    return `link-stacker-${type}-${timestamp}.json`;
+
+    return `moontab-extreme-${type}-${timestamp}.json`;
   }
 
   /**
@@ -184,7 +184,7 @@ class DataManager {
 
       const a = document.createElement('a');
       a.href = url;
-      a.download = `link-stacker-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `moontab-extreme-backup-${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -206,7 +206,7 @@ class DataManager {
     try {
       // Determine file type by extension and content
       const fileName = file.name.toLowerCase();
-      
+
       if (fileName.endsWith('.zip')) {
         // Handle ZIP file
         const importResult = await this.zipExportManager.importFromZip(file);
@@ -218,7 +218,7 @@ class DataManager {
       } else {
         throw new Error('Unsupported file type. Please use .zip or .json files.');
       }
-      
+
     } catch (error) {
       return { valid: false, error: error.message };
     }
@@ -240,34 +240,34 @@ class DataManager {
         type: file.type,
         lastModified: new Date(file.lastModified).toISOString()
       });
-      
+
       // Show backup prompt modal
       const userChoice = await this.uiManager.createImportBackupModal(
-        'content', 
-        file, 
+        'content',
+        file,
         () => this.exportContentOnly()
       );
-      
+
       if (userChoice === 'cancel') {
         console.log('📝 Content import cancelled by user');
         return;
       }
-      
+
       // Safe UI feedback with fallback
       try {
         this.uiManager.showStatus('Importing content...', 'saving');
       } catch (uiError) {
         console.log('⚠️ Status update failed, continuing with import...');
       }
-      
+
       console.log('🔍 Starting file validation...');
       const validation = await this.validateImportFile(file);
       console.log('✅ Validation result:', validation);
-      
+
       if (!validation.valid) {
         throw new Error(validation.error);
       }
-      
+
       // Only show warning for mismatched types, don't block
       if (validation.type !== 'content') {
         console.log(`⚠️ File type mismatch: expected 'content', got '${validation.type}'`);
@@ -284,9 +284,9 @@ class DataManager {
       let faviconUrlsRemoved = 0;
       let faviconUrlsKept = 0;
       let customFaviconsImported = 0;
-      
+
       console.log('🔄 Processing import data...');
-      
+
       if (validation.data.content) {
         const processedColumns = this.processImportColumns(validation.data.content.columns);
         this.data.columns = processedColumns.columns;
@@ -305,19 +305,19 @@ class DataManager {
         faviconUrlsKept = processedColumns.faviconUrlsKept;
         customFaviconsImported = processedColumns.customFaviconsImported;
       }
-      
+
       console.log(`📊 Import statistics:`);
       console.log(`   - Columns: ${columnsImported}`);
       console.log(`   - Links: ${linksImported}`);
       console.log(`   - Custom favicons imported: ${customFaviconsImported}`);
       console.log(`   - Favicon URLs kept: ${faviconUrlsKept}`);
       console.log(`   - Favicon URLs removed: ${faviconUrlsRemoved}`);
-      
+
       // Use immediate save for imports
       console.log('💾 Saving imported data...');
       await StorageManager.saveImmediate(this.data);
       console.log('✅ Data saved successfully!');
-      
+
       // Show import result modal
       const importStats = {
         columnsImported,
@@ -328,10 +328,10 @@ class DataManager {
         faviconUrlsKept,
         faviconUrlsRemoved
       };
-      
+
       console.log('✅ Content import completed successfully! Showing result modal...');
       await this.uiManager.createImportResultModal(importStats);
-      
+
       // Reload page after user clicks OK
       console.log('🔄 Reloading page...');
       location.reload();
@@ -339,7 +339,7 @@ class DataManager {
     } catch (error) {
       console.error('❌ DataManager: Failed to import content:', error);
       console.error('❌ Error stack:', error.stack);
-      
+
       // Safe error feedback with fallback
       try {
         this.uiManager.showError(`Failed to import content: ${error.message}`);
@@ -360,33 +360,33 @@ class DataManager {
 
     try {
       console.log('🚀 DataManager: Starting appearance import for file:', file.name);
-      
+
       // Show backup prompt modal
       const userChoice = await this.uiManager.createImportBackupModal(
-        'appearance', 
-        file, 
+        'appearance',
+        file,
         () => this.exportAppearanceOnly()
       );
-      
+
       if (userChoice === 'cancel') {
         console.log('📝 Appearance import cancelled by user');
         return;
       }
-      
+
       // Safe UI feedback with fallback
       try {
         this.uiManager.showStatus('Importing appearance...', 'saving');
       } catch (uiError) {
         console.log('Status update failed, continuing with import...');
       }
-      
+
       const validation = await this.validateImportFile(file);
       console.log('🔍 DataManager: Validation result:', validation);
-      
+
       if (!validation.valid) {
         throw new Error(validation.error);
       }
-      
+
       // Only show warning for mismatched types, don't block
       if (validation.type !== 'appearance') {
         try {
@@ -417,7 +417,7 @@ class DataManager {
         Object.assign(this.data, validation.data.settings);
         fieldsImported += Object.keys(validation.data.settings).length;
       }
-      
+
       // Handle legacy format - extract appearance-related fields
       if (validation.type.includes('legacy')) {
         const appearanceFields = [
@@ -447,14 +447,14 @@ class DataManager {
           backgroundImageImported = true;
         }
       }
-      
+
       console.log(`🔍 DataManager: Importing ${fieldsImported} appearance fields`);
-      
+
       // Use immediate save for imports
       console.log('💾 Saving imported appearance data...');
       await StorageManager.saveImmediate(this.data);
       console.log('✅ Appearance data saved successfully!');
-      
+
       // Show import result modal
       const importStats = {
         columnsImported: 0,
@@ -465,10 +465,10 @@ class DataManager {
         faviconUrlsKept: 0,
         faviconUrlsRemoved: 0
       };
-      
+
       console.log('✅ Appearance import completed successfully! Showing result modal...');
       await this.uiManager.createImportResultModal(importStats);
-      
+
       // Reload page after user clicks OK
       console.log('🔄 Reloading page...');
       location.reload();
@@ -476,7 +476,7 @@ class DataManager {
     } catch (error) {
       console.error('❌ DataManager: Failed to import appearance:', error);
       console.error('❌ DataManager: Error stack:', error.stack);
-      
+
       // Safe error feedback with fallback
       try {
         this.uiManager.showError(`Failed to import appearance: ${error.message}`);
@@ -497,29 +497,29 @@ class DataManager {
 
     try {
       console.log('🚀 DataManager: Starting complete theme import for file:', file.name);
-      
+
       // Show backup prompt modal
       const userChoice = await this.uiManager.createImportBackupModal(
-        'complete', 
-        file, 
+        'complete',
+        file,
         () => this.exportCompleteTheme()
       );
-      
+
       if (userChoice === 'cancel') {
         console.log('📝 Complete theme import cancelled by user');
         return;
       }
-      
+
       // Safe UI feedback with fallback
       try {
         this.uiManager.showStatus('Validating import...', 'saving');
       } catch (uiError) {
         console.log('Status update failed, continuing with import...');
       }
-      
+
       const validation = await this.validateImportFile(file);
       console.log('🔍 DataManager: Validation result:', validation);
-      
+
       if (!validation.valid) {
         throw new Error(validation.error);
       }
@@ -539,9 +539,9 @@ class DataManager {
       let customFaviconsImported = 0;
       let backgroundImageImported = false;
       let fieldsImported = 0;
-      
+
       console.log('🔄 Processing complete theme import...');
-      
+
       if (validation.data.content) {
         const processedColumns = this.processImportColumns(validation.data.content.columns);
         this.data.columns = processedColumns.columns;
@@ -569,7 +569,7 @@ class DataManager {
         Object.assign(this.data, validation.data.settings);
         fieldsImported += Object.keys(validation.data.settings).length;
       }
-      
+
       // Handle legacy format
       if (validation.type.includes('legacy') && validation.data.columns) {
         const processedColumns = this.processImportColumns(validation.data.columns);
@@ -579,19 +579,19 @@ class DataManager {
         faviconUrlsRemoved = processedColumns.faviconUrlsRemoved;
         faviconUrlsKept = processedColumns.faviconUrlsKept;
         customFaviconsImported = processedColumns.customFaviconsImported;
-        
+
         // Copy other legacy fields
         const dataWithoutColumns = { ...validation.data };
         delete dataWithoutColumns.columns;
         Object.assign(this.data, dataWithoutColumns);
         fieldsImported += Object.keys(dataWithoutColumns).length;
-        
+
         // Check for background image in legacy data
         if (validation.data.backgroundDataUri || validation.data.backgroundImage) {
           backgroundImageImported = true;
         }
       }
-      
+
       console.log(`📊 Import statistics:`);
       console.log(`   - Columns: ${columnsImported}`);
       console.log(`   - Links: ${linksImported}`);
@@ -600,12 +600,12 @@ class DataManager {
       console.log(`   - Background image imported: ${backgroundImageImported}`);
       console.log(`   - Favicon URLs kept: ${faviconUrlsKept}`);
       console.log(`   - Favicon URLs removed: ${faviconUrlsRemoved}`);
-      
+
       // Use immediate save for imports
       console.log('💾 Saving complete theme data...');
       await StorageManager.saveImmediate(this.data);
       console.log('✅ Complete theme data saved successfully!');
-      
+
       // Show import result modal
       const importStats = {
         columnsImported,
@@ -616,10 +616,10 @@ class DataManager {
         faviconUrlsKept,
         faviconUrlsRemoved
       };
-      
+
       console.log('✅ Complete theme import completed successfully! Showing result modal...');
       await this.uiManager.createImportResultModal(importStats);
-      
+
       // Reload page after user clicks OK
       console.log('🔄 Reloading page...');
       location.reload();
@@ -627,7 +627,7 @@ class DataManager {
     } catch (error) {
       console.error('❌ DataManager: Failed to import complete theme:', error);
       console.error('❌ DataManager: Error stack:', error.stack);
-      
+
       // Safe error feedback with fallback
       try {
         this.uiManager.showError(`Failed to import complete theme: ${error.message}`);
@@ -648,19 +648,19 @@ class DataManager {
 
     try {
       console.log('🚀 DataManager: Starting legacy JSON import for file:', file.name);
-      
+
       // Safe UI feedback with fallback
       try {
         this.uiManager.showStatus('Importing JSON data...', 'saving');
       } catch (uiError) {
         console.log('Status update failed, continuing with import...');
       }
-      
+
       const text = await file.text();
       await StorageManager.importData(text);
 
       console.log('✅ DataManager: Legacy JSON import completed successfully!');
-      
+
       // Safe UI feedback with fallback
       try {
         this.uiManager.showSuccess('Legacy JSON import successful!');
@@ -668,14 +668,14 @@ class DataManager {
       } catch (uiError) {
         console.log('Success message failed, but import completed successfully');
       }
-      
+
       // Immediate reload for smooth experience
       location.reload();
 
     } catch (error) {
       console.error('❌ DataManager: Failed to import legacy JSON data:', error);
       console.error('❌ DataManager: Error stack:', error.stack);
-      
+
       // Safe error feedback with fallback
       try {
         this.uiManager.showError(`Failed to import data: ${error.message}. Please check the file format and try again.`);
@@ -697,100 +697,63 @@ class DataManager {
     let faviconUrlsRemoved = 0;
     let faviconUrlsKept = 0;
     let customFaviconsImported = 0;
-    
+
     const processedColumns = columns.map(column => {
       const processedColumn = { ...column };
-      
-      // Process items array (current format)
-      if (column.items && Array.isArray(column.items)) {
-        processedColumn.items = column.items.map(item => {
-          if (item.type === 'link') {
-            linksCount++;
-            const processedItem = { ...item };
-            
-            // Handle iconUrlOverride per new policy
-            if (processedItem.iconUrlOverride) {
-              const shouldKeep = this.shouldKeepFaviconUrl(processedItem.iconUrlOverride);
-              if (shouldKeep) {
-                // Extract domain and reconstruct with preferred size (32px)
-                try {
-                  const url = new URL(processedItem.iconUrlOverride);
-                  const domain = url.searchParams.get('domain');
-                  if (domain) {
-                    processedItem.iconUrlOverride = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=32`;
+
+      // Process groups array (v2 format)
+      if (column.groups && Array.isArray(column.groups)) {
+        processedColumn.groups = column.groups.map(group => {
+          const processedGroup = { ...group };
+
+          if (group.links && Array.isArray(group.links)) {
+            processedGroup.links = group.links.map(link => {
+              linksCount++;
+              const processedLink = { ...link };
+
+              // Handle iconUrlOverride per new policy
+              if (processedLink.iconUrlOverride) {
+                const shouldKeep = this.shouldKeepFaviconUrl(processedLink.iconUrlOverride);
+                if (shouldKeep) {
+                  // Extract domain and reconstruct with preferred size (32px)
+                  try {
+                    const url = new URL(processedLink.iconUrlOverride);
+                    const domain = url.searchParams.get('domain');
+                    if (domain) {
+                      processedLink.iconUrlOverride = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=32`;
+                    }
+                  } catch (e) {
+                    // If extraction fails, keep original
                   }
-                } catch (e) {
-                  // If extraction fails, keep original
+                  console.log(`✅ Keeping Google favicon URL for: ${processedLink.title || processedLink.url}`);
+                  faviconUrlsKept++;
+                } else {
+                  console.log(`🚫 Removing custom favicon URL for: ${processedLink.title || processedLink.url}`);
+                  delete processedLink.iconUrlOverride;
+                  faviconUrlsRemoved++;
                 }
-                console.log(`✅ Keeping Google favicon URL for: ${processedItem.title || processedItem.url}`);
-                faviconUrlsKept++;
-              } else {
-                console.log(`🚫 Removing custom favicon URL for: ${processedItem.title || processedItem.url}`);
-                delete processedItem.iconUrlOverride;
-                faviconUrlsRemoved++;
               }
-            }
-            
-            // Count custom favicons
-            if (processedItem.iconDataUri) {
-              customFaviconsImported++;
-            }
-            
-            // Ensure required fields exist
-            processedItem.iconDataUri = processedItem.iconDataUri || null;
-            processedItem.customClasses = processedItem.customClasses || '';
-            
-            return processedItem;
+
+              // Count custom favicons
+              if (processedLink.iconDataUri) {
+                customFaviconsImported++;
+              }
+
+              // Ensure required fields exist
+              processedLink.iconDataUri = processedLink.iconDataUri || null;
+              processedLink.customClasses = processedLink.customClasses || '';
+
+              return processedLink;
+            });
           }
-          return item; // Return non-link items unchanged (like dividers)
+
+          return processedGroup;
         });
       }
-      
-      // Process legacy links array if exists
-      if (column.links && Array.isArray(column.links)) {
-        processedColumn.links = column.links.map(link => {
-          linksCount++;
-          const processedLink = { ...link };
-          
-          // Handle iconUrlOverride per new policy
-          if (processedLink.iconUrlOverride) {
-            const shouldKeep = this.shouldKeepFaviconUrl(processedLink.iconUrlOverride);
-            if (shouldKeep) {
-              // Extract domain and reconstruct with preferred size (32px)
-              try {
-                const url = new URL(processedLink.iconUrlOverride);
-                const domain = url.searchParams.get('domain');
-                if (domain) {
-                  processedLink.iconUrlOverride = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=32`;
-                }
-              } catch (e) {
-                // If extraction fails, keep original
-              }
-              console.log(`✅ Keeping Google favicon URL for: ${processedLink.title || processedLink.url}`);
-              faviconUrlsKept++;
-            } else {
-              console.log(`🚫 Removing custom favicon URL for: ${processedLink.title || processedLink.url}`);
-              delete processedLink.iconUrlOverride;
-              faviconUrlsRemoved++;
-            }
-          }
-          
-          // Count custom favicons
-          if (processedLink.iconDataUri) {
-            customFaviconsImported++;
-          }
-          
-          // Ensure required fields exist
-          processedLink.iconDataUri = processedLink.iconDataUri || null;
-          processedLink.customClasses = processedLink.customClasses || '';
-          
-          return processedLink;
-        });
-      }
-      
+
       return processedColumn;
     });
-    
+
     return {
       columns: processedColumns,
       linksCount,
@@ -807,11 +770,11 @@ class DataManager {
    */
   shouldKeepFaviconUrl(url) {
     if (!url || typeof url !== 'string') return false;
-    
+
     // Keep Google favicon service URLs
-    return url.includes('google.com/s2/favicons') || 
-           url.includes('gstatic.com/faviconV2') ||
-           url.includes('googleapis.com/favicon');
+    return url.includes('google.com/s2/favicons') ||
+      url.includes('gstatic.com/faviconV2') ||
+      url.includes('googleapis.com/favicon');
   }
 
   /**
@@ -853,7 +816,7 @@ class DataManager {
     try {
       const usage = await StorageManager.checkStorageUsage();
       const metrics = this.calculateStorageMetrics(this.data);
-      
+
       this.updateStorageDisplay(usage, metrics);
 
     } catch (error) {
@@ -870,7 +833,7 @@ class DataManager {
     const metrics = {
       totalLinks: 0,
       totalColumns: data.columns ? data.columns.length : 0,
-      totalDividers: 0,
+      totalGroups: 0,
       customFavicons: 0,
       customFaviconsSize: 0,
       backgroundImageSize: 0,
@@ -878,36 +841,39 @@ class DataManager {
       textDataSize: 0
     };
 
-    // Analyze columns and items
+    // Analyze columns and groups
     if (data.columns) {
       data.columns.forEach(column => {
         // Count column name and custom classes size
         metrics.textDataSize += new Blob([column.name || '']).size;
         metrics.textDataSize += new Blob([column.customClasses || '']).size;
-        
-        if (column.items) {
-          column.items.forEach(item => {
-            if (item.type === 'link') {
-              metrics.totalLinks++;
-              
-              // Count text data (URL, title, custom classes)
-              metrics.textDataSize += new Blob([item.url || '']).size;
-              metrics.textDataSize += new Blob([item.title || '']).size;
-              metrics.textDataSize += new Blob([item.customClasses || '']).size;
-              
-              // Count custom favicon data
-              if (item.iconDataUri) {
-                metrics.customFavicons++;
-                metrics.customFaviconsSize += new Blob([item.iconDataUri]).size;
-              }
-              if (item.iconUrlOverride) {
-                metrics.textDataSize += new Blob([item.iconUrlOverride]).size;
-              }
-              
-            } else if (item.type === 'divider') {
-              metrics.totalDividers++;
-              metrics.textDataSize += new Blob([item.title || '']).size;
-              metrics.textDataSize += new Blob([item.customClasses || '']).size;
+
+        if (column.groups) {
+          column.groups.forEach(group => {
+            metrics.totalGroups++;
+
+            // Count group metadata size
+            metrics.textDataSize += new Blob([group.title || '']).size;
+            metrics.textDataSize += new Blob([group.customClasses || '']).size;
+
+            if (group.links) {
+              group.links.forEach(link => {
+                metrics.totalLinks++;
+
+                // Count text data (URL, title, custom classes)
+                metrics.textDataSize += new Blob([link.url || '']).size;
+                metrics.textDataSize += new Blob([link.title || '']).size;
+                metrics.textDataSize += new Blob([link.customClasses || '']).size;
+
+                // Count custom favicon data
+                if (link.iconDataUri) {
+                  metrics.customFavicons++;
+                  metrics.customFaviconsSize += new Blob([link.iconDataUri]).size;
+                }
+                if (link.iconUrlOverride) {
+                  metrics.textDataSize += new Blob([link.iconUrlOverride]).size;
+                }
+              });
             }
           });
         }
@@ -924,7 +890,7 @@ class DataManager {
     if (data.customCss) {
       totalCssSize += new Blob([data.customCss]).size;
     }
-    
+
     // Add theme-specific CSS sizes
     const themes = ['light', 'dark', 'browser'];
     themes.forEach(theme => {
@@ -933,7 +899,7 @@ class DataManager {
         totalCssSize += new Blob([data[cssField]]).size;
       }
     });
-    
+
     metrics.customCssSize = totalCssSize;
 
     // Add settings and other text data
@@ -969,7 +935,7 @@ class DataManager {
    */
   updateStorageDisplay(usage, metrics) {
     const storageInfo = document.querySelector('.storage-info');
-    
+
     // Build new storage info HTML
     const storageHtml = `
       <div class="storage-overview">
@@ -990,8 +956,8 @@ class DataManager {
               <span class="metric-value">${metrics.totalColumns}</span>
             </div>
             <div class="metric-item">
-              <span class="metric-label">Dividers:</span>
-              <span class="metric-value">${metrics.totalDividers}</span>
+              <span class="metric-label">Groups:</span>
+              <span class="metric-value">${metrics.totalGroups}</span>
             </div>
             <div class="metric-item">
               <span class="metric-label">Text data:</span>
@@ -1030,7 +996,7 @@ class DataManager {
         </ul>
       </div>
     `;
-    
+
     storageInfo.innerHTML = storageHtml;
   }
 
@@ -1041,11 +1007,11 @@ class DataManager {
    */
   formatBytes(bytes) {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   }
 }

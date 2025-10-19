@@ -1,5 +1,5 @@
 /**
- * Theme Selector - Link Stacker Options
+ * Theme Selector - Moontab Extreme Options
  * Handles theme selection and theme-specific CSS section visibility
  */
 

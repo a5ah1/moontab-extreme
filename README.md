@@ -1,15 +1,15 @@
-# Link Stacker
+# Moontab Extreme
 
 A privacy-focused, highly customizable new tab page for Chrome
 
-[![Version](https://img.shields.io/badge/version-0.2.3-blue.svg)](manifest.json)
+[![Version](https://img.shields.io/badge/version-0.4.0-blue.svg)](manifest.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
 
-Link Stacker transforms your Chrome new tab page into a powerful, customizable dashboard for organizing your favorite links. With an intuitive column-based interface, it gives you complete control over how you access and organize your web destinations.
+Moontab Extreme transforms your Chrome new tab page into a powerful, customizable dashboard for organizing your favorite links. With an intuitive column-based interface, it gives you complete control over how you access and organize your web destinations.
 
-Built with vanilla JavaScript and zero external dependencies, Link Stacker prioritizes your privacy by storing all data locally on your device. No accounts, no cloud sync, no tracking – just a fast, reliable new tab experience that's entirely yours.
+Built with vanilla JavaScript and zero external dependencies, Moontab Extreme prioritizes your privacy by storing all data locally on your device. No accounts, no cloud sync, no tracking – just a fast, reliable new tab experience that's entirely yours.
 
 ## ✨ Features
 
@@ -24,9 +24,9 @@ Built with vanilla JavaScript and zero external dependencies, Link Stacker prior
 
 ## 📸 Screenshots
 
-[![Link Stacker screenshots](screenshots/screenshots-github.jpeg)](screenshots/screenshots-github.jpeg)
+[![Moontab Extreme screenshots](screenshots/screenshots-github.jpeg)](screenshots/screenshots-github.jpeg)
 
-Top left: the example/default set of columns, links, and dividers with the light theme.  
+Top left: the example/default set of columns, groups, and links with the light theme.  
 Top right: the default dark theme.  
 Bottom left: a customized theme and background.  
 Bottom right: the Appearance panel in the options page.
@@ -37,25 +37,25 @@ Bottom right: the Appearance panel in the options page.
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/a5ah1/link-stacker.git
-   cd link-stacker
+   git clone https://github.com/a5ah1/moontab-extreme.git
+   cd moontab-extreme
    ```
 
 2. Open Chrome and navigate to `chrome://extensions/`
 
 3. Enable "Developer mode" in the top right
 
-4. Click "Load unpacked" and select the `link-stacker` directory
+4. Click "Load unpacked" and select the `moontab-extreme` directory
 
-5. Open a new tab to see Link Stacker in action!
+5. Open a new tab to see Moontab Extreme in action!
 
 ### From Chrome Web Store
 
-[Install Link Stacker from the Chrome Web Store](https://chromewebstore.google.com/detail/link-stacker/peabiommmpphfnncadocemodpakhjlbg)
+[Install Moontab Extreme from the Chrome Web Store](https://chromewebstore.google.com/detail/moontab-extreme/peabiommmpphfnncadocemodpakhjlbg)
 
 ## 📖 Usage
 
-1. **Open a new tab** to see your Link Stacker dashboard
+1. **Open a new tab** to see your Moontab Extreme dashboard
 2. **Click the settings icon** (⚙️) in the top right or access via Chrome extension options
 3. **Add your first column** using the "Add Column" button
 4. **Add links** to your columns with titles, URLs, and optional custom icons
@@ -68,7 +68,7 @@ For detailed usage instructions, check the built-in help guide in the options pa
 ### Project Structure
 
 ```
-link-stacker/
+moontab-extreme/
 ├── newtab.html       # New tab page
 ├── options.html      # Settings interface
 ├── scripts/          # Core functionality
@@ -90,7 +90,7 @@ link-stacker/
 
 ### Architecture
 
-Link Stacker follows a modular architecture with clear separation between the read-only new tab interface and the full-featured options page. For detailed technical documentation, see [CLAUDE.md](CLAUDE.md).
+Moontab Extreme follows a modular architecture with clear separation between the read-only new tab interface and the full-featured options page. For detailed technical documentation, see [CLAUDE.md](CLAUDE.md).
 
 ## 🤝 Contributing
 
@@ -121,7 +121,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-Link Stacker includes the following open-source libraries:
+Moontab Extreme includes the following open-source libraries:
 
 - [SortableJS](https://github.com/SortableJS/Sortable/) - Drag and drop functionality
 - [Ace Editor](https://github.com/ajaxorg/ace) - Code editing capabilities

@@ -1,5 +1,5 @@
 /**
- * Drag scrolling functionality for Link Stacker
+ * Drag scrolling functionality for Moontab Extreme
  * Enables horizontal mouse/touch scrolling on the board container
  */
 

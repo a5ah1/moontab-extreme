@@ -1,5 +1,5 @@
 /**
- * General Manager - Link Stacker Options
+ * General Manager - Moontab Extreme Options
  * Handles display settings and general configuration options
  */
 
@@ -46,6 +46,14 @@ class GeneralManager {
     showColumnHeadersToggle.addEventListener('change', () => {
       this.updateColumnHeaderVisibility(showColumnHeadersToggle.checked);
     });
+
+    // Group headers visibility setting
+    const showGroupHeadersToggle = document.getElementById('show-group-headers-setting');
+    showGroupHeadersToggle.checked = this.data.showGroupHeaders !== undefined ? this.data.showGroupHeaders : true;
+
+    showGroupHeadersToggle.addEventListener('change', () => {
+      this.updateGroupHeaderVisibility(showGroupHeadersToggle.checked);
+    });
   }
 
   /**
@@ -72,6 +80,15 @@ class GeneralManager {
    */
   updateColumnHeaderVisibility(showColumnHeaders) {
     this.data.showColumnHeaders = showColumnHeaders;
+    this.markDirty();
+  }
+
+  /**
+   * Update group header visibility setting
+   * @param {boolean} showGroupHeaders - Whether to show group headers
+   */
+  updateGroupHeaderVisibility(showGroupHeaders) {
+    this.data.showGroupHeaders = showGroupHeaders;
     this.markDirty();
   }
 

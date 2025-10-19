@@ -1,5 +1,5 @@
 /**
- * ZIP Export Manager - Link Stacker
+ * ZIP Export Manager - Moontab Extreme
  * Handles ZIP-based import/export operations with image separation
  */
 
@@ -13,7 +13,7 @@ class ZipExportManager {
    * @throws {Error} If JSZip is not loaded
    */
   checkJSZip() {
-        if (typeof JSZip === 'undefined') {
+    if (typeof JSZip === 'undefined') {
       throw new Error('JSZip library is not loaded. Please ensure jszip.min.js is loaded before using ZipExportManager.');
     }
   }
@@ -27,17 +27,17 @@ class ZipExportManager {
     this.checkJSZip();
     const zip = new JSZip();
     const images = {};
-    
+
     // Process custom favicons from links
     const processedColumns = this.processCustomFavicons(data.columns, images);
-    
+
     // Create export data structure
     const exportData = {
       metadata: {
         exportType: 'content',
         version: this.version,
         timestamp: new Date().toISOString(),
-        generator: 'Link Stacker'
+        generator: 'Moontab Extreme'
       },
       content: {
         columns: processedColumns
@@ -62,30 +62,30 @@ class ZipExportManager {
     this.checkJSZip();
     const zip = new JSZip();
     const images = {};
-    
-            
+
+
     // Process background image
     const appearanceData = {
       theme: data.theme,
       pageBackgroundColor: data.pageBackgroundColor
     };
-    
+
     // Add custom CSS as a separate file if it exists
     if (data.customCss && data.customCss.trim()) {
-            zip.file('custom.css', data.customCss);
+      zip.file('custom.css', data.customCss);
       appearanceData.customCss = 'custom.css'; // Reference to the file
     } else {
-          }
+    }
 
     // Add theme-specific CSS files if they exist
     const themes = ['light', 'dark', 'browser'];
     themes.forEach(theme => {
       const cssField = `${theme}Css`;
       const enabledField = `${theme}CssEnabled`;
-      
+
       // Include enabled state
       appearanceData[enabledField] = data[enabledField] || false;
-      
+
       // Add CSS file (save whether enabled or not, even if empty)
       if (data[cssField] !== undefined) {
         zip.file(`${theme}-theme.css`, data[cssField] || '');
@@ -95,7 +95,7 @@ class ZipExportManager {
 
     // Handle background image
     if (data.backgroundDataUri && data.backgroundDataUri.startsWith('data:')) {
-            const imageInfo = this.extractImageInfo(data.backgroundDataUri);
+      const imageInfo = this.extractImageInfo(data.backgroundDataUri);
       const imagePath = `images/background.${imageInfo.extension}`;
       images[imagePath] = imageInfo.binary;
       appearanceData.backgroundImage = imagePath;
@@ -117,13 +117,14 @@ class ZipExportManager {
         exportType: 'appearance',
         version: this.version,
         timestamp: new Date().toISOString(),
-        generator: 'Link Stacker'
+        generator: 'Moontab Extreme'
       },
       appearance: appearanceData,
       settings: {
         showIcons: data.showIcons,
         showUrls: data.showUrls,
         showColumnHeaders: data.showColumnHeaders,
+        showGroupHeaders: data.showGroupHeaders,
         // Column animation settings (global settings, not theme-specific)
         columnAnimationEnabled: data.columnAnimationEnabled,
         columnAnimationStyle: data.columnAnimationStyle,
@@ -153,19 +154,19 @@ class ZipExportManager {
     this.checkJSZip();
     const zip = new JSZip();
     const images = {};
-    
+
     // Process custom favicons from links
     const processedColumns = this.processCustomFavicons(data.columns, images);
-    
+
     // Process appearance data
     const appearanceData = {
       theme: data.theme,
       pageBackgroundColor: data.pageBackgroundColor
     };
-    
+
     // Add custom CSS as a separate file if it exists
     if (data.customCss && data.customCss.trim()) {
-            zip.file('custom.css', data.customCss);
+      zip.file('custom.css', data.customCss);
       appearanceData.customCss = 'custom.css'; // Reference to the file
     }
 
@@ -174,10 +175,10 @@ class ZipExportManager {
     themes.forEach(theme => {
       const cssField = `${theme}Css`;
       const enabledField = `${theme}CssEnabled`;
-      
+
       // Include enabled state
       appearanceData[enabledField] = data[enabledField] || false;
-      
+
       // Add CSS file (save whether enabled or not, even if empty)
       if (data[cssField] !== undefined) {
         zip.file(`${theme}-theme.css`, data[cssField] || '');
@@ -187,7 +188,7 @@ class ZipExportManager {
 
     // Handle background image
     if (data.backgroundDataUri && data.backgroundDataUri.startsWith('data:')) {
-            const imageInfo = this.extractImageInfo(data.backgroundDataUri);
+      const imageInfo = this.extractImageInfo(data.backgroundDataUri);
       const imagePath = `images/background.${imageInfo.extension}`;
       images[imagePath] = imageInfo.binary;
       appearanceData.backgroundImage = imagePath;
@@ -209,7 +210,7 @@ class ZipExportManager {
         exportType: 'complete',
         version: this.version,
         timestamp: new Date().toISOString(),
-        generator: 'Link Stacker'
+        generator: 'Moontab Extreme'
       },
       content: {
         columns: processedColumns
@@ -219,6 +220,7 @@ class ZipExportManager {
         showIcons: data.showIcons,
         showUrls: data.showUrls,
         showColumnHeaders: data.showColumnHeaders,
+        showGroupHeaders: data.showGroupHeaders,
         // Column animation settings (global settings, not theme-specific)
         columnAnimationEnabled: data.columnAnimationEnabled,
         columnAnimationStyle: data.columnAnimationStyle,
@@ -249,32 +251,32 @@ class ZipExportManager {
       this.checkJSZip();
       const zip = new JSZip();
       const zipContent = await zip.loadAsync(file);
-      
+
       // Read data.json
       const dataFile = zipContent.file('data.json');
       if (!dataFile) {
         throw new Error('Invalid ZIP file: missing data.json');
       }
-      
+
       const jsonContent = await dataFile.async('string');
       const importData = JSON.parse(jsonContent);
-      
+
       // Validate structure
       if (!importData.metadata || !importData.metadata.exportType) {
         throw new Error('Invalid export file: missing metadata');
       }
-      
+
       // Convert image references back to base64
       await this.processImageReferences(importData, zipContent);
-      
+
       // Process custom CSS file if referenced
       await this.processCSSReference(importData, zipContent);
-      
+
       return {
         type: importData.metadata.exportType,
         data: importData
       };
-      
+
     } catch (error) {
       if (error.message.includes('Invalid ZIP file')) {
         throw error;
@@ -291,7 +293,7 @@ class ZipExportManager {
   async importFromJson(file) {
     const text = await file.text();
     const data = JSON.parse(text);
-    
+
     // Detect legacy format and determine type
     if (data.columns && data.theme) {
       return { type: 'complete', data: this.convertLegacyToNewFormat(data, 'complete') };
@@ -310,46 +312,37 @@ class ZipExportManager {
    */
   processCustomFavicons(columns, images) {
     if (!columns) return [];
-    
+
     return columns.map(column => {
       const processedColumn = { ...column };
-      
-      // Process items in column (can be links or dividers)
-      if (column.items) {
-        processedColumn.items = column.items.map(item => {
-          const processedItem = { ...item };
-          
-          // Process custom favicon for links
-          if (item.type === 'link' && item.iconDataUri && item.iconDataUri.startsWith('data:')) {
-                        const imageInfo = this.extractImageInfo(item.iconDataUri);
-            const imagePath = `images/favicon_${item.id}.${imageInfo.extension}`;
-            images[imagePath] = imageInfo.binary;
-            processedItem.iconDataUri = imagePath;
-            // Skip iconUrlOverride per new policy - no longer supported
+
+      // Process groups in column (v2 format)
+      if (column.groups) {
+        processedColumn.groups = column.groups.map(group => {
+          const processedGroup = { ...group };
+
+          // Process links within group
+          if (group.links) {
+            processedGroup.links = group.links.map(link => {
+              const processedLink = { ...link };
+
+              // Process custom favicon
+              if (link.iconDataUri && link.iconDataUri.startsWith('data:')) {
+                const imageInfo = this.extractImageInfo(link.iconDataUri);
+                const imagePath = `images/favicon_${link.id}.${imageInfo.extension}`;
+                images[imagePath] = imageInfo.binary;
+                processedLink.iconDataUri = imagePath;
+                // Skip iconUrlOverride per new policy - no longer supported
+              }
+
+              return processedLink;
+            });
           }
-          
-          return processedItem;
+
+          return processedGroup;
         });
       }
-      
-      // Also check legacy links array for backward compatibility
-      if (column.links) {
-        processedColumn.links = column.links.map(link => {
-          const processedLink = { ...link };
-          
-          // Process custom favicon
-          if (link.iconDataUri && link.iconDataUri.startsWith('data:')) {
-                        const imageInfo = this.extractImageInfo(link.iconDataUri);
-            const imagePath = `images/favicon_${link.id}.${imageInfo.extension}`;
-            images[imagePath] = imageInfo.binary;
-            processedLink.iconDataUri = imagePath;
-            // Skip iconUrlOverride per new policy - no longer supported
-          }
-          
-          return processedLink;
-        });
-      }
-      
+
       return processedColumn;
     });
   }
@@ -363,14 +356,14 @@ class ZipExportManager {
     const [header, base64Data] = dataUrl.split(',');
     const mimeType = header.match(/data:([^;]+)/)[1];
     const extension = this.getExtensionFromMimeType(mimeType);
-    
+
     // Convert base64 to binary
     const binaryString = atob(base64Data);
     const bytes = new Uint8Array(binaryString.length);
     for (let i = 0; i < binaryString.length; i++) {
       bytes[i] = binaryString.charCodeAt(i);
     }
-    
+
     return {
       binary: bytes,
       extension: extension,
@@ -404,11 +397,11 @@ class ZipExportManager {
    */
   async addImagesToZip(zip, images) {
     if (Object.keys(images).length === 0) {
-            return;
+      return;
     }
-    
-        for (const [path, binary] of Object.entries(images)) {
-            zip.file(path, binary);
+
+    for (const [path, binary] of Object.entries(images)) {
+      zip.file(path, binary);
     }
   }
 
@@ -421,63 +414,41 @@ class ZipExportManager {
     // Process content images (custom favicons)
     if (importData.content && importData.content.columns) {
       for (const column of importData.content.columns) {
-        // Process items array (current format)
-        if (column.items) {
-          for (const item of column.items) {
-            if (item.type === 'link') {
-              // Process custom favicon data URIs
-              if (item.iconDataUri && item.iconDataUri.startsWith('images/')) {
-                const imageFile = zipContent.file(item.iconDataUri);
-                if (imageFile) {
-                  const binary = await imageFile.async('uint8array');
-                  item.iconDataUri = await this.binaryToDataUrl(binary, item.iconDataUri);
+        // Process groups array (v2 format)
+        if (column.groups) {
+          for (const group of column.groups) {
+            if (group.links) {
+              for (const link of group.links) {
+                // Process custom favicon data URIs
+                if (link.iconDataUri && link.iconDataUri.startsWith('images/')) {
+                  const imageFile = zipContent.file(link.iconDataUri);
+                  if (imageFile) {
+                    const binary = await imageFile.async('uint8array');
+                    link.iconDataUri = await this.binaryToDataUrl(binary, link.iconDataUri);
+                  }
                 }
-              }
-              // Handle iconUrlOverride per new policy
-              if (item.iconUrlOverride) {
-                const shouldKeep = this.shouldKeepFaviconUrl(item.iconUrlOverride);
-                if (shouldKeep) {
-                  console.log(`✅ Keeping Google favicon URL during import for: ${item.title || item.url}`);
-                } else {
-                  console.log(`🚫 Removing custom favicon URL during import for: ${item.title || item.url}`);
-                  delete item.iconUrlOverride;
+                // Handle iconUrlOverride per new policy
+                if (link.iconUrlOverride) {
+                  const shouldKeep = this.shouldKeepFaviconUrl(link.iconUrlOverride);
+                  if (shouldKeep) {
+                    console.log(`✅ Keeping Google favicon URL during import for: ${link.title || link.url}`);
+                  } else {
+                    console.log(`🚫 Removing custom favicon URL during import for: ${link.title || link.url}`);
+                    delete link.iconUrlOverride;
+                  }
                 }
-              }
-            }
-          }
-        }
-        
-        // Process legacy links array
-        if (column.links) {
-          for (const link of column.links) {
-            // Process custom favicon data URIs
-            if (link.iconDataUri && link.iconDataUri.startsWith('images/')) {
-              const imageFile = zipContent.file(link.iconDataUri);
-              if (imageFile) {
-                const binary = await imageFile.async('uint8array');
-                link.iconDataUri = await this.binaryToDataUrl(binary, link.iconDataUri);
-              }
-            }
-            // Handle iconUrlOverride per new policy
-            if (link.iconUrlOverride) {
-              const shouldKeep = this.shouldKeepFaviconUrl(link.iconUrlOverride);
-              if (shouldKeep) {
-                console.log(`✅ Keeping Google favicon URL during import for: ${link.title || link.url}`);
-              } else {
-                console.log(`🚫 Removing custom favicon URL during import for: ${link.title || link.url}`);
-                delete link.iconUrlOverride;
               }
             }
           }
         }
       }
     }
-    
+
     // Process appearance images (background)
     if (importData.appearance) {
       // Handle both field names for compatibility
-      if (importData.appearance.backgroundImage && 
-          importData.appearance.backgroundImage.startsWith('images/')) {
+      if (importData.appearance.backgroundImage &&
+        importData.appearance.backgroundImage.startsWith('images/')) {
         const imageFile = zipContent.file(importData.appearance.backgroundImage);
         if (imageFile) {
           const binary = await imageFile.async('uint8array');
@@ -486,8 +457,8 @@ class ZipExportManager {
           delete importData.appearance.backgroundImage; // Remove the old field
         }
       }
-      if (importData.appearance.backgroundDataUri && 
-          importData.appearance.backgroundDataUri.startsWith('images/')) {
+      if (importData.appearance.backgroundDataUri &&
+        importData.appearance.backgroundDataUri.startsWith('images/')) {
         const imageFile = zipContent.file(importData.appearance.backgroundDataUri);
         if (imageFile) {
           const binary = await imageFile.async('uint8array');
@@ -509,7 +480,7 @@ class ZipExportManager {
     if (importData.appearance.customCss === 'custom.css') {
       const cssFile = zipContent.file('custom.css');
       if (cssFile) {
-                const cssContent = await cssFile.async('string');
+        const cssContent = await cssFile.async('string');
         importData.appearance.customCss = cssContent;
       } else {
         console.warn('Custom CSS file referenced but not found in ZIP');
@@ -522,11 +493,11 @@ class ZipExportManager {
     for (const theme of themes) {
       const cssField = `${theme}Css`;
       const fileName = `${theme}-theme.css`;
-      
+
       if (importData.appearance[cssField] === fileName) {
         const cssFile = zipContent.file(fileName);
         if (cssFile) {
-                    const cssContent = await cssFile.async('string');
+          const cssContent = await cssFile.async('string');
           importData.appearance[cssField] = cssContent;
         } else {
           console.warn(`${theme} theme CSS file referenced but not found in ZIP`);
@@ -545,14 +516,14 @@ class ZipExportManager {
   async binaryToDataUrl(binary, filename) {
     const extension = filename.split('.').pop().toLowerCase();
     const mimeType = this.getMimeTypeFromExtension(extension);
-    
+
     // Convert binary to base64
     let binaryString = '';
     for (let i = 0; i < binary.length; i++) {
       binaryString += String.fromCharCode(binary[i]);
     }
     const base64 = btoa(binaryString);
-    
+
     return `data:${mimeType};base64,${base64}`;
   }
 
@@ -587,7 +558,7 @@ class ZipExportManager {
         exportType: exportType,
         version: this.version,
         timestamp: new Date().toISOString(),
-        generator: 'Link Stacker (Legacy Import)'
+        generator: 'Moontab Extreme (Legacy Import)'
       }
     };
 
@@ -601,7 +572,7 @@ class ZipExportManager {
       newData.appearance = {};
       if (legacyData.theme) newData.appearance.theme = legacyData.theme;
       if (legacyData.customCss) newData.appearance.customCss = legacyData.customCss;
-      
+
       // Map theme-specific CSS fields
       const themes = ['light', 'dark', 'browser'];
       themes.forEach(theme => {
@@ -610,7 +581,7 @@ class ZipExportManager {
         if (legacyData[cssField]) newData.appearance[cssField] = legacyData[cssField];
         if (legacyData[enabledField] !== undefined) newData.appearance[enabledField] = legacyData[enabledField];
       });
-      
+
       if (legacyData.pageBackgroundColor) newData.appearance.pageBackgroundColor = legacyData.pageBackgroundColor;
       if (legacyData.backgroundDataUri) newData.appearance.backgroundDataUri = legacyData.backgroundDataUri;
       if (legacyData.backgroundImage) newData.appearance.backgroundDataUri = legacyData.backgroundImage; // Map old field name
@@ -626,7 +597,8 @@ class ZipExportManager {
       if (legacyData.showIcons !== undefined) newData.settings.showIcons = legacyData.showIcons;
       if (legacyData.showUrls !== undefined) newData.settings.showUrls = legacyData.showUrls;
       if (legacyData.showColumnHeaders !== undefined) newData.settings.showColumnHeaders = legacyData.showColumnHeaders;
-      
+      if (legacyData.showGroupHeaders !== undefined) newData.settings.showGroupHeaders = legacyData.showGroupHeaders;
+
       // Include column animation settings (global settings, not theme-specific)
       if (legacyData.columnAnimationEnabled !== undefined) newData.settings.columnAnimationEnabled = legacyData.columnAnimationEnabled;
       if (legacyData.columnAnimationStyle !== undefined) newData.settings.columnAnimationStyle = legacyData.columnAnimationStyle;
@@ -647,11 +619,11 @@ class ZipExportManager {
    */
   shouldKeepFaviconUrl(url) {
     if (!url || typeof url !== 'string') return false;
-    
+
     // Keep Google favicon service URLs
-    return url.includes('google.com/s2/favicons') || 
-           url.includes('gstatic.com/faviconV2') ||
-           url.includes('googleapis.com/favicon');
+    return url.includes('google.com/s2/favicons') ||
+      url.includes('gstatic.com/faviconV2') ||
+      url.includes('googleapis.com/favicon');
   }
 
   /**
@@ -664,7 +636,7 @@ class ZipExportManager {
       .replace(/:/g, '-')
       .replace(/\.\d{3}Z$/, '')
       .replace('T', '_');
-    
-    return `link-stacker-${exportType}-${timestamp}.zip`;
+
+    return `moontab-extreme-${exportType}-${timestamp}.zip`;
   }
 }

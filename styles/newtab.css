@@ -1,4 +1,4 @@
-/* Link Stacker New Tab Styles */
+/* Moontab Extreme New Tab Styles */
 
 /* CSS Variables - defined by theme manager or user custom CSS */
 
@@ -66,18 +66,38 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Links container scrollbar styling */
-.links-container::-webkit-scrollbar {
+/* Groups container scrollbar styling */
+.groups-container::-webkit-scrollbar {
   width: 6px;
 }
 
-.links-container::-webkit-scrollbar-track {
+.groups-container::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.links-container::-webkit-scrollbar-thumb {
+.groups-container::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb-color);
   border-radius: 3px;
+}
+
+/* Group styling */
+.group {
+  background: var(--group-bg-color, transparent);
+  border: var(--group-border, none);
+  border-radius: var(--group-radius, 0);
+  padding: var(--group-padding, 0);
+}
+
+/* Group header styling */
+.group-header {
+  margin-bottom: var(--group-title-spacing, calc(8px * var(--ui-scale, 1)));
+}
+
+.group-title {
+  color: var(--group-title-color, var(--text-secondary));
+  font-size: var(--group-title-size, calc(13rem / 16));
+  font-weight: var(--group-title-weight, 600);
+  text-transform: var(--group-title-transform, uppercase);
 }
 
 /* Link card styling */
@@ -208,47 +228,6 @@ body {
 
 
 
-
-/* Divider styling - unboxed, same level as column background */
-.divider-item {
-  background: none;
-  border: none;
-  border-radius: var(--divider-radius);
-  box-shadow: none;
-  padding: 12px 0 8px 0;
-  margin: 8px 0;
-  cursor: default;
-  transition: none;
-}
-
-.divider-item:hover {
-  background: none;
-  box-shadow: none;
-}
-
-.divider-item:first-child {
-  margin-top: 0;
-}
-
-.divider-title {
-  font-weight: 600;
-  font-size: calc(14rem / 16);
-  color: var(--divider-title-color, var(--text-secondary));
-  text-align: left;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--divider-border-color);
-  padding-bottom: 8px;
-  transition: color 0.2s ease;
-}
-
-/* Empty divider (horizontal rule effect) */
-.divider-item .divider-title:empty {
-  display: block;
-  padding: 0;
-  border-bottom: 1px solid var(--divider-border-color);
-  height: 1px;
-  margin: 8px 16px;
-}
 
 /* Responsive design - styling only */
 @media (max-width: 768px) {

@@ -3,7 +3,7 @@
    * @param {string} customCss - Custom CSS string
    * @returns {Promise<void>}
    *//**
-* Theme management for Link Stacker
+* Theme management for Moontab Extreme
 * Handles theme switching, CSS injection, and custom CSS
 */
 
@@ -99,9 +99,9 @@ class ThemeManager {
    * @returns {boolean} True if in options page context
    */
   isOptionsPageContext() {
-    return document.body.classList.contains('options-page') || 
-           document.title.includes('Settings') ||
-           window.location.href.includes('options.html');
+    return document.body.classList.contains('options-page') ||
+      document.title.includes('Settings') ||
+      window.location.href.includes('options.html');
   }
 
   /**
@@ -165,7 +165,7 @@ class ThemeManager {
     if (this.themeData) {
       const userCss = this.themeData[`${themeName}Css`];
       const enabled = this.themeData[`${themeName}CssEnabled`];
-      
+
       if (enabled && userCss) {
         await this.applyUserThemeCSS(userCss);
       } else {
@@ -218,7 +218,7 @@ class ThemeManager {
     if (this.themeData) {
       const userCss = this.themeData.browserCss;
       const enabled = this.themeData.browserCssEnabled;
-      
+
       if (enabled && userCss) {
         await this.applyUserThemeCSS(userCss);
       } else {
@@ -337,7 +337,7 @@ class ThemeManager {
    */
   async updateThemeData(themeData) {
     this.themeData = themeData;
-    
+
     // Re-apply current theme to pick up new CSS
     if (this.currentTheme === 'custom') {
       // Don't re-apply custom theme here, it's handled separately
@@ -424,7 +424,7 @@ class ThemeManager {
    */
   applyPageBackgroundColor(color) {
     const root = document.documentElement;
-    
+
     if (color) {
       root.style.setProperty('--page-bg-color', color);
     } else {
@@ -529,7 +529,7 @@ function getThemeManager() {
  */
 async function initializeTheming(settings = {}) {
   const manager = getThemeManager();
-  
+
   // Extract theme-specific CSS data
   const themeData = {
     lightCss: settings.lightCss || '',
@@ -539,7 +539,7 @@ async function initializeTheming(settings = {}) {
     browserCss: settings.browserCss || '',
     browserCssEnabled: settings.browserCssEnabled || false
   };
-  
+
   await manager.init(settings.theme, settings.customCss, themeData);
 
   // Apply background with settings if present

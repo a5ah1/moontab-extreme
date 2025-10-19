@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Link Stacker",
-  "version": "0.2.3",
+  "name": "Moontab Extreme",
+  "version": "0.4.0",
   "description": "Turn your new tab into a quick launch page with customizable columns of links",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
@@ -25,7 +25,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Link Stacker Options"
+    "default_title": "Moontab Extreme Options"
   },
   "offline_enabled": true,
   "incognito": "split"

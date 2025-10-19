@@ -1,5 +1,5 @@
 /**
- * Content Manager - Link Stacker Options
+ * Content Manager - Moontab Extreme Options
  * Handles all column and item operations: CRUD, drag/drop, temporary item handling
  * Supports both links and dividers
  */
@@ -54,11 +54,11 @@ class ContentManager {
   }
 
   /**
-   * Render content panel with columns and links
+   * Render content panel with columns and groups
    */
   renderContentPanel() {
     const columnsList = document.getElementById('columns-list');
-    
+
     // Clear only the column elements, preserving empty state and add button
     const existingColumns = columnsList.querySelectorAll('.column-item');
     existingColumns.forEach(column => column.remove());
@@ -84,7 +84,7 @@ class ContentManager {
   updateColumnListVisibility() {
     const emptyPlaceholder = document.getElementById('empty-columns-placeholder');
     const addColumnSection = document.getElementById('add-column-section');
-    
+
     if (this.data.columns.length === 0) {
       emptyPlaceholder.style.display = 'block';
       addColumnSection.style.display = 'none';
@@ -106,24 +106,26 @@ class ContentManager {
 
     columnEl.dataset.columnId = column.id;
     columnEl.dataset.index = index;
-    
+
     // Start collapsed by default
     columnEl.classList.add('collapsed');
 
     // Set column header info
     const columnNameInline = columnEl.querySelector('.column-name-inline');
     const columnLinkCount = columnEl.querySelector('.column-link-count');
-    
+
     columnNameInline.value = column.name;
-    const itemCount = column.items ? column.items.length : 0;
-    const linkCount = column.items ? column.items.filter(item => item.type === 'link').length : 0;
-    const dividerCount = column.items ? column.items.filter(item => item.type === 'divider').length : 0;
-    
-    if (dividerCount > 0) {
-      columnLinkCount.textContent = `(${linkCount} links, ${dividerCount} dividers)`;
-    } else {
-      columnLinkCount.textContent = `(${linkCount} links)`;
+
+    // Count groups and total links across all groups
+    const groupCount = column.groups ? column.groups.length : 0;
+    let totalLinks = 0;
+    if (column.groups) {
+      column.groups.forEach(group => {
+        totalLinks += (group.links ? group.links.length : 0);
+      });
     }
+
+    columnLinkCount.textContent = `(${groupCount} groups, ${totalLinks} links)`;
 
     // Setup column name editing
     columnNameInline.addEventListener('input', () => {
@@ -144,52 +146,42 @@ class ContentManager {
     });
 
     // Setup column actions
-    const addLinkBtn = columnEl.querySelector('.add-link-options-btn');
-    const addFirstLinkBtn = columnEl.querySelector('.add-first-link-btn');
-    const addDividerBtn = columnEl.querySelector('.add-divider-options-btn');
-    const addFirstDividerBtn = columnEl.querySelector('.add-first-divider-btn');
+    const addGroupBtn = columnEl.querySelector('.add-group-options-btn');
+    const addFirstGroupBtn = columnEl.querySelector('.add-first-group-btn');
     const deleteBtn = columnEl.querySelector('.delete-column-options-btn');
 
-    addLinkBtn.addEventListener('click', () => {
-      this.addLinkToColumn(column.id);
+    addGroupBtn.addEventListener('click', () => {
+      this.addGroupToColumn(column.id);
     });
 
-    addFirstLinkBtn.addEventListener('click', () => {
-      this.addLinkToColumn(column.id);
-    });
-
-    addDividerBtn.addEventListener('click', () => {
-      this.addDividerToColumn(column.id);
-    });
-
-    addFirstDividerBtn.addEventListener('click', () => {
-      this.addDividerToColumn(column.id);
+    addFirstGroupBtn.addEventListener('click', () => {
+      this.addGroupToColumn(column.id);
     });
 
     deleteBtn.addEventListener('click', () => {
       this.confirmDeleteColumn(column.id, column.name);
     });
 
-    // Render items (links and dividers) and manage empty state
-    const linksList = columnEl.querySelector('.links-list');
-    const emptyPlaceholder = columnEl.querySelector('.empty-links-placeholder');
-    const addLinkSection = columnEl.querySelector('.add-link-section');
+    // Render groups and manage empty state
+    const groupsList = columnEl.querySelector('.groups-list');
+    const emptyPlaceholder = columnEl.querySelector('.empty-groups-placeholder');
+    const addGroupSection = columnEl.querySelector('.add-group-section');
 
-    if (!column.items || column.items.length === 0) {
+    if (!column.groups || column.groups.length === 0) {
       emptyPlaceholder.style.display = 'block';
-      addLinkSection.style.display = 'none';
+      addGroupSection.style.display = 'none';
     } else {
       emptyPlaceholder.style.display = 'none';
-      addLinkSection.style.display = 'block';
-      
-      column.items.forEach((item, itemIndex) => {
-        const itemElement = this.createItemOptionsElement(item, itemIndex);
-        linksList.appendChild(itemElement);
+      addGroupSection.style.display = 'block';
+
+      column.groups.forEach((group, groupIndex) => {
+        const groupElement = this.createGroupOptionsElement(group, index, groupIndex);
+        groupsList.appendChild(groupElement);
       });
     }
 
-    // Setup drag and drop for items
-    this.setupItemDragDrop(linksList);
+    // Setup drag and drop for groups
+    this.setupGroupDragDrop(groupsList);
 
     // Setup custom CSS classes input handling with debounced save
     const customClassesInput = columnEl.querySelector('.column-custom-classes-input');
@@ -198,34 +190,34 @@ class ContentManager {
       customClassesInput.value = column.customClasses || '';
 
       let saveTimeout = null;
-      
+
       // Helper function for debounced saving
       const debouncedSave = (property, value) => {
         if (saveTimeout) {
           clearTimeout(saveTimeout);
         }
-        
+
         saveTimeout = setTimeout(() => {
           this.forceColumnPropertyUpdate(column.id, property, value);
         }, 500);
       };
-      
+
       customClassesInput.addEventListener('input', () => {
         const classes = customClassesInput.value.trim();
-        
+
         // Validate CSS classes
         const isValid = this.validateCssClasses(classes);
-        
+
         // Update visual feedback
         if (isValid || classes === '') {
           customClassesInput.classList.remove('invalid');
         } else {
           customClassesInput.classList.add('invalid');
         }
-        
+
         // Update column data
         column.customClasses = classes;
-        
+
         // Debounced save
         debouncedSave('customClasses', classes);
       });
@@ -238,32 +230,91 @@ class ContentManager {
   }
 
   /**
-   * Create item options element (link or divider)
-   * @param {Object} item - Item data
-   * @param {number} index - Item index
-   * @returns {Element} Item element
+   * Create group options element
+   * @param {Object} group - Group data
+   * @param {number} columnIndex - Column index
+   * @param {number} groupIndex - Group index
+   * @returns {Element} Group element
    */
-  createItemOptionsElement(item, index) {
-    if (item.type === 'divider') {
-      return this.createDividerOptionsElement(item, index);
-    } else {
-      return this.createLinkOptionsElement(item, index);
+  createGroupOptionsElement(group, columnIndex, groupIndex) {
+    const template = this.templates.groupOptions.content.cloneNode(true);
+    const groupEl = template.querySelector('.group-item');
+
+    groupEl.dataset.groupId = group.id;
+    groupEl.dataset.index = groupIndex;
+
+    // Start collapsed by default
+    groupEl.classList.add('collapsed');
+
+    // Set group preview
+    const titlePreview = groupEl.querySelector('.group-title-preview');
+    const linkCount = groupEl.querySelector('.group-link-count');
+
+    titlePreview.textContent = group.title || 'Group';
+    const linkNum = group.links ? group.links.length : 0;
+    linkCount.textContent = `(${linkNum} links)`;
+
+    // Setup accordion toggle
+    const headerBar = groupEl.querySelector('.group-header-bar');
+    headerBar.addEventListener('click', (e) => {
+      // Don't toggle when clicking on action buttons
+      if (e.target.closest('.group-quick-actions')) return;
+      this.uiManager.toggleLink(groupEl); // Reuse link toggle for groups
+    });
+
+    // Set form values
+    const titleInput = groupEl.querySelector('.group-title-options-input');
+    const customClassesInput = groupEl.querySelector('.group-custom-classes-input');
+
+    titleInput.value = group.title || '';
+    if (customClassesInput) {
+      customClassesInput.value = group.customClasses || '';
     }
+
+    // Setup form handlers with debounced saving
+    this.setupGroupFormHandlers(group, groupEl, titlePreview, linkCount);
+
+    // Setup group actions
+    const addLinkBtn = groupEl.querySelector('.add-link-to-group-btn');
+    const deleteBtn = groupEl.querySelector('.delete-group-options-btn');
+
+    addLinkBtn.addEventListener('click', () => {
+      this.addLinkToGroup(group.id);
+    });
+
+    deleteBtn.addEventListener('click', () => {
+      this.confirmDeleteGroup(group.id, group.title || 'Untitled Group');
+    });
+
+    // Render links within group
+    const linksList = groupEl.querySelector('.group-links-list');
+    if (group.links && group.links.length > 0) {
+      group.links.forEach((link, linkIndex) => {
+        const linkElement = this.createLinkOptionsElement(link, linkIndex, group.id);
+        linksList.appendChild(linkElement);
+      });
+    }
+
+    // Setup drag and drop for links within group
+    this.setupLinkDragDrop(linksList, group.id);
+
+    return groupEl;
   }
 
   /**
    * Create link options element
    * @param {Object} link - Link data
    * @param {number} index - Link index
+   * @param {string} groupId - Group ID containing this link
    * @returns {Element} Link element
    */
-  createLinkOptionsElement(link, index) {
+  createLinkOptionsElement(link, index, groupId) {
     const template = this.templates.linkOptions.content.cloneNode(true);
     const linkEl = template.querySelector('.link-item');
 
     linkEl.dataset.linkId = link.id;
     linkEl.dataset.index = index;
-    
+
     // Start collapsed by default
     linkEl.classList.add('collapsed');
 
@@ -289,7 +340,7 @@ class ContentManager {
 
     urlInput.value = link.url;
     titleInput.value = link.title || '';
-    
+
     // For domain mode, extract domain from Google URL if present
     let domainValue = '';
     if (link.iconUrlOverride) {
@@ -308,7 +359,7 @@ class ContentManager {
     const url = (link.url || '').trim();
     const statusIndicator = linkEl.querySelector('.link-status-indicator');
     const statusText = linkEl.querySelector('.status-text');
-    
+
     this.linkProcessor.updateLinkStatusIndicator(url, urlInput, statusIndicator, statusText);
 
     // Setup form handlers with debounced saving and title fetching
@@ -316,7 +367,7 @@ class ContentManager {
 
     // Setup favicon controls
     this.setupFaviconControls(link, linkEl);
-    
+
     // Set initial favicon mode UI state
     this.linkProcessor.updateFaviconModeUI(linkEl, link);
 
@@ -488,10 +539,10 @@ class ContentManager {
    */
   validateCssClasses(classes) {
     if (!classes || classes.trim() === '') return true;
-    
+
     const classArray = classes.trim().split(/\s+/);
     const validClassRegex = /^[a-zA-Z_][\w\-]*$/;
-    
+
     return classArray.every(className => validClassRegex.test(className));
   }
 
@@ -511,7 +562,7 @@ class ContentManager {
     faviconModeButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const mode = btn.dataset.mode;
-        
+
         // If upload button clicked and file already uploaded, do nothing
         const currentLink = this.data.columns.flatMap(col => col.items || [])
           .filter(item => item && item.type === 'link')
@@ -519,11 +570,11 @@ class ContentManager {
         if (mode === 'upload' && currentLink && currentLink.iconDataUri) {
           return;
         }
-        
+
         // Reset active states
         faviconModeButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        
+
         if (mode === 'upload') {
           // Show drop zone, hide URL input
           iconUrlInput.style.display = 'none';
@@ -535,7 +586,7 @@ class ContentManager {
           iconUrlInput.style.display = 'block';
           iconUrlInput.focus();
           uploadStatus.style.display = 'none';
-          
+
           // Update placeholder text for domain input
           iconUrlInput.placeholder = 'e.g., fastmail.com';
         }
@@ -564,7 +615,7 @@ class ContentManager {
       e.preventDefault();
       e.stopPropagation();
       dropZone.classList.remove('drag-over');
-      
+
       const files = e.dataTransfer.files;
       if (files.length > 0 && files[0].type.startsWith('image/')) {
         await this.linkProcessor.handleIconUpload(link.id, files[0], iconPreview, this.updateLinkProperty.bind(this));
@@ -613,20 +664,20 @@ class ContentManager {
       const columnElement = this.createColumnOptionsElement(tempColumn, this.data.columns.length - 1);
       const addColumnSection = document.getElementById('add-column-section');
       const columnsList = document.getElementById('columns-list');
-      
+
       // Insert before the add column section
       columnsList.insertBefore(columnElement, addColumnSection);
-      
+
       // Update visibility state
       this.updateColumnListVisibility();
-      
+
       // Setup drag and drop for the new column
       this.setupColumnDragDrop();
 
       // Expand the column for editing
       columnElement.classList.remove('collapsed');
       columnElement.classList.add('expanded');
-      
+
       // Focus on the column name input
       const nameInput = columnElement.querySelector('.column-name-inline');
       if (nameInput) {
@@ -643,6 +694,389 @@ class ContentManager {
   }
 
   /**
+   * Add new group to column
+   * @param {string} columnId - Column ID
+   */
+  async addGroupToColumn(columnId) {
+    try {
+      // Find the column
+      const column = this.data.columns.find(c => c.id === columnId);
+      if (!column) {
+        this.uiManager.showError('Column not found');
+        return;
+      }
+
+      // Ensure column has groups array
+      if (!column.groups) {
+        column.groups = [];
+      }
+
+      // Create temporary group with unique ID
+      const tempGroup = {
+        id: `temp_${Date.now()}`,
+        title: '',
+        customClasses: '',
+        links: [],
+        isTemporary: true
+      };
+
+      // Add to local data temporarily
+      column.groups.push(tempGroup);
+
+      // Update the column DOM to include the new group
+      this.updateColumnDOM(column);
+
+      // Expand the column if it's collapsed
+      const columnEl = document.querySelector(`[data-column-id="${columnId}"]`);
+      if (columnEl && columnEl.classList.contains('collapsed')) {
+        this.uiManager.toggleColumn(columnEl);
+      }
+
+      // Find the new group element and expand it for editing
+      const newGroupEl = document.querySelector(`[data-group-id="${tempGroup.id}"]`);
+      if (newGroupEl) {
+        // Expand the group for editing
+        newGroupEl.classList.remove('collapsed');
+        newGroupEl.classList.add('expanded');
+
+        // Focus on the title input
+        const titleInput = newGroupEl.querySelector('.group-title-options-input');
+        if (titleInput) {
+          setTimeout(() => {
+            titleInput.focus();
+            titleInput.select();
+          }, 100);
+        }
+      }
+
+    } catch (error) {
+      console.error('Failed to add group:', error);
+      this.uiManager.showError('Failed to add group. Please try again.');
+    }
+  }
+
+  /**
+   * Setup group form handlers with debounced saving
+   */
+  setupGroupFormHandlers(group, groupEl, titlePreview, linkCount) {
+    const titleInput = groupEl.querySelector('.group-title-options-input');
+    const customClassesInput = groupEl.querySelector('.group-custom-classes-input');
+
+    let saveTimeout = null;
+
+    // Helper function for debounced saving
+    const debouncedSave = (property, value) => {
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+
+      saveTimeout = setTimeout(() => {
+        if (group.isTemporary) {
+          // Convert temporary group to permanent on first save
+          this.handleTemporaryGroupSave(group);
+        } else {
+          // Force update the property and trigger save
+          this.forceGroupPropertyUpdate(group.id, property, value);
+        }
+      }, 500);
+    };
+
+    titleInput.addEventListener('input', () => {
+      const title = titleInput.value.trim();
+
+      // Update preview immediately
+      titlePreview.textContent = title || 'Group';
+
+      // Update local data immediately
+      group.title = title;
+
+      // Debounced save
+      debouncedSave('title', title);
+    });
+
+    if (customClassesInput) {
+      customClassesInput.addEventListener('input', () => {
+        const classes = customClassesInput.value.trim();
+
+        // Validate CSS classes
+        if (classes && !this.validateCssClasses(classes)) {
+          customClassesInput.classList.add('invalid');
+          return;
+        } else {
+          customClassesInput.classList.remove('invalid');
+        }
+
+        // Update local data immediately
+        group.customClasses = classes;
+
+        // Debounced save
+        debouncedSave('customClasses', classes);
+      });
+    }
+
+    // Show/hide advanced options
+    this.updateAdvancedOptionsVisibility();
+  }
+
+  /**
+   * Handle saving of temporary group
+   */
+  async handleTemporaryGroupSave(tempGroup) {
+    try {
+      // Find the column containing this temporary group
+      let column = null;
+      for (const col of this.data.columns) {
+        if (col.groups && col.groups.find(g => g.id === tempGroup.id)) {
+          column = col;
+          break;
+        }
+      }
+
+      if (!column) {
+        console.error('Column not found for temporary group:', tempGroup.id);
+        return;
+      }
+
+      // Locate the temp group element
+      const groupEl = document.querySelector(`[data-group-id="${tempGroup.id}"]`);
+
+      // Create new permanent group with new ID
+      const savedGroup = {
+        id: generateUUID(),
+        title: tempGroup.title || '',
+        customClasses: tempGroup.customClasses || '',
+        links: tempGroup.links || []
+      };
+
+      // Replace temporary group with saved group in data
+      const tempIndex = column.groups.findIndex(g => g.id === tempGroup.id);
+      if (tempIndex !== -1) {
+        column.groups[tempIndex] = savedGroup;
+      }
+
+      // Update the DOM element in-place
+      if (groupEl) {
+        groupEl.dataset.groupId = savedGroup.id;
+        this.updateGroupEventListeners(groupEl, savedGroup);
+      }
+
+      this.markDirty();
+
+    } catch (error) {
+      console.error('Failed to save temporary group:', error);
+      this.uiManager.showError('Failed to save group. Please try again.');
+    }
+  }
+
+  /**
+   * Update event listeners for a saved group
+   * @param {Element} groupEl - Group DOM element
+   * @param {Object} savedGroup - Saved group data
+   */
+  updateGroupEventListeners(groupEl, savedGroup) {
+    const deleteBtn = groupEl.querySelector('.delete-group-options-btn');
+    const addLinkBtn = groupEl.querySelector('.add-link-to-group-btn');
+
+    if (deleteBtn) {
+      const newDeleteBtn = deleteBtn.cloneNode(true);
+      deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+      newDeleteBtn.addEventListener('click', () => {
+        this.confirmDeleteGroup(savedGroup.id, savedGroup.title || 'Untitled Group');
+      });
+    }
+
+    if (addLinkBtn) {
+      const newAddLinkBtn = addLinkBtn.cloneNode(true);
+      addLinkBtn.parentNode.replaceChild(newAddLinkBtn, addLinkBtn);
+      newAddLinkBtn.addEventListener('click', () => {
+        this.addLinkToGroup(savedGroup.id);
+      });
+    }
+  }
+
+  /**
+   * Force update group property and save
+   */
+  forceGroupPropertyUpdate(groupId, property, value) {
+    // Find which column contains this group
+    let foundColumn = null;
+    let foundGroup = null;
+
+    for (const column of this.data.columns) {
+      if (column.groups) {
+        const group = column.groups.find(g => g.id === groupId);
+        if (group) {
+          foundColumn = column;
+          foundGroup = group;
+          break;
+        }
+      }
+    }
+
+    if (foundGroup) {
+      foundGroup[property] = value;
+      this.markDirty();
+    }
+  }
+
+  /**
+   * Confirm delete group
+   */
+  confirmDeleteGroup(groupId, groupTitle) {
+    const modal = this.uiManager.createModal('confirm', {
+      title: 'Delete Group',
+      message: `Are you sure you want to delete "${groupTitle}"? This will also delete all links in this group. This action cannot be undone.`
+    });
+
+    const confirmBtn = modal.querySelector('.modal-confirm-btn');
+    confirmBtn.addEventListener('click', async () => {
+      await this.deleteGroup(groupId);
+      modal.remove();
+    });
+
+    document.body.appendChild(modal);
+  }
+
+  /**
+   * Delete group
+   */
+  async deleteGroup(groupId) {
+    // Check if this is a temporary group
+    const isTemporary = groupId.startsWith('temp_');
+
+    if (isTemporary) {
+      // For temporary groups, just remove from local data
+      this.removeTemporaryGroup(groupId);
+      return;
+    }
+
+    // For saved groups, remove from local data and let auto-save handle storage
+    try {
+      // Find which column contains this group
+      let foundColumn = null;
+      for (const column of this.data.columns) {
+        if (column.groups && column.groups.find(g => g.id === groupId)) {
+          foundColumn = column;
+          break;
+        }
+      }
+
+      if (foundColumn) {
+        // Remove from local data
+        foundColumn.groups = foundColumn.groups.filter(g => g.id !== groupId);
+
+        // Update the DOM
+        this.updateColumnDOM(foundColumn);
+        this.markDirty();
+      }
+    } catch (error) {
+      console.error('Failed to delete group:', error);
+      this.uiManager.showError('Failed to delete group. Please try again.');
+    }
+  }
+
+  /**
+   * Remove temporary group from DOM and data
+   */
+  removeTemporaryGroup(groupId) {
+    // Remove from DOM
+    const groupEl = document.querySelector(`[data-group-id="${groupId}"]`);
+    if (groupEl) {
+      groupEl.remove();
+    }
+
+    // Remove from local data
+    for (const column of this.data.columns) {
+      if (column.groups) {
+        column.groups = column.groups.filter(g => g.id !== groupId);
+      }
+    }
+
+    // Update visibility states
+    this.data.columns.forEach(column => {
+      this.updateColumnDOM(column);
+    });
+  }
+
+  /**
+   * Add link to group
+   * @param {string} groupId - Group ID
+   */
+  async addLinkToGroup(groupId) {
+    try {
+      // Find the group
+      let group = null;
+      let column = null;
+      for (const col of this.data.columns) {
+        if (col.groups) {
+          const foundGroup = col.groups.find(g => g.id === groupId);
+          if (foundGroup) {
+            group = foundGroup;
+            column = col;
+            break;
+          }
+        }
+      }
+
+      if (!group) {
+        this.uiManager.showError('Group not found');
+        return;
+      }
+
+      // Ensure group has links array
+      if (!group.links) {
+        group.links = [];
+      }
+
+      // Create temporary link with unique ID
+      const tempLink = {
+        type: 'link',
+        id: `temp_${Date.now()}`,
+        url: '',
+        title: '',
+        iconDataUri: null,
+        iconUrlOverride: null,
+        customClasses: '',
+        isTemporary: true
+      };
+
+      // Add to local data temporarily
+      group.links.push(tempLink);
+
+      // Update the column DOM to include the new link
+      this.updateColumnDOM(column);
+
+      // Expand the group if it's collapsed
+      const groupEl = document.querySelector(`[data-group-id="${groupId}"]`);
+      if (groupEl && groupEl.classList.contains('collapsed')) {
+        this.uiManager.toggleLink(groupEl);
+      }
+
+      // Find the new link element and expand it for editing
+      const newLinkEl = document.querySelector(`[data-link-id="${tempLink.id}"]`);
+      if (newLinkEl) {
+        // Expand the link for editing
+        newLinkEl.classList.remove('collapsed');
+        newLinkEl.classList.add('expanded');
+
+        // Focus on the URL input
+        const urlInput = newLinkEl.querySelector('.link-url-options-input');
+        if (urlInput) {
+          setTimeout(() => {
+            urlInput.focus();
+            urlInput.select();
+          }, 100);
+        }
+      }
+
+    } catch (error) {
+      console.error('Failed to add link:', error);
+      this.uiManager.showError('Failed to add link. Please try again.');
+    }
+  }
+
+  /**
+   * OLD DIVIDER METHOD - TO BE REMOVED
    * Create divider options element
    * @param {Object} divider - Divider data
    * @param {number} index - Divider index
@@ -654,7 +1088,7 @@ class ContentManager {
 
     dividerEl.dataset.dividerId = divider.id;
     dividerEl.dataset.index = index;
-    
+
     // Start collapsed by default
     dividerEl.classList.add('collapsed');
 
@@ -737,7 +1171,7 @@ class ContentManager {
         // Expand the link for editing
         newLinkEl.classList.remove('collapsed');
         newLinkEl.classList.add('expanded');
-        
+
         // Focus on the URL input
         const urlInput = newLinkEl.querySelector('.link-url-options-input');
         if (urlInput) {
@@ -799,7 +1233,7 @@ class ContentManager {
         // Expand the divider for editing
         newDividerEl.classList.remove('collapsed');
         newDividerEl.classList.add('expanded');
-        
+
         // Focus on the title input
         const titleInput = newDividerEl.querySelector('.divider-title-options-input');
         if (titleInput) {
@@ -827,10 +1261,10 @@ class ContentManager {
 
     // Handle empty names by using default
     const finalName = name.trim() || 'New Column';
-    
+
     if (column.name !== finalName) {
       column.name = finalName;
-      
+
       // If this is a temporary column, convert it to permanent
       if (column.isTemporary) {
         this.convertTemporaryColumnToPermanent(column);
@@ -850,16 +1284,16 @@ class ContentManager {
       const permanentId = generateUUID();
       column.id = permanentId;
       delete column.isTemporary;
-      
+
       // Find the DOM element and update its data attribute
       const columnEl = document.querySelector(`[data-column-id^="temp_"]`);
       if (columnEl && columnEl.dataset.columnId.startsWith('temp_')) {
         columnEl.dataset.columnId = permanentId;
-        
+
         // Update event listeners to use new permanent ID
         this.updateColumnEventListeners(columnEl, column);
       }
-      
+
       // Update visibility state after conversion
       this.updateColumnListVisibility();
       this.markDirty();
@@ -918,11 +1352,15 @@ class ContentManager {
    */
   updateLinkProperty(linkId, property, value) {
     for (const column of this.data.columns) {
-      const link = column.items ? column.items.find(i => i.id === linkId && i.type === 'link') : null;
-      if (link && link[property] !== value) {
-        link[property] = value;
-        this.markDirty();
-        break;
+      if (column.groups) {
+        for (const group of column.groups) {
+          const link = group.links ? group.links.find(l => l.id === linkId) : null;
+          if (link && link[property] !== value) {
+            link[property] = value;
+            this.markDirty();
+            return;
+          }
+        }
       }
     }
   }
@@ -935,11 +1373,15 @@ class ContentManager {
    */
   forceLinkPropertyUpdate(linkId, property, value) {
     for (const column of this.data.columns) {
-      const link = column.items ? column.items.find(i => i.id === linkId && i.type === 'link') : null;
-      if (link) {
-        link[property] = value;
-        this.markDirty();
-        break;
+      if (column.groups) {
+        for (const group of column.groups) {
+          const link = group.links ? group.links.find(l => l.id === linkId) : null;
+          if (link) {
+            link[property] = value;
+            this.markDirty();
+            return;
+          }
+        }
       }
     }
   }
@@ -973,12 +1415,12 @@ class ContentManager {
           // Get the moved element and its column ID
           const movedElement = evt.item;
           const movedColumnId = movedElement.dataset.columnId;
-          
+
           // Get all column elements in their new DOM order
           const columnElements = Array.from(columnsList.querySelectorAll('.column-item'));
           const newOrder = columnElements.map(el => el.dataset.columnId);
-          
-          
+
+
           // Reorder the data array to match the new DOM order
           const newColumns = [];
           newOrder.forEach(columnId => {
@@ -987,29 +1429,63 @@ class ContentManager {
               newColumns.push(column);
             }
           });
-          
+
           // Update the data with the new order
           this.data.columns = newColumns;
 
           // Update indices and mark dirty
           this.updateColumnIndices();
           this.markDirty();
-          
+
         }
       }
     });
   }
 
   /**
-   * Setup drag and drop for links using SortableJS
-   * @param {Element} linksList - Links list container
+   * Setup drag and drop for groups using SortableJS
+   * @param {Element} groupsList - Groups list container
    */
-  setupItemDragDrop(linksList) {
-    // Store reference to this for use in callbacks
+  setupGroupDragDrop(groupsList) {
     const self = this;
-    
+
+    new Sortable(groupsList, {
+      handle: '.drag-handle',
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      dragClass: 'sortable-drag',
+      draggable: '.group-item',
+      onEnd: (evt) => {
+        if (evt.oldIndex !== evt.newIndex) {
+          const columnEl = groupsList.closest('.column-item');
+          const columnId = columnEl.dataset.columnId;
+          const column = self.data.columns.find(c => c.id === columnId);
+
+          if (column && column.groups) {
+            // Move group in data array
+            const [movedGroup] = column.groups.splice(evt.oldIndex, 1);
+            column.groups.splice(evt.newIndex, 0, movedGroup);
+
+            // Update indices and mark dirty
+            self.updateGroupIndices(groupsList);
+            self.markDirty();
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Setup drag and drop for links within a group using SortableJS
+   * @param {Element} linksList - Links list container
+   * @param {string} groupId - Group ID containing these links
+   */
+  setupLinkDragDrop(linksList, groupId) {
+    const self = this;
+
     new Sortable(linksList, {
-      group: 'link-items',
+      group: 'group-links',
       handle: '.drag-handle',
       animation: 150,
       ghostClass: 'sortable-ghost',
@@ -1017,7 +1493,7 @@ class ContentManager {
       dragClass: 'sortable-drag',
       onStart: (evt) => {
         // Add visual feedback to all potential drop zones
-        document.querySelectorAll('.links-list').forEach(list => {
+        document.querySelectorAll('.group-links-list').forEach(list => {
           if (list !== evt.from) {
             list.classList.add('sortable-drop-zone');
           }
@@ -1025,63 +1501,84 @@ class ContentManager {
       },
       onEnd: async (evt) => {
         // Remove visual feedback from all drop zones
-        document.querySelectorAll('.links-list').forEach(list => {
+        document.querySelectorAll('.group-links-list').forEach(list => {
           list.classList.remove('sortable-drop-zone');
         });
-        
-        const itemElement = evt.item;
-        const itemId = itemElement.dataset.linkId || itemElement.dataset.dividerId;
-        const sourceColumnId = evt.from.closest('.column-item').dataset.columnId;
-        const targetColumnId = evt.to.closest('.column-item').dataset.columnId;
 
-        // Handle cross-column moves
-        if (sourceColumnId !== targetColumnId) {
+        const linkElement = evt.item;
+        const linkId = linkElement.dataset.linkId;
+        const sourceGroupId = evt.from.closest('.group-item').dataset.groupId;
+        const targetGroupId = evt.to.closest('.group-item').dataset.groupId;
+
+        // Handle cross-group moves
+        if (sourceGroupId !== targetGroupId) {
           try {
-            // Update local data directly
-            const sourceColumn = self.data.columns.find(c => c.id === sourceColumnId);
-            const targetColumn = self.data.columns.find(c => c.id === targetColumnId);
-            
-            if (sourceColumn && targetColumn) {
-              // Ensure both columns have items arrays
-              if (!sourceColumn.items) sourceColumn.items = [];
-              if (!targetColumn.items) targetColumn.items = [];
-              
-              // Find and remove the item from source column
-              const itemIndex = sourceColumn.items.findIndex(i => i.id === itemId);
-              if (itemIndex !== -1) {
-                const [movedItem] = sourceColumn.items.splice(itemIndex, 1);
-                // Insert at the new position in target column
-                const insertIndex = Math.min(evt.newIndex, targetColumn.items.length);
-                targetColumn.items.splice(insertIndex, 0, movedItem);
-                
-                // Update indices and mark dirty to trigger auto-save
-                self.updateItemIndices(evt.from);
-                self.updateItemIndices(evt.to);
+            // Find source and target groups
+            let sourceGroup = null;
+            let targetGroup = null;
+            let sourceColumn = null;
+            let targetColumn = null;
+
+            for (const column of self.data.columns) {
+              if (column.groups) {
+                for (const group of column.groups) {
+                  if (group.id === sourceGroupId) {
+                    sourceGroup = group;
+                    sourceColumn = column;
+                  }
+                  if (group.id === targetGroupId) {
+                    targetGroup = group;
+                    targetColumn = column;
+                  }
+                }
+              }
+            }
+
+            if (sourceGroup && targetGroup) {
+              // Ensure both groups have links arrays
+              if (!sourceGroup.links) sourceGroup.links = [];
+              if (!targetGroup.links) targetGroup.links = [];
+
+              // Find and remove the link from source group
+              const linkIndex = sourceGroup.links.findIndex(l => l.id === linkId);
+              if (linkIndex !== -1) {
+                const [movedLink] = sourceGroup.links.splice(linkIndex, 1);
+                // Insert at the new position in target group
+                const insertIndex = Math.min(evt.newIndex, targetGroup.links.length);
+                targetGroup.links.splice(insertIndex, 0, movedLink);
+
+                // Update the column DOMs
+                if (sourceColumn) self.updateColumnDOM(sourceColumn);
+                if (targetColumn && targetColumn !== sourceColumn) self.updateColumnDOM(targetColumn);
                 self.markDirty();
               }
             }
           } catch (error) {
-            console.error('Failed to move item between columns:', error);
-            self.uiManager.showError('Failed to move item. Please try again.');
-            // Refresh the UI to show current state
+            console.error('Failed to move link between groups:', error);
+            self.uiManager.showError('Failed to move link. Please try again.');
             self.renderContentPanel();
           }
         } else if (evt.oldIndex !== evt.newIndex) {
-          // Handle within-column reordering
-          const columnEl = linksList.closest('.column-item');
-          const columnId = columnEl.dataset.columnId;
-          const column = self.data.columns.find(c => c.id === columnId);
+          // Handle within-group reordering
+          const groupEl = linksList.closest('.group-item');
+          const groupId = groupEl.dataset.groupId;
 
-          if (column) {
-            // Ensure column has items array
-            if (!column.items) column.items = [];
-            
-            // Move item in data array
-            const [movedItem] = column.items.splice(evt.oldIndex, 1);
-            column.items.splice(evt.newIndex, 0, movedItem);
+          // Find the group
+          let group = null;
+          for (const column of self.data.columns) {
+            if (column.groups) {
+              group = column.groups.find(g => g.id === groupId);
+              if (group) break;
+            }
+          }
+
+          if (group && group.links) {
+            // Move link in data array
+            const [movedLink] = group.links.splice(evt.oldIndex, 1);
+            group.links.splice(evt.newIndex, 0, movedLink);
 
             // Update indices and mark dirty
-            self.updateItemIndices(linksList);
+            self.updateLinkIndices(linksList);
             self.markDirty();
           }
         }
@@ -1100,22 +1597,25 @@ class ContentManager {
   }
 
   /**
-   * Update item indices after reordering
-   * @param {Element} linksList - Items list container
+   * Update group indices after reordering
+   * @param {Element} groupsList - Groups list container
    */
-  updateItemIndices(linksList) {
-    const items = linksList.querySelectorAll('.link-item, .divider-item');
-    items.forEach((item, index) => {
-      item.dataset.index = index;
+  updateGroupIndices(groupsList) {
+    const groups = groupsList.querySelectorAll('.group-item');
+    groups.forEach((group, index) => {
+      group.dataset.index = index;
     });
   }
 
   /**
-   * Update link indices after reordering (legacy method for backward compatibility)
+   * Update link indices after reordering
    * @param {Element} linksList - Links list container
    */
   updateLinkIndices(linksList) {
-    return this.updateItemIndices(linksList);
+    const links = linksList.querySelectorAll('.link-item');
+    links.forEach((link, index) => {
+      link.dataset.index = index;
+    });
   }
 
   /**
@@ -1126,20 +1626,29 @@ class ContentManager {
   confirmDeleteColumn(columnId, columnName) {
     const column = this.data.columns.find(c => c.id === columnId);
     if (!column) return;
-    
+
     // Check if this is a temporary column OR empty column
-    const isEmpty = !column.items || column.items.length === 0;
+    const isEmpty = !column.groups || column.groups.length === 0;
     const isTemporary = column.isTemporary;
-    
+
     if (isTemporary || isEmpty) {
       // Delete temporary or empty columns immediately without confirmation
       this.deleteColumn(columnId);
       return;
     }
 
+    // Count total groups and links
+    const groupCount = column.groups ? column.groups.length : 0;
+    let totalLinks = 0;
+    if (column.groups) {
+      column.groups.forEach(group => {
+        totalLinks += (group.links ? group.links.length : 0);
+      });
+    }
+
     const modal = this.uiManager.createModal('confirm', {
       title: 'Delete Column',
-      message: `Are you sure you want to delete "${columnName}" and all its ${column.items ? column.items.length : 0} items? This action cannot be undone.`
+      message: `Are you sure you want to delete "${columnName}" with ${groupCount} groups and ${totalLinks} links? This action cannot be undone.`
     });
 
     const confirmBtn = modal.querySelector('.modal-confirm-btn');
@@ -1158,19 +1667,19 @@ class ContentManager {
   deleteColumn(columnId) {
     const column = this.data.columns.find(c => c.id === columnId);
     const wasTemporary = column && column.isTemporary;
-    
+
     // Remove from data array
     this.data.columns = this.data.columns.filter(c => c.id !== columnId);
-    
+
     // Update UI visibility state
     this.updateColumnListVisibility();
-    
+
     // Remove the DOM element directly instead of full re-render
     const columnEl = document.querySelector(`[data-column-id="${columnId}"]`);
     if (columnEl) {
       columnEl.remove();
     }
-    
+
     // Only mark dirty if it wasn't a temporary column
     if (!wasTemporary) {
       this.markDirty();
@@ -1204,7 +1713,7 @@ class ContentManager {
   async deleteLink(linkId) {
     // Check if this is a temporary link
     const isTemporary = linkId.startsWith('temp_');
-    
+
     if (isTemporary) {
       // For temporary links, just remove from local data
       this.removeTemporaryLink(linkId);
@@ -1213,19 +1722,27 @@ class ContentManager {
 
     // For saved links, remove from local data and let auto-save handle storage
     try {
-      // Find which column contains this link
+      // Find which column and group contain this link
       let foundColumn = null;
+      let foundGroup = null;
+
       for (const column of this.data.columns) {
-        if (column.items && column.items.find(i => i.id === linkId)) {
-          foundColumn = column;
-          break;
+        if (column.groups) {
+          for (const group of column.groups) {
+            if (group.links && group.links.find(l => l.id === linkId)) {
+              foundColumn = column;
+              foundGroup = group;
+              break;
+            }
+          }
+          if (foundColumn) break;
         }
       }
 
-      if (foundColumn) {
+      if (foundColumn && foundGroup) {
         // Remove from local data
-        foundColumn.items = foundColumn.items.filter(i => i.id !== linkId);
-        
+        foundGroup.links = foundGroup.links.filter(l => l.id !== linkId);
+
         // Update the DOM
         this.updateColumnDOM(foundColumn);
         this.markDirty();
@@ -1245,13 +1762,13 @@ class ContentManager {
     const titlePreview = dividerEl.querySelector('.divider-title-preview');
 
     let saveTimeout = null;
-    
+
     // Helper function for debounced saving with validation
     const debouncedSave = (property, value) => {
       if (saveTimeout) {
         clearTimeout(saveTimeout);
       }
-      
+
       saveTimeout = setTimeout(() => {
         if (divider.isTemporary) {
           // Convert temporary divider to permanent on first save
@@ -1262,23 +1779,23 @@ class ContentManager {
         }
       }, 500);
     };
-    
+
     titleInput.addEventListener('input', () => {
       const title = titleInput.value.trim();
-      
+
       // Update preview immediately
       titlePreview.textContent = title || 'Divider';
-      
+
       // Update local data immediately
       divider.title = title;
-      
+
       // Debounced save
       debouncedSave('title', title);
     });
 
     customClassesInput.addEventListener('input', () => {
       const classes = customClassesInput.value.trim();
-      
+
       // Validate CSS classes
       if (classes && !this.validateCssClasses(classes)) {
         customClassesInput.classList.add('invalid');
@@ -1286,10 +1803,10 @@ class ContentManager {
       } else {
         customClassesInput.classList.remove('invalid');
       }
-      
+
       // Update local data immediately
       divider.customClasses = classes;
-      
+
       // Debounced save
       debouncedSave('customClasses', classes);
     });
@@ -1305,7 +1822,7 @@ class ContentManager {
     // Find which column contains this divider
     let foundColumn = null;
     let foundDivider = null;
-    
+
     for (const column of this.data.columns) {
       if (column.items) {
         const divider = column.items.find(i => i.id === dividerId && i.type === 'divider');
@@ -1347,7 +1864,7 @@ class ContentManager {
   async deleteDivider(dividerId) {
     // Check if this is a temporary divider
     const isTemporary = dividerId.startsWith('temp_');
-    
+
     if (isTemporary) {
       // For temporary dividers, just remove from local data
       this.removeTemporaryDivider(dividerId);
@@ -1368,7 +1885,7 @@ class ContentManager {
       if (foundColumn) {
         // Remove from local data
         foundColumn.items = foundColumn.items.filter(i => i.id !== dividerId);
-        
+
         // Update the DOM
         this.updateColumnDOM(foundColumn);
         this.markDirty();
@@ -1478,58 +1995,82 @@ class ContentManager {
     // Store current accordion state
     const wasExpanded = columnEl.classList.contains('expanded');
 
-    // Store expanded states of all items before clearing
-    const itemStates = new Map();
-    const existingItems = columnEl.querySelectorAll('.link-item, .divider-item');
-    existingItems.forEach(item => {
-      const itemId = item.dataset.linkId || item.dataset.dividerId;
-      if (itemId) {
-        itemStates.set(itemId, item.classList.contains('expanded'));
+    // Store expanded states of all groups and links before clearing
+    const groupStates = new Map();
+    const linkStates = new Map();
+
+    const existingGroups = columnEl.querySelectorAll('.group-item');
+    existingGroups.forEach(groupEl => {
+      const groupId = groupEl.dataset.groupId;
+      if (groupId) {
+        groupStates.set(groupId, groupEl.classList.contains('expanded'));
+
+        // Store link states within this group
+        const existingLinks = groupEl.querySelectorAll('.link-item');
+        existingLinks.forEach(linkEl => {
+          const linkId = linkEl.dataset.linkId;
+          if (linkId) {
+            linkStates.set(linkId, linkEl.classList.contains('expanded'));
+          }
+        });
       }
     });
 
-    // Update column link count
+    // Update column count
     const linkCount = columnEl.querySelector('.column-link-count');
     if (linkCount) {
-      const itemCount = column.items ? column.items.length : 0;
-      const linkItemCount = column.items ? column.items.filter(item => item.type === 'link').length : 0;
-      const dividerCount = column.items ? column.items.filter(item => item.type === 'divider').length : 0;
-      
-      if (dividerCount > 0) {
-        linkCount.textContent = `(${linkItemCount} links, ${dividerCount} dividers)`;
-      } else {
-        linkCount.textContent = `(${linkItemCount} links)`;
+      const groupCount = column.groups ? column.groups.length : 0;
+      let totalLinks = 0;
+      if (column.groups) {
+        column.groups.forEach(group => {
+          totalLinks += (group.links ? group.links.length : 0);
+        });
       }
+
+      linkCount.textContent = `(${groupCount} groups, ${totalLinks} links)`;
     }
 
-    // Update links section
-    const linksList = columnEl.querySelector('.links-list');
-    const emptyPlaceholder = columnEl.querySelector('.empty-links-placeholder');
-    const addLinkSection = columnEl.querySelector('.add-link-section');
+    // Update groups section
+    const groupsList = columnEl.querySelector('.groups-list');
+    const emptyPlaceholder = columnEl.querySelector('.empty-groups-placeholder');
+    const addGroupSection = columnEl.querySelector('.add-group-section');
 
-    // Clear existing links
-    linksList.innerHTML = '';
+    // Clear existing groups
+    groupsList.innerHTML = '';
 
-    // Ensure column has items array
-    if (!column.items) column.items = [];
-    
-    if (column.items.length === 0) {
+    // Ensure column has groups array
+    if (!column.groups) column.groups = [];
+
+    if (column.groups.length === 0) {
       emptyPlaceholder.style.display = 'block';
-      addLinkSection.style.display = 'none';
+      addGroupSection.style.display = 'none';
     } else {
       emptyPlaceholder.style.display = 'none';
-      addLinkSection.style.display = 'block';
-      
-      // Re-render items (links and dividers)
-      column.items.forEach((item, itemIndex) => {
-        const itemElement = this.createItemOptionsElement(item, itemIndex);
-        linksList.appendChild(itemElement);
-        
-        // Restore previous expanded state if it existed
-        if (itemStates.has(item.id) && itemStates.get(item.id)) {
-          itemElement.classList.remove('collapsed');
-          itemElement.classList.add('expanded');
+      addGroupSection.style.display = 'block';
+
+      // Re-render groups
+      column.groups.forEach((group, groupIndex) => {
+        const groupElement = this.createGroupOptionsElement(group, column.id, groupIndex);
+        groupsList.appendChild(groupElement);
+
+        // Restore previous expanded state for group if it existed
+        if (groupStates.has(group.id) && groupStates.get(group.id)) {
+          const groupDiv = groupElement.querySelector('.group-item');
+          if (groupDiv) {
+            groupDiv.classList.remove('collapsed');
+            groupDiv.classList.add('expanded');
+          }
         }
+
+        // Restore link states
+        const linkElements = groupElement.querySelectorAll('.link-item');
+        linkElements.forEach(linkEl => {
+          const linkId = linkEl.dataset.linkId;
+          if (linkStates.has(linkId) && linkStates.get(linkId)) {
+            linkEl.classList.remove('collapsed');
+            linkEl.classList.add('expanded');
+          }
+        });
       });
     }
 
@@ -1539,8 +2080,8 @@ class ContentManager {
       columnEl.classList.remove('collapsed');
     }
 
-    // Setup drag and drop for links
-    this.setupItemDragDrop(linksList);
+    // Setup drag and drop for groups
+    this.setupGroupDragDrop(groupsList);
   }
 
   /**
@@ -1613,11 +2154,15 @@ class ContentManager {
   removeTemporaryLink(tempLinkId) {
     // Remove from data
     for (const column of this.data.columns) {
-      const itemIndex = column.items ? column.items.findIndex(i => i.id === tempLinkId) : -1;
-      if (itemIndex !== -1) {
-        column.items.splice(itemIndex, 1);
-        this.updateColumnDOM(column);
-        break;
+      if (column.groups) {
+        for (const group of column.groups) {
+          const linkIndex = group.links ? group.links.findIndex(l => l.id === tempLinkId) : -1;
+          if (linkIndex !== -1) {
+            group.links.splice(linkIndex, 1);
+            this.updateColumnDOM(column);
+            return;
+          }
+        }
       }
     }
   }
@@ -1671,7 +2216,7 @@ class ContentManager {
     advancedToggle.addEventListener('change', async () => {
       this.data.showAdvancedOptions = advancedToggle.checked;
       this.updateAdvancedOptionsVisibility();
-      
+
       // Save this setting directly without triggering auto-save/dirty tracking
       await SettingsManager.updateAdvancedOptionsVisibility(advancedToggle.checked);
     });
@@ -1686,7 +2231,7 @@ class ContentManager {
   updateAdvancedOptionsVisibility() {
     const isVisible = this.data.showAdvancedOptions;
     const advancedFields = document.querySelectorAll('.advanced-field');
-    
+
     advancedFields.forEach(field => {
       field.style.display = isVisible ? 'flex' : 'none';
     });

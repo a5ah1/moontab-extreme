@@ -1,5 +1,5 @@
 /**
- * CSS Editor Manager - Link Stacker Options
+ * CSS Editor Manager - Moontab Extreme Options
  * Manages all CSS editors (custom, light, dark, browser)
  */
 

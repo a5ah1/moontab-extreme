@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Link Stacker Settings</title>
+  <title>Moontab Extreme Settings</title>
   <link rel="stylesheet" href="vendor/animate/animate.min.css">
   <link rel="stylesheet" href="styles/options.css">
 </head>
@@ -14,8 +14,8 @@
   <header class="header">
     <div class="header-content">
       <h1>
-        <img src="assets/icons/icon48.png" alt="Link Stacker" width="24" height="24" class="header-icon">
-        Link Stacker Settings
+        <img src="assets/icons/icon48.png" alt="Moontab Extreme" width="24" height="24" class="header-icon">
+        Moontab Extreme Settings
       </h1>
       <div class="header-actions">
         <button id="open-new-tab-btn" class="btn btn-secondary">
@@ -571,6 +571,16 @@
                       </div>
                     </label>
                   </div>
+
+                  <div class="setting-group">
+                    <label class="setting-label">
+                      <input type="checkbox" id="show-group-headers-setting" checked>
+                      <div class="setting-content">
+                        <span class="setting-title">Group headings</span>
+                        <span class="setting-description">Display group titles within columns</span>
+                      </div>
+                    </label>
+                  </div>
                 </div>
               </div>
 
@@ -821,45 +831,29 @@
             <input type="text" class="column-custom-classes-input" placeholder="Custom CSS classes (space-separated)">
           </div>
         </div>
-        <div class="links-section">
-          <div class="links-list">
-            <!-- Links will be inserted here -->
+        <div class="groups-section">
+          <div class="groups-list">
+            <!-- Groups will be inserted here -->
           </div>
-          <div class="empty-links-placeholder">
-            <p>No items yet</p>
+          <div class="empty-groups-placeholder">
+            <p>No groups yet</p>
             <div class="empty-actions">
-              <button class="btn btn-secondary add-first-link-btn">
+              <button class="btn btn-secondary add-first-group-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
                   <path d="M5 12h14" />
                   <path d="M12 5v14" />
                 </svg>
-                Add first link
-              </button>
-              <button class="btn btn-tertiary add-first-divider-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-divide-icon lucide-divide">
-                  <circle cx="12" cy="6" r="1" />
-                  <line x1="5" x2="19" y1="12" y2="12" />
-                  <circle cx="12" cy="18" r="1" />
-                </svg>
-                Add divider
+                Add first group
               </button>
             </div>
           </div>
-          <div class="add-link-section">
-            <button class="btn btn-secondary btn-compact add-link-options-btn">
+          <div class="add-group-section">
+            <button class="btn btn-secondary btn-compact add-group-options-btn">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
                 <path d="M5 12h14" />
                 <path d="M12 5v14" />
               </svg>
-              Add link
-            </button>
-            <button class="btn btn-tertiary btn-compact add-divider-options-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-divide-icon lucide-divide">
-                <circle cx="12" cy="6" r="1" />
-                <line x1="5" x2="19" y1="12" y2="12" />
-                <circle cx="12" cy="18" r="1" />
-              </svg>
-              Add divider
+              Add group
             </button>
           </div>
         </div>
@@ -989,10 +983,10 @@
     </div>
   </template>
 
-  <template id="divider-options-template">
-    <div class="divider-item" data-divider-id="">
-      <div class="divider-header-bar" role="button" tabindex="0">
-        <div class="divider-handle-section">
+  <template id="group-options-template">
+    <div class="group-item" data-group-id="">
+      <div class="group-header-bar" role="button" tabindex="0">
+        <div class="group-handle-section">
           <div class="drag-handle" title="Drag to reorder">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grip-vertical-icon lucide-grip-vertical">
               <circle cx="9" cy="12" r="1" />
@@ -1009,14 +1003,21 @@
             </svg>
           </div>
         </div>
-        <div class="divider-preview">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">
-            <path d="M5 12h14" />
+        <div class="group-preview">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder">
+            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
           </svg>
-          <div class="divider-title-preview">New Divider</div>
+          <div class="group-title-preview">New Group</div>
+          <span class="group-link-count">(0 links)</span>
         </div>
-        <div class="divider-quick-actions">
-          <button class="btn-icon-round delete-divider-options-btn" title="Delete Divider" aria-label="Delete Divider">
+        <div class="group-quick-actions">
+          <button class="btn-icon-round add-link-to-group-btn" title="Add Link to Group" aria-label="Add Link to Group">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+          </button>
+          <button class="btn-icon-round delete-group-options-btn" title="Delete Group" aria-label="Delete Group">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
               <path d="M3 6h18" />
               <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
@@ -1025,9 +1026,9 @@
           </button>
         </div>
       </div>
-      <div class="divider-details">
+      <div class="group-details">
         <div class="form-row">
-          <input type="text" class="form-input divider-title-options-input" placeholder="Enter divider title (leave blank for a simple divider line)">
+          <input type="text" class="form-input group-title-options-input" placeholder="Group title (optional)">
         </div>
         <div class="form-row advanced-field" style="display: none;">
           <div class="input-with-icon">
@@ -1035,8 +1036,11 @@
               <path d="m16 18 6-6-6-6" />
               <path d="m8 6-6 6 6 6" />
             </svg>
-            <input type="text" class="divider-custom-classes-input" placeholder="Custom CSS classes (space-separated)">
+            <input type="text" class="group-custom-classes-input" placeholder="Custom CSS classes (space-separated)">
           </div>
+        </div>
+        <div class="group-links-list">
+          <!-- Links will be inserted here -->
         </div>
       </div>
     </div>

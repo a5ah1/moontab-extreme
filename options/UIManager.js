@@ -1,5 +1,5 @@
 /**
- * UI Manager - Link Stacker Options
+ * UI Manager - Moontab Extreme Options
  * Handles UI utilities, modals, status indicators, and user feedback
  */
 
@@ -61,7 +61,7 @@ class UIManager {
    */
   showModal(title, message, buttons = []) {
     const modal = this.createModal('confirm', { title, message });
-    
+
     if (buttons.length > 0) {
       const buttonContainer = modal.querySelector('.modal-footer');
       if (!buttonContainer) {
@@ -69,7 +69,7 @@ class UIManager {
         return modal;
       }
       buttonContainer.innerHTML = '';
-      
+
       buttons.forEach(btn => {
         const button = document.createElement('button');
         button.textContent = btn.text;
@@ -81,7 +81,7 @@ class UIManager {
         buttonContainer.appendChild(button);
       });
     }
-    
+
     return modal;
   }
 
@@ -189,13 +189,13 @@ class UIManager {
       columnsEl.textContent = importStats.columnsImported || 0;
       linksEl.textContent = importStats.linksImported || 0;
       settingsEl.textContent = importStats.settingsImported || 0;
-      
+
       // Show custom favicons if any were imported
       if (importStats.customFaviconsImported > 0) {
         customFaviconsStatEl.style.display = 'block';
         customFaviconsEl.textContent = importStats.customFaviconsImported;
       }
-      
+
       // Show background image if one was imported
       if (importStats.backgroundImageImported) {
         backgroundImageStatEl.style.display = 'block';
@@ -205,13 +205,13 @@ class UIManager {
       // Show favicon changes if any
       if (importStats.faviconUrlsKept > 0 || importStats.faviconUrlsRemoved > 0) {
         faviconChangesEl.style.display = 'block';
-        
+
         if (importStats.faviconUrlsKept > 0) {
           const keptItem = modal.querySelector('.favicon-item.kept');
           keptItem.style.display = 'block';
           faviconsKeptEl.textContent = importStats.faviconUrlsKept;
         }
-        
+
         if (importStats.faviconUrlsRemoved > 0) {
           const removedItem = modal.querySelector('.favicon-item.removed');
           removedItem.style.display = 'block';
@@ -247,15 +247,15 @@ class UIManager {
    */
   generateImportSummary(importStats) {
     const parts = [];
-    
+
     if (importStats.columnsImported > 0) {
       parts.push(`${importStats.columnsImported} column${importStats.columnsImported !== 1 ? 's' : ''}`);
     }
-    
+
     if (importStats.linksImported > 0) {
       parts.push(`${importStats.linksImported} link${importStats.linksImported !== 1 ? 's' : ''}`);
     }
-    
+
     if (importStats.settingsImported > 0) {
       parts.push(`${importStats.settingsImported} setting${importStats.settingsImported !== 1 ? 's' : ''}`);
     }
@@ -285,7 +285,7 @@ class UIManager {
    */
   toggleColumn(columnEl) {
     const isExpanded = columnEl.classList.contains('expanded');
-    
+
     if (isExpanded) {
       columnEl.classList.remove('expanded');
       columnEl.classList.add('collapsed');
@@ -300,7 +300,7 @@ class UIManager {
    */
   toggleLink(linkEl) {
     const isExpanded = linkEl.classList.contains('expanded');
-    
+
     if (isExpanded) {
       linkEl.classList.remove('expanded');
       linkEl.classList.add('collapsed');
@@ -381,14 +381,14 @@ class UIManager {
       // Create toast element
       const toast = document.createElement('div');
       toast.className = `toast toast-${type}`;
-      
+
       // Add icon based on type
       const icons = {
         success: '✅',
         error: '❌',
         info: 'ℹ️'
       };
-      
+
       toast.innerHTML = `
         <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
         <span class="toast-message">${message}</span>
@@ -417,7 +417,7 @@ class UIManager {
       }, duration);
 
       return toast;
-      
+
     } catch (error) {
       console.error('Toast creation failed:', error);
       // Fallback to console log
@@ -434,7 +434,7 @@ class UIManager {
     if (toast && toast.parentNode) {
       toast.classList.remove('toast-show');
       toast.classList.add('toast-hide');
-      
+
       setTimeout(() => {
         if (toast.parentNode) {
           toast.parentNode.removeChild(toast);
@@ -478,7 +478,7 @@ class UIManager {
   showSavingStatus() {
     const statusElements = [
       document.getElementById('save-status-content'),
-      document.getElementById('save-status-appearance'), 
+      document.getElementById('save-status-appearance'),
       document.getElementById('save-status-general')
     ];
 
@@ -487,7 +487,7 @@ class UIManager {
         status.className = 'save-status saving';
         const icon = status.querySelector('.save-icon');
         const text = status.querySelector('.save-text');
-        
+
         if (icon) {
           icon.innerHTML = `<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>`;
         }
@@ -513,7 +513,7 @@ class UIManager {
         status.className = 'save-status';
         const icon = status.querySelector('.save-icon');
         const text = status.querySelector('.save-text');
-        
+
         if (icon) {
           icon.innerHTML = `<polyline points="20,6 9,17 4,12"/>`;
         }
@@ -529,7 +529,7 @@ class UIManager {
    */
   showErrorStatus(error) {
     console.error('Save failed:', error);
-    
+
     const statusElements = [
       document.getElementById('save-status-content'),
       document.getElementById('save-status-appearance'),
@@ -541,7 +541,7 @@ class UIManager {
         status.className = 'save-status error';
         const icon = status.querySelector('.save-icon');
         const text = status.querySelector('.save-text');
-        
+
         if (icon) {
           icon.innerHTML = `<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>`;
         }

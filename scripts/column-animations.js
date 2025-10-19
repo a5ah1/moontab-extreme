@@ -1,10 +1,10 @@
 /**
- * Column Animations Manager - Link Stacker
+ * Column Animations Manager - Moontab Extreme
  * Handles optional CSS animations for columns using animate.css
  */
 
 class ColumnAnimationManager {
-  
+
   /**
    * Apply animations to columns based on settings
    * @param {HTMLElement[]} columns - Array of column elements
@@ -37,19 +37,19 @@ class ColumnAnimationManager {
     // Base animate.css classes
     column.classList.add('animate__animated');
     column.classList.add(`animate__${settings.columnAnimationStyle}`);
-    
+
     // Set duration based on settings
     const durationClass = this.getDurationClass(settings.columnAnimationDuration);
     if (durationClass) {
       column.classList.add(durationClass);
     }
-    
+
     // Calculate and apply delay
     const delay = this.calculateDelay(index, settings);
     if (delay > 0) {
       column.style.animationDelay = `${delay}s`;
     }
-    
+
     // Set custom duration if not using predefined classes
     if (!durationClass) {
       column.style.animationDuration = `${settings.columnAnimationDuration}s`;
@@ -64,11 +64,11 @@ class ColumnAnimationManager {
    */
   static calculateDelay(index, settings) {
     let delay = settings.columnAnimationDelay;
-    
+
     if (settings.columnAnimationMode === 'sequential') {
       delay += index * settings.columnAnimationStagger;
     }
-    
+
     return delay;
   }
 
@@ -83,7 +83,7 @@ class ColumnAnimationManager {
     if (duration <= 0.8) return 'animate__fast';
     if (duration <= 1.2) return 'animate__slow';
     if (duration <= 2.0) return 'animate__slower';
-    
+
     // For other durations, use custom CSS
     return null;
   }
@@ -105,7 +105,7 @@ class ColumnAnimationManager {
     columns.forEach(column => {
       // Remove animate.css classes
       column.classList.remove('animate__animated');
-      
+
       // Remove all animation style classes
       const animationClasses = [
         'animate__fadeIn', 'animate__bounceIn', 'animate__bounceInDown', 'animate__bounceInUp',
@@ -113,11 +113,11 @@ class ColumnAnimationManager {
         'animate__flipInY', 'animate__zoomIn', 'animate__faster',
         'animate__fast', 'animate__slow', 'animate__slower'
       ];
-      
+
       animationClasses.forEach(className => {
         column.classList.remove(className);
       });
-      
+
       // Remove inline styles
       column.style.animationDelay = '';
       column.style.animationDuration = '';

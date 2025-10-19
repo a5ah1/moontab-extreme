@@ -1,5 +1,5 @@
 /**
- * Animation Manager - Link Stacker Options
+ * Animation Manager - Moontab Extreme Options
  * Handles column animation configuration
  */
 

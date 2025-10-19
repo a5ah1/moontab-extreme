@@ -1,5 +1,5 @@
 /**
- * Appearance Manager - Link Stacker Options
+ * Appearance Manager - Moontab Extreme Options
  * Coordinates all appearance-related managers (themes, CSS, backgrounds, animations)
  */
 

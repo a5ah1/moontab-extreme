@@ -54,7 +54,7 @@
         <line x1="9" y1="9" x2="9" y2="15"></line>
         <line x1="15" y1="9" x2="15" y2="15"></line>
       </svg>
-      <h2>Welcome to Link Stacker!</h2>
+      <h2>Welcome to Moontab Extreme!</h2>
       <p>Open settings to create your first column and start organizing your links.</p>
       <button id="open-settings-btn" class="btn btn-primary">
         Open Settings
@@ -69,7 +69,18 @@
         <h3 class="column-title"></h3>
       </div>
 
-      <div class="links-container">
+      <div class="groups-container">
+        <!-- Groups will be inserted here -->
+      </div>
+    </div>
+  </template>
+
+  <template id="group-template">
+    <div class="group" data-group-id="">
+      <div class="group-header">
+        <h4 class="group-title"></h4>
+      </div>
+      <div class="group-links">
         <!-- Links will be inserted here -->
       </div>
     </div>
@@ -86,12 +97,6 @@
           <div class="link-url"></div>
         </div>
       </a>
-    </div>
-  </template>
-
-  <template id="divider-template">
-    <div class="divider-item" data-divider-id="">
-      <div class="divider-title"></div>
     </div>
   </template>
 
