@@ -2,7 +2,7 @@
 
 A privacy-focused, highly customizable new tab page for Chrome
 
-[![Version](https://img.shields.io/badge/version-0.4.0-blue.svg)](manifest.json)
+[![Version](https://img.shields.io/badge/version-0.4.2-blue.svg)](manifest.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
@@ -117,7 +117,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Claude** <noreply@anthropic.com> - AI assistant for development and documentation
 - **Grok** <grok@x.ai> - AI assistant for initial development work
-- **Public Domain Review** - for finding [the project's icon image](https://publicdomainreview.org/essay/stuffed-ox-dummy-tree-artificial-rock-deception-in-the-work-of-richard-and-cherry-kearton/)
 
 ## 🙏 Acknowledgments
 
