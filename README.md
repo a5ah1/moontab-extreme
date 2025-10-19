@@ -49,10 +49,6 @@ Bottom right: the Appearance panel in the options page.
 
 5. Open a new tab to see Moontab Extreme in action!
 
-### From Chrome Web Store
-
-[Install Moontab Extreme from the Chrome Web Store](https://chromewebstore.google.com/detail/moontab-extreme/peabiommmpphfnncadocemodpakhjlbg)
-
 ## 📖 Usage
 
 1. **Open a new tab** to see your Moontab Extreme dashboard
@@ -69,15 +65,36 @@ For detailed usage instructions, check the built-in help guide in the options pa
 
 ```
 moontab-extreme/
-├── newtab.html       # New tab page
-├── options.html      # Settings interface
-├── scripts/          # Core functionality
-│   ├── storage.js    # Data persistence
-│   ├── theme-manager.js
-│   └── utils.js
-├── styles/           # CSS files
-├── vendor/           # Third-party libraries
-└── manifest.json     # Extension configuration
+├── manifest.json           # Extension configuration
+├── newtab.html            # New tab page
+├── newtab.js              # New tab controller
+├── options.html           # Settings interface
+├── options.js             # Settings controller
+├── popup.html             # Extension popup
+├── popup.js               # Popup controller
+├── help.md                # Built-in help documentation
+├── options/               # Settings page managers
+│   ├── ContentManager.js  # Columns, groups, links CRUD
+│   ├── AppearanceManager.js
+│   ├── GeneralManager.js
+│   ├── DataManager.js     # Import/export
+│   └── [8+ other managers]
+├── scripts/               # Core utilities
+│   ├── storage.js         # Data persistence
+│   ├── theme-manager.js   # Theme system
+│   ├── drag-scroll.js     # Scrolling behavior
+│   └── utils.js           # Validation & helpers
+├── styles/                # CSS files
+│   ├── skeleton.css       # Layout structure
+│   ├── newtab.css         # New tab styling
+│   └── options.css        # Settings styling
+├── vendor/                # Third-party libraries
+│   ├── sortable/          # SortableJS
+│   ├── ace/               # Ace Editor
+│   ├── marked/            # Markdown parser
+│   └── jszip/             # ZIP handling
+├── assets/icons/          # Extension icons
+└── screenshots/           # Project screenshots
 ```
 
 ### Technologies
