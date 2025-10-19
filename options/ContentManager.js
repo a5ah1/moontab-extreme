@@ -274,17 +274,8 @@ class ContentManager {
     // Setup form handlers with debounced saving
     this.setupGroupFormHandlers(group, groupEl, titlePreview, linkCount);
 
-    // Setup group actions
-    const addLinkBtn = groupEl.querySelector('.add-link-to-group-btn');
-    const deleteBtn = groupEl.querySelector('.delete-group-options-btn');
-
-    addLinkBtn.addEventListener('click', () => {
-      this.addLinkToGroup(group.id);
-    });
-
-    deleteBtn.addEventListener('click', () => {
-      this.confirmDeleteGroup(group.id, group.title || 'Untitled Group');
-    });
+    // Setup group action buttons
+    this.setupGroupActions(groupEl, group);
 
     // Render links within group
     const linksList = groupEl.querySelector('.group-links-list');
@@ -371,72 +362,26 @@ class ContentManager {
     // Set initial favicon mode UI state
     this.linkProcessor.updateFaviconModeUI(linkEl, link);
 
-    // Setup refresh button
-    const refreshBtn = linkEl.querySelector('.refresh-link-btn');
-    refreshBtn.addEventListener('click', async () => {
-      if (link.url && this.linkProcessor.isValidUrl(link.url)) {
-        await this.linkProcessor.fetchPageTitleAndIcon(link, titleInput, titlePreview, iconPreview, linkEl);
-      }
-    });
-
-    // Setup delete button
-    const deleteBtn = linkEl.querySelector('.delete-link-options-btn');
-    deleteBtn.addEventListener('click', () => {
-      this.confirmDeleteLink(link.id, link.title || this.linkProcessor.extractDomainFromUrl(link.url));
-    });
-
-    // Initialize favicon mode UI
-    this.linkProcessor.updateFaviconModeUI(linkEl, link);
+    // Setup link action buttons
+    this.setupLinkActions(linkEl, link, titleInput, titlePreview, iconPreview);
 
     return linkEl;
   }
 
   /**
-   * Setup link form handlers with unified event system for both temporary and saved links
-   * This single method handles all link input events, eliminating the need for separate
-   * temporary vs saved link event handlers.
+   * Setup URL input handler for link form
+   * @private
    */
-  setupLinkFormHandlers(link, linkEl) {
-    const urlInput = linkEl.querySelector('.link-url-options-input');
-    const titleInput = linkEl.querySelector('.link-title-options-input');
-    const iconUrlInput = linkEl.querySelector('.icon-url-input');
-    const customClassesInput = linkEl.querySelector('.link-custom-classes-input');
-    const titlePreview = linkEl.querySelector('.link-title-preview');
-    const iconPreview = linkEl.querySelector('.link-icon-preview');
-
-    let domainFetchTimeout = null;
-    let saveTimeout = null;
-
-    // Helper function for debounced saving
-    // Works for both temporary (triggers conversion) and saved links (triggers storage update)
-    const debouncedSave = (property, value) => {
-      if (saveTimeout) {
-        clearTimeout(saveTimeout);
-      }
-
-      saveTimeout = setTimeout(() => {
-        // Update the link property
-        link[property] = value;
-
-        if (link.isTemporary) {
-          // For temporary links, trigger conversion to permanent
-          this.handleTemporaryLinkSave(link);
-        } else {
-          // For saved links, force update the property and trigger save
-          this.forceLinkPropertyUpdate(link.id, property, value);
-        }
-      }, 500);
-    };
-
+  setupUrlInputHandler(link, linkEl, urlInput, titleInput, titlePreview, iconPreview, timeouts, debouncedSave) {
     urlInput.addEventListener('input', async () => {
       const url = urlInput.value.trim();
 
       // Clear previous timeouts
-      if (domainFetchTimeout) {
-        clearTimeout(domainFetchTimeout);
+      if (timeouts.domainFetch) {
+        clearTimeout(timeouts.domainFetch);
       }
-      if (saveTimeout) {
-        clearTimeout(saveTimeout);
+      if (timeouts.save) {
+        clearTimeout(timeouts.save);
       }
 
       // Get status indicator elements
@@ -455,7 +400,7 @@ class ContentManager {
       // Validate URL and handle domain extraction
       if (url && this.linkProcessor.isValidUrl(url)) {
         // Debounce the domain extraction and icon preview (wait 500ms after user stops typing)
-        domainFetchTimeout = setTimeout(async () => {
+        timeouts.domainFetch = setTimeout(async () => {
           await this.linkProcessor.fetchPageTitleAndIcon(link, titleInput, titlePreview, iconPreview, linkEl);
         }, 500);
       }
@@ -463,7 +408,13 @@ class ContentManager {
       // Debounced save for both temporary and saved links
       debouncedSave('url', url);
     });
+  }
 
+  /**
+   * Setup title input handler for link form
+   * @private
+   */
+  setupTitleInputHandler(link, titleInput, titlePreview, debouncedSave) {
     titleInput.addEventListener('input', () => {
       const title = titleInput.value.trim();
 
@@ -476,7 +427,13 @@ class ContentManager {
       // Debounced save for both temporary and saved links
       debouncedSave('title', title);
     });
+  }
 
+  /**
+   * Setup icon URL input handler for link form
+   * @private
+   */
+  setupIconUrlInputHandler(link, linkEl, iconUrlInput, iconPreview, debouncedSave) {
     iconUrlInput.addEventListener('input', () => {
       const customDomain = iconUrlInput.value.trim();
       let newOverride = '';
@@ -504,33 +461,88 @@ class ContentManager {
       // Debounced save for both temporary and saved links
       debouncedSave('iconUrlOverride', newOverride);
     });
-
-    // Custom CSS classes input handling with validation
-    if (customClassesInput) {
-      // Set initial value
-      customClassesInput.value = link.customClasses || '';
-
-      customClassesInput.addEventListener('input', () => {
-        const classes = customClassesInput.value.trim();
-
-        // Validate CSS classes
-        const isValid = this.validateCssClasses(classes);
-
-        // Update visual feedback
-        if (isValid || classes === '') {
-          customClassesInput.classList.remove('invalid');
-        } else {
-          customClassesInput.classList.add('invalid');
-        }
-
-        // Update local link object immediately
-        link.customClasses = classes;
-
-        // Debounced save for both temporary and saved links
-        debouncedSave('customClasses', classes);
-      });
-    }
   }
+
+  /**
+   * Setup custom CSS classes input handler for link form
+   * @private
+   */
+  setupCustomClassesInputHandler(link, customClassesInput, debouncedSave) {
+    if (!customClassesInput) return;
+
+    // Set initial value
+    customClassesInput.value = link.customClasses || '';
+
+    customClassesInput.addEventListener('input', () => {
+      const classes = customClassesInput.value.trim();
+
+      // Validate CSS classes
+      const isValid = this.validateCssClasses(classes);
+
+      // Update visual feedback
+      if (isValid || classes === '') {
+        customClassesInput.classList.remove('invalid');
+      } else {
+        customClassesInput.classList.add('invalid');
+      }
+
+      // Update local link object immediately
+      link.customClasses = classes;
+
+      // Debounced save for both temporary and saved links
+      debouncedSave('customClasses', classes);
+    });
+  }
+
+  /**
+   * Setup link form handlers with unified event system for both temporary and saved links
+   * This orchestrator method sets up all link input handlers
+   */
+  setupLinkFormHandlers(link, linkEl) {
+    const urlInput = linkEl.querySelector('.link-url-options-input');
+    const titleInput = linkEl.querySelector('.link-title-options-input');
+    const iconUrlInput = linkEl.querySelector('.icon-url-input');
+    const customClassesInput = linkEl.querySelector('.link-custom-classes-input');
+    const titlePreview = linkEl.querySelector('.link-title-preview');
+    const iconPreview = linkEl.querySelector('.link-icon-preview');
+
+    // Shared timeout references for cleanup
+    const timeouts = {
+      domainFetch: null,
+      save: null
+    };
+
+    // Helper function for debounced saving
+    // Works for both temporary (triggers conversion) and saved links (triggers storage update)
+    const debouncedSave = (property, value) => {
+      if (timeouts.save) {
+        clearTimeout(timeouts.save);
+      }
+
+      timeouts.save = setTimeout(() => {
+        // Update the link property
+        link[property] = value;
+
+        if (link.isTemporary) {
+          // For temporary links, trigger conversion to permanent
+          this.handleTemporaryLinkSave(link);
+        } else {
+          // For saved links, force update the property and trigger save
+          this.forceLinkPropertyUpdate(link.id, property, value);
+        }
+      }, 500);
+    };
+
+    // Setup individual input handlers
+    this.setupUrlInputHandler(link, linkEl, urlInput, titleInput, titlePreview, iconPreview, timeouts, debouncedSave);
+    this.setupTitleInputHandler(link, titleInput, titlePreview, debouncedSave);
+    this.setupIconUrlInputHandler(link, linkEl, iconUrlInput, iconPreview, debouncedSave);
+    this.setupCustomClassesInputHandler(link, customClassesInput, debouncedSave);
+  }
+
+  // ===================================================================
+  // VALIDATION METHODS
+  // ===================================================================
 
   /**
    * Validate CSS class names
@@ -545,6 +557,30 @@ class ContentManager {
 
     return classArray.every(className => validClassRegex.test(className));
   }
+
+  /**
+   * Validate if a column can accept more groups
+   * @param {Object} column - Column data object
+   * @returns {boolean} True if can add more groups (limit: 50 groups per column)
+   */
+  validateGroupCount(column) {
+    const currentCount = column.groups ? column.groups.length : 0;
+    return currentCount < 50;
+  }
+
+  /**
+   * Validate if a group can accept more links
+   * @param {Object} group - Group data object
+   * @returns {boolean} True if can add more links (limit: 200 links per group)
+   */
+  validateLinkCount(group) {
+    const currentCount = group.links ? group.links.length : 0;
+    return currentCount < 200;
+  }
+
+  // ===================================================================
+  // END VALIDATION METHODS
+  // ===================================================================
 
   /**
    * Setup favicon controls
@@ -645,6 +681,33 @@ class ContentManager {
   }
 
   /**
+   * Setup action buttons for a link (refresh, delete)
+   * @param {Element} linkEl - Link DOM element
+   * @param {Object} link - Link data object
+   * @param {Element} titleInput - Title input element
+   * @param {Element} titlePreview - Title preview element
+   * @param {Element} iconPreview - Icon preview element
+   */
+  setupLinkActions(linkEl, link, titleInput, titlePreview, iconPreview) {
+    const refreshBtn = linkEl.querySelector('.refresh-link-btn');
+    const deleteBtn = linkEl.querySelector('.delete-link-options-btn');
+
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', async () => {
+        if (link.url && this.linkProcessor.isValidUrl(link.url)) {
+          await this.linkProcessor.fetchPageTitleAndIcon(link, titleInput, titlePreview, iconPreview, linkEl);
+        }
+      });
+    }
+
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', () => {
+        this.confirmDeleteLink(link.id, link.title || this.linkProcessor.extractDomainFromUrl(link.url));
+      });
+    }
+  }
+
+  /**
    * Add new column - creates inline editing interface
    */
   async addColumn() {
@@ -709,6 +772,12 @@ class ContentManager {
       // Ensure column has groups array
       if (!column.groups) {
         column.groups = [];
+      }
+
+      // Validate group count limit (max 50 groups per column)
+      if (!this.validateGroupCount(column)) {
+        this.uiManager.showError('Cannot add more groups. Maximum 50 groups per column.');
+        return;
       }
 
       // Create temporary group with unique ID
@@ -819,45 +888,67 @@ class ContentManager {
   }
 
   /**
-   * Handle saving of temporary group
+   * Setup action buttons for a group (add link, delete)
+   * @param {Element} groupEl - Group DOM element
+   * @param {Object} group - Group data object
+   */
+  setupGroupActions(groupEl, group) {
+    const addLinkBtn = groupEl.querySelector('.add-link-to-group-btn');
+    const addLinkBottomBtn = groupEl.querySelector('.add-link-bottom-btn');
+    const deleteBtn = groupEl.querySelector('.delete-group-options-btn');
+
+    if (addLinkBtn) {
+      addLinkBtn.addEventListener('click', () => {
+        this.addLinkToGroup(group.id);
+      });
+    }
+
+    if (addLinkBottomBtn) {
+      addLinkBottomBtn.addEventListener('click', () => {
+        this.addLinkToGroup(group.id);
+      });
+    }
+
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', () => {
+        this.confirmDeleteGroup(group.id, group.title || 'Untitled Group');
+      });
+    }
+  }
+
+  /**
+   * Handle saving of temporary group - converts to permanent
+   * @param {Object} tempGroup - Temporary group to convert
    */
   async handleTemporaryGroupSave(tempGroup) {
     try {
+      // Store the old temporary ID
+      const oldTempId = tempGroup.id;
+
       // Find the column containing this temporary group
       let column = null;
       for (const col of this.data.columns) {
-        if (col.groups && col.groups.find(g => g.id === tempGroup.id)) {
+        if (col.groups && col.groups.find(g => g.id === oldTempId)) {
           column = col;
           break;
         }
       }
 
       if (!column) {
-        console.error('Column not found for temporary group:', tempGroup.id);
+        console.error('Column not found for temporary group:', oldTempId);
         return;
       }
 
-      // Locate the temp group element
-      const groupEl = document.querySelector(`[data-group-id="${tempGroup.id}"]`);
+      // Generate a permanent ID and update the group
+      const permanentId = generateUUID();
+      tempGroup.id = permanentId;
+      delete tempGroup.isTemporary;
 
-      // Create new permanent group with new ID
-      const savedGroup = {
-        id: generateUUID(),
-        title: tempGroup.title || '',
-        customClasses: tempGroup.customClasses || '',
-        links: tempGroup.links || []
-      };
-
-      // Replace temporary group with saved group in data
-      const tempIndex = column.groups.findIndex(g => g.id === tempGroup.id);
-      if (tempIndex !== -1) {
-        column.groups[tempIndex] = savedGroup;
-      }
-
-      // Update the DOM element in-place
+      // Update the DOM element's data attribute
+      const groupEl = document.querySelector(`[data-group-id="${oldTempId}"]`);
       if (groupEl) {
-        groupEl.dataset.groupId = savedGroup.id;
-        this.updateGroupEventListeners(groupEl, savedGroup);
+        groupEl.dataset.groupId = permanentId;
+        this.updateGroupEventListeners(groupEl, tempGroup);
       }
 
       this.markDirty();
@@ -869,29 +960,28 @@ class ContentManager {
   }
 
   /**
-   * Update event listeners for a saved group
+   * Update event listeners for a saved group (after temp group conversion)
    * @param {Element} groupEl - Group DOM element
    * @param {Object} savedGroup - Saved group data
    */
   updateGroupEventListeners(groupEl, savedGroup) {
-    const deleteBtn = groupEl.querySelector('.delete-group-options-btn');
-    const addLinkBtn = groupEl.querySelector('.add-link-to-group-btn');
+    // Remove old event listeners by cloning and replacing buttons
+    const buttonsToRefresh = [
+      '.delete-group-options-btn',
+      '.add-link-to-group-btn',
+      '.add-link-bottom-btn'
+    ];
 
-    if (deleteBtn) {
-      const newDeleteBtn = deleteBtn.cloneNode(true);
-      deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
-      newDeleteBtn.addEventListener('click', () => {
-        this.confirmDeleteGroup(savedGroup.id, savedGroup.title || 'Untitled Group');
-      });
-    }
+    buttonsToRefresh.forEach(selector => {
+      const btn = groupEl.querySelector(selector);
+      if (btn) {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+      }
+    });
 
-    if (addLinkBtn) {
-      const newAddLinkBtn = addLinkBtn.cloneNode(true);
-      addLinkBtn.parentNode.replaceChild(newAddLinkBtn, addLinkBtn);
-      newAddLinkBtn.addEventListener('click', () => {
-        this.addLinkToGroup(savedGroup.id);
-      });
-    }
+    // Re-attach event listeners using the centralized helper
+    this.setupGroupActions(groupEl, savedGroup);
   }
 
   /**
@@ -1028,6 +1118,12 @@ class ContentManager {
         group.links = [];
       }
 
+      // Validate link count limit (max 200 links per group)
+      if (!this.validateLinkCount(group)) {
+        this.uiManager.showError('Cannot add more links. Maximum 200 links per group.');
+        return;
+      }
+
       // Create temporary link with unique ID
       const tempLink = {
         type: 'link',
@@ -1075,53 +1171,6 @@ class ContentManager {
     }
   }
 
-  /**
-   * OLD DIVIDER METHOD - TO BE REMOVED
-   * Create divider options element
-   * @param {Object} divider - Divider data
-   * @param {number} index - Divider index
-   * @returns {Element} Divider element
-   */
-  createDividerOptionsElement(divider, index) {
-    const template = this.templates.dividerOptions.content.cloneNode(true);
-    const dividerEl = template.querySelector('.divider-item');
-
-    dividerEl.dataset.dividerId = divider.id;
-    dividerEl.dataset.index = index;
-
-    // Start collapsed by default
-    dividerEl.classList.add('collapsed');
-
-    // Set divider preview
-    const titlePreview = dividerEl.querySelector('.divider-title-preview');
-    titlePreview.textContent = divider.title || 'Divider';
-
-    // Setup accordion toggle
-    const headerBar = dividerEl.querySelector('.divider-header-bar');
-    headerBar.addEventListener('click', (e) => {
-      // Don't toggle when clicking on action buttons
-      if (e.target.closest('.divider-quick-actions')) return;
-      this.uiManager.toggleLink(dividerEl); // Reuse link toggle functionality
-    });
-
-    // Set form values
-    const titleInput = dividerEl.querySelector('.divider-title-options-input');
-    const customClassesInput = dividerEl.querySelector('.divider-custom-classes-input');
-
-    titleInput.value = divider.title || '';
-    customClassesInput.value = divider.customClasses || '';
-
-    // Setup form handlers with debounced saving
-    this.setupDividerFormHandlers(divider, dividerEl);
-
-    // Setup delete button
-    const deleteBtn = dividerEl.querySelector('.delete-divider-options-btn');
-    deleteBtn.addEventListener('click', () => {
-      this.confirmDeleteDivider(divider.id, divider.title || 'Untitled Divider');
-    });
-
-    return dividerEl;
-  }
 
   /**
    * Add link to column - creates inline editing interface
@@ -1188,67 +1237,6 @@ class ContentManager {
     }
   }
 
-  /**
-   * Add divider to column - creates inline editing interface
-   * @param {string} columnId - Column ID
-   */
-  async addDividerToColumn(columnId) {
-    try {
-      // Find the column
-      const column = this.data.columns.find(c => c.id === columnId);
-      if (!column) {
-        this.uiManager.showError('Column not found');
-        return;
-      }
-
-      // Ensure column has items array
-      if (!column.items) {
-        column.items = [];
-      }
-
-      // Create temporary divider with unique ID
-      const tempDivider = {
-        type: 'divider',
-        id: `temp_${Date.now()}`,
-        title: '',
-        customClasses: '',
-        isTemporary: true
-      };
-
-      // Add to local data temporarily
-      column.items.push(tempDivider);
-
-      // Update the column DOM to include the new divider
-      this.updateColumnDOM(column);
-
-      // Expand the column if it's collapsed
-      const columnEl = document.querySelector(`[data-column-id="${columnId}"]`);
-      if (columnEl && columnEl.classList.contains('collapsed')) {
-        this.uiManager.toggleColumn(columnEl);
-      }
-
-      // Find the new divider element and expand it for editing
-      const newDividerEl = document.querySelector(`[data-divider-id="${tempDivider.id}"]`);
-      if (newDividerEl) {
-        // Expand the divider for editing
-        newDividerEl.classList.remove('collapsed');
-        newDividerEl.classList.add('expanded');
-
-        // Focus on the title input
-        const titleInput = newDividerEl.querySelector('.divider-title-options-input');
-        if (titleInput) {
-          setTimeout(() => {
-            titleInput.focus();
-            titleInput.select();
-          }, 100);
-        }
-      }
-
-    } catch (error) {
-      console.error('Failed to add divider:', error);
-      this.uiManager.showError('Failed to add divider. Please try again.');
-    }
-  }
 
   /**
    * Update column name
@@ -1267,7 +1255,7 @@ class ContentManager {
 
       // If this is a temporary column, convert it to permanent
       if (column.isTemporary) {
-        this.convertTemporaryColumnToPermanent(column);
+        this.handleTemporaryColumnSave(column);
       } else {
         this.markDirty();
       }
@@ -1275,19 +1263,22 @@ class ContentManager {
   }
 
   /**
-   * Convert temporary column to permanent column
+   * Handle saving of temporary column - converts to permanent
    * @param {Object} column - Temporary column to convert
    */
-  async convertTemporaryColumnToPermanent(column) {
+  async handleTemporaryColumnSave(column) {
     try {
+      // Store the old temporary ID
+      const oldTempId = column.id;
+
       // Generate a permanent ID and update the column
       const permanentId = generateUUID();
       column.id = permanentId;
       delete column.isTemporary;
 
       // Find the DOM element and update its data attribute
-      const columnEl = document.querySelector(`[data-column-id^="temp_"]`);
-      if (columnEl && columnEl.dataset.columnId.startsWith('temp_')) {
+      const columnEl = document.querySelector(`[data-column-id="${oldTempId}"]`);
+      if (columnEl) {
         columnEl.dataset.columnId = permanentId;
 
         // Update event listeners to use new permanent ID
@@ -1298,10 +1289,10 @@ class ContentManager {
       this.updateColumnListVisibility();
       this.markDirty();
     } catch (error) {
-      console.error('Failed to convert temporary column:', error);
+      console.error('Failed to save temporary column:', error);
       this.uiManager.showError('Failed to save column. Please try again.');
       // Remove the temporary column on failure
-      this.deleteColumn(column.id);
+      this.removeTemporaryColumn(column.id);
     }
   }
 
@@ -1444,20 +1435,83 @@ class ContentManager {
 
   /**
    * Setup drag and drop for groups using SortableJS
+   * Supports both within-column reordering and cross-column moves
    * @param {Element} groupsList - Groups list container
    */
   setupGroupDragDrop(groupsList) {
     const self = this;
 
     new Sortable(groupsList, {
+      group: 'column-groups', // Enable cross-column dragging
       handle: '.drag-handle',
       animation: 150,
       ghostClass: 'sortable-ghost',
       chosenClass: 'sortable-chosen',
       dragClass: 'sortable-drag',
       draggable: '.group-item',
+      onStart: (evt) => {
+        // Add visual feedback to all potential drop zones
+        document.querySelectorAll('.groups-list').forEach(list => {
+          if (list !== evt.from) {
+            list.classList.add('sortable-drop-zone');
+          }
+        });
+      },
       onEnd: (evt) => {
-        if (evt.oldIndex !== evt.newIndex) {
+        // Remove visual feedback from all drop zones
+        document.querySelectorAll('.groups-list').forEach(list => {
+          list.classList.remove('sortable-drop-zone');
+        });
+
+        const groupElement = evt.item;
+        const groupId = groupElement.dataset.groupId;
+        const sourceColumnEl = evt.from.closest('.column-item');
+        const targetColumnEl = evt.to.closest('.column-item');
+        const sourceColumnId = sourceColumnEl?.dataset.columnId;
+        const targetColumnId = targetColumnEl?.dataset.columnId;
+
+        // Handle cross-column moves
+        if (sourceColumnId !== targetColumnId) {
+          try {
+            // Find source and target columns
+            const sourceColumn = self.data.columns.find(c => c.id === sourceColumnId);
+            const targetColumn = self.data.columns.find(c => c.id === targetColumnId);
+
+            if (sourceColumn && targetColumn) {
+              // Ensure both columns have groups arrays
+              if (!sourceColumn.groups) sourceColumn.groups = [];
+              if (!targetColumn.groups) targetColumn.groups = [];
+
+              // Validate target column group count limit (before adding)
+              if (targetColumn.groups.length >= 50) {
+                self.uiManager.showError('Cannot move group. Target column has reached maximum of 50 groups.');
+                // Revert DOM change by re-rendering
+                self.renderContentPanel();
+                return;
+              }
+
+              // Find and remove the group from source column
+              const groupIndex = sourceColumn.groups.findIndex(g => g.id === groupId);
+              if (groupIndex !== -1) {
+                const [movedGroup] = sourceColumn.groups.splice(groupIndex, 1);
+
+                // Insert at the new position in target column
+                const insertIndex = Math.min(evt.newIndex, targetColumn.groups.length);
+                targetColumn.groups.splice(insertIndex, 0, movedGroup);
+
+                // Update both column DOMs to reflect changes
+                self.updateColumnDOM(sourceColumn);
+                self.updateColumnDOM(targetColumn);
+                self.markDirty();
+              }
+            }
+          } catch (error) {
+            console.error('Failed to move group between columns:', error);
+            self.uiManager.showError('Failed to move group. Please try again.');
+            self.renderContentPanel();
+          }
+        } else if (evt.oldIndex !== evt.newIndex) {
+          // Handle within-column reordering
           const columnEl = groupsList.closest('.column-item');
           const columnId = columnEl.dataset.columnId;
           const column = self.data.columns.find(c => c.id === columnId);
@@ -1687,6 +1741,24 @@ class ContentManager {
   }
 
   /**
+   * Remove temporary column from DOM and data
+   * @param {string} columnId - Temporary column ID
+   */
+  removeTemporaryColumn(columnId) {
+    // Remove from DOM
+    const columnEl = document.querySelector(`[data-column-id="${columnId}"]`);
+    if (columnEl) {
+      columnEl.remove();
+    }
+
+    // Remove from local data
+    this.data.columns = this.data.columns.filter(c => c.id !== columnId);
+
+    // Update visibility state
+    this.updateColumnListVisibility();
+  }
+
+  /**
    * Confirm delete link
    * @param {string} linkId - Link ID
    * @param {string} linkTitle - Link title
@@ -1753,284 +1825,107 @@ class ContentManager {
     }
   }
 
+
+
+
+
+
+
+
   /**
-   * Setup divider form handlers with debounced saving
+   * Capture the current expanded/collapsed state of a column and its contents
+   * @param {Element} columnEl - Column DOM element
+   * @returns {Object} State object with column, group, and link states
    */
-  setupDividerFormHandlers(divider, dividerEl) {
-    const titleInput = dividerEl.querySelector('.divider-title-options-input');
-    const customClassesInput = dividerEl.querySelector('.divider-custom-classes-input');
-    const titlePreview = dividerEl.querySelector('.divider-title-preview');
-
-    let saveTimeout = null;
-
-    // Helper function for debounced saving with validation
-    const debouncedSave = (property, value) => {
-      if (saveTimeout) {
-        clearTimeout(saveTimeout);
-      }
-
-      saveTimeout = setTimeout(() => {
-        if (divider.isTemporary) {
-          // Convert temporary divider to permanent on first save
-          this.handleTemporaryDividerSave(divider);
-        } else {
-          // Force update the property and trigger save
-          this.forceDividerPropertyUpdate(divider.id, property, value);
-        }
-      }, 500);
+  captureColumnState(columnEl) {
+    const state = {
+      columnExpanded: columnEl.classList.contains('expanded'),
+      groupStates: new Map(),
+      linkStates: new Map()
     };
-
-    titleInput.addEventListener('input', () => {
-      const title = titleInput.value.trim();
-
-      // Update preview immediately
-      titlePreview.textContent = title || 'Divider';
-
-      // Update local data immediately
-      divider.title = title;
-
-      // Debounced save
-      debouncedSave('title', title);
-    });
-
-    customClassesInput.addEventListener('input', () => {
-      const classes = customClassesInput.value.trim();
-
-      // Validate CSS classes
-      if (classes && !this.validateCssClasses(classes)) {
-        customClassesInput.classList.add('invalid');
-        return;
-      } else {
-        customClassesInput.classList.remove('invalid');
-      }
-
-      // Update local data immediately
-      divider.customClasses = classes;
-
-      // Debounced save
-      debouncedSave('customClasses', classes);
-    });
-
-    // Show/hide advanced options
-    this.updateAdvancedOptionsVisibility();
-  }
-
-  /**
-   * Force update divider property and save
-   */
-  forceDividerPropertyUpdate(dividerId, property, value) {
-    // Find which column contains this divider
-    let foundColumn = null;
-    let foundDivider = null;
-
-    for (const column of this.data.columns) {
-      if (column.items) {
-        const divider = column.items.find(i => i.id === dividerId && i.type === 'divider');
-        if (divider) {
-          foundColumn = column;
-          foundDivider = divider;
-          break;
-        }
-      }
-    }
-
-    if (foundDivider) {
-      foundDivider[property] = value;
-      this.markDirty();
-    }
-  }
-
-  /**
-   * Confirm delete divider
-   */
-  confirmDeleteDivider(dividerId, dividerTitle) {
-    const modal = this.uiManager.createModal('confirm', {
-      title: 'Delete Divider',
-      message: `Are you sure you want to delete "${dividerTitle}"? This action cannot be undone.`
-    });
-
-    const confirmBtn = modal.querySelector('.modal-confirm-btn');
-    confirmBtn.addEventListener('click', async () => {
-      await this.deleteDivider(dividerId);
-      modal.remove();
-    });
-
-    document.body.appendChild(modal);
-  }
-
-  /**
-   * Delete divider
-   */
-  async deleteDivider(dividerId) {
-    // Check if this is a temporary divider
-    const isTemporary = dividerId.startsWith('temp_');
-
-    if (isTemporary) {
-      // For temporary dividers, just remove from local data
-      this.removeTemporaryDivider(dividerId);
-      return;
-    }
-
-    // For saved dividers, remove from local data and let auto-save handle storage
-    try {
-      // Find which column contains this divider
-      let foundColumn = null;
-      for (const column of this.data.columns) {
-        if (column.items && column.items.find(i => i.id === dividerId && i.type === 'divider')) {
-          foundColumn = column;
-          break;
-        }
-      }
-
-      if (foundColumn) {
-        // Remove from local data
-        foundColumn.items = foundColumn.items.filter(i => i.id !== dividerId);
-
-        // Update the DOM
-        this.updateColumnDOM(foundColumn);
-        this.markDirty();
-      }
-    } catch (error) {
-      console.error('Failed to delete divider:', error);
-      this.uiManager.showError('Failed to delete divider. Please try again.');
-    }
-  }
-
-  /**
-   * Remove temporary divider from DOM and data
-   */
-  removeTemporaryDivider(dividerId) {
-    // Remove from DOM
-    const dividerEl = document.querySelector(`[data-divider-id="${dividerId}"]`);
-    if (dividerEl) {
-      dividerEl.remove();
-    }
-
-    // Remove from local data
-    for (const column of this.data.columns) {
-      if (column.items) {
-        column.items = column.items.filter(i => i.id !== dividerId);
-      }
-    }
-
-    // Update visibility states
-    this.data.columns.forEach(column => {
-      this.updateColumnDOM(column);
-    });
-  }
-
-  /**
-   * Handle saving of temporary divider
-   */
-  async handleTemporaryDividerSave(tempDivider) {
-    try {
-      // Find the column containing this temporary divider
-      let column = null;
-      for (const col of this.data.columns) {
-        if (col.items && col.items.find(i => i.id === tempDivider.id)) {
-          column = col;
-          break;
-        }
-      }
-
-      if (!column) {
-        console.error('Column not found for temporary divider:', tempDivider.id);
-        return;
-      }
-
-      // Locate the temp divider element
-      const dividerEl = document.querySelector(`[data-divider-id="${tempDivider.id}"]`);
-
-      // Create new permanent divider with new ID
-      const savedDivider = {
-        type: 'divider',
-        id: generateUUID(),
-        title: tempDivider.title || '',
-        customClasses: tempDivider.customClasses || ''
-      };
-
-      // Replace temporary divider with saved divider in data
-      const tempIndex = column.items.findIndex(i => i.id === tempDivider.id);
-      if (tempIndex !== -1) {
-        column.items[tempIndex] = savedDivider;
-      }
-
-      // Update the DOM element in-place
-      if (dividerEl) {
-        dividerEl.dataset.dividerId = savedDivider.id;
-        this.updateDividerEventListeners(dividerEl, savedDivider);
-      }
-
-      this.markDirty();
-
-    } catch (error) {
-      console.error('Failed to save temporary divider:', error);
-      this.uiManager.showError('Failed to save divider. Please try again.');
-    }
-  }
-
-  /**
-   * Update event listeners for a saved divider
-   * @param {Element} dividerEl - Divider DOM element
-   * @param {Object} savedDivider - Saved divider data
-   */
-  updateDividerEventListeners(dividerEl, savedDivider) {
-    const deleteBtn = dividerEl.querySelector('.delete-divider-options-btn');
-    if (deleteBtn) {
-      const newDeleteBtn = deleteBtn.cloneNode(true);
-      deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
-      newDeleteBtn.addEventListener('click', () => {
-        this.confirmDeleteDivider(savedDivider.id, savedDivider.title || 'Untitled Divider');
-      });
-    }
-  }
-
-  /**
-   * Update a single column's DOM without affecting other accordion states
-   */
-  updateColumnDOM(column) {
-    const columnEl = document.querySelector(`[data-column-id="${column.id}"]`);
-    if (!columnEl) return;
-
-    // Store current accordion state
-    const wasExpanded = columnEl.classList.contains('expanded');
-
-    // Store expanded states of all groups and links before clearing
-    const groupStates = new Map();
-    const linkStates = new Map();
 
     const existingGroups = columnEl.querySelectorAll('.group-item');
     existingGroups.forEach(groupEl => {
       const groupId = groupEl.dataset.groupId;
       if (groupId) {
-        groupStates.set(groupId, groupEl.classList.contains('expanded'));
+        state.groupStates.set(groupId, groupEl.classList.contains('expanded'));
 
         // Store link states within this group
         const existingLinks = groupEl.querySelectorAll('.link-item');
         existingLinks.forEach(linkEl => {
           const linkId = linkEl.dataset.linkId;
           if (linkId) {
-            linkStates.set(linkId, linkEl.classList.contains('expanded'));
+            state.linkStates.set(linkId, linkEl.classList.contains('expanded'));
           }
         });
       }
     });
 
-    // Update column count
-    const linkCount = columnEl.querySelector('.column-link-count');
-    if (linkCount) {
-      const groupCount = column.groups ? column.groups.length : 0;
-      let totalLinks = 0;
-      if (column.groups) {
-        column.groups.forEach(group => {
-          totalLinks += (group.links ? group.links.length : 0);
-        });
-      }
+    return state;
+  }
 
-      linkCount.textContent = `(${groupCount} groups, ${totalLinks} links)`;
+  /**
+   * Restore the expanded/collapsed state of a column and its contents
+   * @param {Element} columnEl - Column DOM element
+   * @param {Object} state - State object from captureColumnState
+   * @param {Object} column - Column data object
+   */
+  restoreColumnState(columnEl, state, column) {
+    // Restore column accordion state
+    if (state.columnExpanded) {
+      columnEl.classList.add('expanded');
+      columnEl.classList.remove('collapsed');
     }
 
-    // Update groups section
+    // Restore group and link states
+    column.groups.forEach(group => {
+      const groupEl = columnEl.querySelector(`[data-group-id="${group.id}"]`);
+      if (groupEl) {
+        // Restore group expanded state
+        if (state.groupStates.has(group.id) && state.groupStates.get(group.id)) {
+          groupEl.classList.remove('collapsed');
+          groupEl.classList.add('expanded');
+        }
+
+        // Restore link states within this group
+        const linkElements = groupEl.querySelectorAll('.link-item');
+        linkElements.forEach(linkEl => {
+          const linkId = linkEl.dataset.linkId;
+          if (state.linkStates.has(linkId) && state.linkStates.get(linkId)) {
+            linkEl.classList.remove('collapsed');
+            linkEl.classList.add('expanded');
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Update column count display
+   * @param {Object} column - Column data object
+   * @param {Element} columnEl - Column DOM element
+   */
+  updateColumnCounts(column, columnEl) {
+    const linkCount = columnEl.querySelector('.column-link-count');
+    if (!linkCount) return;
+
+    const groupCount = column.groups ? column.groups.length : 0;
+    let totalLinks = 0;
+    if (column.groups) {
+      column.groups.forEach(group => {
+        totalLinks += (group.links ? group.links.length : 0);
+      });
+    }
+
+    linkCount.textContent = `(${groupCount} groups, ${totalLinks} links)`;
+  }
+
+  /**
+   * Render groups within a column and manage empty state visibility
+   * @param {Object} column - Column data object
+   * @param {Element} columnEl - Column DOM element
+   */
+  renderColumnGroups(column, columnEl) {
     const groupsList = columnEl.querySelector('.groups-list');
     const emptyPlaceholder = columnEl.querySelector('.empty-groups-placeholder');
     const addGroupSection = columnEl.querySelector('.add-group-section');
@@ -2052,50 +1947,52 @@ class ContentManager {
       column.groups.forEach((group, groupIndex) => {
         const groupElement = this.createGroupOptionsElement(group, column.id, groupIndex);
         groupsList.appendChild(groupElement);
-
-        // Restore previous expanded state for group if it existed
-        if (groupStates.has(group.id) && groupStates.get(group.id)) {
-          const groupDiv = groupElement.querySelector('.group-item');
-          if (groupDiv) {
-            groupDiv.classList.remove('collapsed');
-            groupDiv.classList.add('expanded');
-          }
-        }
-
-        // Restore link states
-        const linkElements = groupElement.querySelectorAll('.link-item');
-        linkElements.forEach(linkEl => {
-          const linkId = linkEl.dataset.linkId;
-          if (linkStates.has(linkId) && linkStates.get(linkId)) {
-            linkEl.classList.remove('collapsed');
-            linkEl.classList.add('expanded');
-          }
-        });
       });
     }
+  }
 
-    // Restore accordion state
-    if (wasExpanded) {
-      columnEl.classList.add('expanded');
-      columnEl.classList.remove('collapsed');
-    }
-
-    // Setup drag and drop for groups
+  /**
+   * Setup column interactions (drag-drop)
+   * @param {Element} columnEl - Column DOM element
+   */
+  setupColumnInteractions(columnEl) {
+    const groupsList = columnEl.querySelector('.groups-list');
     this.setupGroupDragDrop(groupsList);
   }
 
   /**
-   * Handle saving of temporary link
-   * Simplified: just converts the temporary link to permanent without replacing event listeners
+   * Update a single column's DOM without affecting other accordion states
+   * @param {Object} column - Column data object
+   */
+  updateColumnDOM(column) {
+    const columnEl = document.querySelector(`[data-column-id="${column.id}"]`);
+    if (!columnEl) return;
+
+    // Capture current state before making changes
+    const state = this.captureColumnState(columnEl);
+
+    // Update count display
+    this.updateColumnCounts(column, columnEl);
+
+    // Render groups and manage empty state
+    this.renderColumnGroups(column, columnEl);
+
+    // Restore previous accordion states
+    this.restoreColumnState(columnEl, state, column);
+
+    // Setup interactions
+    this.setupColumnInteractions(columnEl);
+  }
+
+  /**
+   * Handle saving of temporary link - converts to permanent
+   * @param {Object} tempLink - Temporary link to convert
    */
   async handleTemporaryLinkSave(tempLink) {
-    // Allow saving with empty URL (will show warning in UI)
-    // Allow saving with invalid URL (will show warning in UI)
-    // Only block saving if URL contains dangerous content
-
     const url = tempLink.url ? tempLink.url.trim() : '';
 
     // Check for dangerous URLs that should block saving
+    // Allow empty or invalid URLs (will show warning in UI)
     if (url && this.linkProcessor.isDangerousUrl(url)) {
       this.uiManager.showError('URL contains potentially dangerous content and cannot be saved.');
       this.removeTemporaryLink(tempLink.id);
@@ -2103,21 +2000,29 @@ class ContentManager {
     }
 
     try {
-      // Find the column containing this temporary link
-      let column = null;
+      // Store the old temporary ID
+      const oldTempId = tempLink.id;
+
+      // Find the group containing this temporary link
+      let foundGroup = null;
       for (const col of this.data.columns) {
-        if (col.items && col.items.find(i => i.id === tempLink.id)) {
-          column = col;
-          break;
+        if (col.groups) {
+          for (const group of col.groups) {
+            if (group.links && group.links.find(l => l.id === oldTempId)) {
+              foundGroup = group;
+              break;
+            }
+          }
+          if (foundGroup) break;
         }
       }
 
-      if (!column) return;
+      if (!foundGroup) {
+        console.error('Group not found for temporary link:', oldTempId);
+        return;
+      }
 
-      // Store the old temporary ID before changing it
-      const oldTempId = tempLink.id;
-
-      // Generate a permanent ID and convert the temporary link
+      // Generate a permanent ID and update the link
       const permanentId = generateUUID();
       tempLink.id = permanentId;
       delete tempLink.isTemporary;
@@ -2134,15 +2039,13 @@ class ContentManager {
       const linkEl = document.querySelector(`[data-link-id="${oldTempId}"]`);
       if (linkEl) {
         linkEl.dataset.linkId = permanentId;
-
-        // Update action buttons (delete and refresh) to use the new permanent ID
         this.updateActionButtonListeners(linkEl, tempLink);
       }
 
       this.markDirty();
 
     } catch (error) {
-      console.error('Failed to save link:', error);
+      console.error('Failed to save temporary link:', error);
       this.uiManager.showError('Failed to save link. Please try again.');
       this.removeTemporaryLink(tempLink.id);
     }
@@ -2168,38 +2071,30 @@ class ContentManager {
   }
 
   /**
-   * Update action button listeners for a saved link
+   * Update action button listeners for a saved link (after temp link conversion)
    * Only updates delete and refresh buttons - input handlers remain unchanged
    * since they work for both temporary and permanent links
    */
   updateActionButtonListeners(linkEl, savedLink) {
-    const deleteBtn = linkEl.querySelector('.delete-link-options-btn');
-    const refreshBtn = linkEl.querySelector('.refresh-link-btn');
+    // Remove old event listeners by cloning and replacing buttons
+    const buttonsToRefresh = [
+      '.delete-link-options-btn',
+      '.refresh-link-btn'
+    ];
 
-    if (deleteBtn) {
-      // Remove old event listener and add new one
-      const newDeleteBtn = deleteBtn.cloneNode(true);
-      deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+    buttonsToRefresh.forEach(selector => {
+      const btn = linkEl.querySelector(selector);
+      if (btn) {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+      }
+    });
 
-      newDeleteBtn.addEventListener('click', () => {
-        this.confirmDeleteLink(savedLink.id, savedLink.title || this.linkProcessor.extractDomainFromUrl(savedLink.url));
-      });
-    }
-
-    if (refreshBtn) {
-      // Remove old event listener and add new one
-      const newRefreshBtn = refreshBtn.cloneNode(true);
-      refreshBtn.parentNode.replaceChild(newRefreshBtn, refreshBtn);
-
-      newRefreshBtn.addEventListener('click', async () => {
-        if (savedLink.url && this.linkProcessor.isValidUrl(savedLink.url)) {
-          const titleInput = linkEl.querySelector('.link-title-options-input');
-          const titlePreview = linkEl.querySelector('.link-title-preview');
-          const iconPreview = linkEl.querySelector('.link-icon-preview');
-          await this.linkProcessor.fetchPageTitleAndIcon(savedLink, titleInput, titlePreview, iconPreview, linkEl);
-        }
-      });
-    }
+    // Re-attach event listeners using the centralized helper
+    const titleInput = linkEl.querySelector('.link-title-options-input');
+    const titlePreview = linkEl.querySelector('.link-title-preview');
+    const iconPreview = linkEl.querySelector('.link-icon-preview');
+    this.setupLinkActions(linkEl, savedLink, titleInput, titlePreview, iconPreview);
   }
 
   /**

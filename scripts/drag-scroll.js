@@ -188,8 +188,8 @@ class DragScroll {
    * @param {WheelEvent} e - Wheel event
    */
   handleWheel(e) {
-    // Check if we're over a scrollable links container
-    const linksContainer = e.target.closest('.links-container');
+    // Check if we're over a scrollable groups container
+    const linksContainer = e.target.closest('.groups-container');
 
     if (linksContainer) {
       // We're over a column's links - check if it needs vertical scrolling

@@ -7,6 +7,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.2] - 2025-10-19
+
+### Fixed
+- Fixed groups collapsing when deleting links from within them
+  - Groups now maintain their expanded/collapsed state when links are deleted
+  - Issue was caused by incorrect querySelector in state restoration logic (options/ContentManager.js:2057-2059)
+
+### Added
+- Added visible "Add link" button at bottom-right of each group
+  - Green button provides clear, accessible way to add links to groups
+  - Complements existing plus icon in group header
+  - Differentiates from blue "Add group" buttons through color and positioning
+- Added ability to drag groups between columns
+  - Groups can now be dragged from one column to another using the drag handle
+  - Visual feedback highlights valid drop zones during drag operations
+  - Validates target column doesn't exceed 50 group limit before allowing move
+  - Preserves group content (all links) during cross-column moves
+  - Auto-saves changes after successful move
+
+### Changed
+- Removed deprecated divider-related code (~200 lines removed from ContentManager.js)
+- Refactored state preservation logic into reusable helper methods
+  - Added `captureColumnState()` and `restoreColumnState()` methods
+  - Improved code maintainability and readability
+- Consolidated event listener setup into reusable methods
+  - Added `setupGroupActions()` for group button event listeners
+  - Added `setupLinkActions()` for link button event listeners
+  - Simplified `updateGroupEventListeners()` and `updateActionButtonListeners()` to use centralized helpers
+  - Eliminated duplicate event listener code throughout ContentManager.js
+- Standardized temporary item handling across all item types (columns, groups, links)
+  - Renamed `convertTemporaryColumnToPermanent()` to `handleTemporaryColumnSave()` for consistency
+  - Added `removeTemporaryColumn()` method for consistent temporary item removal
+  - All three `handleTemporarySave()` methods now follow the same pattern: store old ID → find parent → generate UUID → update data → update DOM → update listeners → mark dirty
+  - Improved code consistency and maintainability
+- Simplified DOM update methods for better code organization
+  - Extracted `updateColumnCounts()` from `updateColumnDOM()` - focused on count display only
+  - Extracted `renderColumnGroups()` from `updateColumnDOM()` - handles group rendering and empty state
+  - Extracted `setupColumnInteractions()` from `updateColumnDOM()` - handles drag-drop setup
+  - Main `updateColumnDOM()` method now orchestrates focused helper methods (easier to understand and maintain)
+- Organized and enhanced validation logic
+  - Grouped all validation methods together in dedicated section for better code organization
+  - Added `validateGroupCount()` to enforce 50 groups per column limit
+  - Added `validateLinkCount()` to enforce 200 links per group limit
+  - Applied validation checks when adding groups and links with user-friendly error messages
+  - Improved enforcement of architectural limits from CLAUDE.md specification
+- Reduced method length for better code maintainability
+  - Extracted `setupUrlInputHandler()` from `setupLinkFormHandlers()` - handles URL input events
+  - Extracted `setupTitleInputHandler()` from `setupLinkFormHandlers()` - handles title input events
+  - Extracted `setupIconUrlInputHandler()` from `setupLinkFormHandlers()` - handles icon URL input events
+  - Extracted `setupCustomClassesInputHandler()` from `setupLinkFormHandlers()` - handles CSS classes input events
+  - Reduced `setupLinkFormHandlers()` from 134 lines to 40-line orchestrator method
+  - Each handler now has focused, single responsibility (easier to understand and maintain)
+
+## [0.4.1] - 2025-10-19
+
+### Fixed
+- Fixed scroll wheel not working for vertical scrolling in columns with overflow
+  - Corrected CSS selector mismatch in drag-scroll wheel handler (was looking for `.links-container`, now correctly targets `.groups-container`)
+  - Users can now use scroll wheel to scroll vertically within columns that exceed viewport height
+  - Horizontal scrolling for board navigation continues to work as expected
+
 ## [0.4.0] - 2025-10-19
 
 ### Major Changes - New Group-Based Architecture
@@ -117,7 +178,9 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.1...v0.4.2
+[0.4.1]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.2.2...v0.2.3

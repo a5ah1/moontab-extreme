@@ -1357,6 +1357,26 @@ input.empty-warning {
   margin-top: 12px;
 }
 
+/* Add link section (within groups) */
+.add-link-section {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  margin-top: 12px;
+}
+
+/* Green button for add link */
+.add-link-section .btn-primary {
+  background: var(--success);
+  border-color: var(--success);
+  width: auto;
+}
+
+.add-link-section .btn-primary:hover {
+  background: color-mix(in srgb, var(--success) 85%, black);
+  border-color: color-mix(in srgb, var(--success) 85%, black);
+}
+
 .add-group-options-btn {
   background: var(--accent) !important;
   color: white !important;
@@ -2653,8 +2673,8 @@ input[type="checkbox"] {
 }
 
 .add-link-section .btn {
-  flex: 1;
-  min-width: 100px;
+  flex: 0 0 auto;
+  width: auto;
 }
 
 /* Help Panel Styles */
