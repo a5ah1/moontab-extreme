@@ -329,7 +329,7 @@ class NewTabApp {
   }
 
   /**
-   * Update visibility classes for icons and URLs
+   * Update visibility classes for icons, URLs, and column headers
    */
   updateVisibilityClasses() {
     const body = document.body;
@@ -346,6 +346,13 @@ class NewTabApp {
       body.classList.add('hide-urls');
     } else {
       body.classList.remove('hide-urls');
+    }
+
+    // Update column header visibility (for dynamic styling)
+    if (this.data.showColumnHeaders === false) {
+      body.classList.add('hide-column-headers');
+    } else {
+      body.classList.remove('hide-column-headers');
     }
   }
 

@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.3] - 2025-10-20
+
+### Changed
+- Removed deprecated "Dividers" section from CSS variables reference grid in options page
+  - Dividers were replaced by groups in v0.2.0 but documentation remained
+  - Cleaned up options.html CSS variables help template
+- Removed deprecated divider CSS variables from theme definitions
+  - Removed `--divider-border-color` and `--divider-radius` from light and dark themes
+  - Variables were unused after migration to group-based architecture
+- Hidden scrollbars while maintaining scroll functionality
+  - Horizontal scrollbar on board container now hidden
+  - Vertical scrollbar on groups container now hidden
+  - Mouse wheel, touchpad, and drag-scroll still work normally
+  - Creates cleaner, more immersive visual experience
+- Implemented dynamic styling system for column/group box appearance
+  - Groups now appear as visual boxes when column headers are hidden
+  - Box appearance (background, border, shadow) shifts from columns to groups dynamically
+  - Padding automatically adjusts between columns and groups based on header visibility
+  - Smooth transitions between states for polished UX
+  - State managed via `.hide-column-headers` class on body element
+
+### Added
+- Added comprehensive "Groups" section to CSS variables reference grid
+  - Documents all group-related CSS variables for user customization
+  - Includes 11 variables: background, hover, border, border-color, radius, padding, and title styling
+  - Positioned after Columns section for logical flow
+  - Enables advanced users to style groups independently
+- Added new CSS variables for dynamic styling system
+  - `--column-bg-hover-color`: Column background on hover (light: #e9ecef, dark: #3a3a3a)
+  - `--group-bg-hover-color`: Group background on hover (matches column hover colors)
+  - `--group-border-color`: Group border color (matches column border colors)
+  - `--groups-container-padding`: Dynamic padding for groups container (default: 8px scaled)
+  - `--group-padding-default`: Default padding for groups (default: 0)
+  - All new variables defined in both light and dark themes
+- Added state class management in newtab.js
+  - Body element gets `.hide-column-headers` class when column headers are hidden
+  - Enables CSS-based dynamic styling without JavaScript DOM manipulation
+  - Class automatically updated when settings change
+
+### Reviewed
+- Completed comprehensive HTML/CSS naming consistency audit (Phase 2)
+  - Reviewed all template structures in newtab.html and options.html
+  - Analyzed CSS class naming patterns across skeleton.css, newtab.css, and options.css
+  - Confirmed all naming follows consistent patterns within each context
+  - Different class names between view and edit contexts are intentional and appropriate
+  - Documented findings in `.claude/PHASE2-FINDINGS.md`
+  - No changes needed - current architecture is well-structured
+
 ## [0.4.2] - 2025-10-19
 
 ### Fixed
@@ -178,7 +226,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.2...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.3...HEAD
+[0.4.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.3.0...v0.4.0

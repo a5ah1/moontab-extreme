@@ -13,23 +13,9 @@ body {
   color: var(--text-primary);
 }
 
-/* Board container scrollbar styling */
+/* Board container scrollbar - hidden while maintaining scroll functionality */
 .board-container::-webkit-scrollbar {
-  height: 8px;
-}
-
-.board-container::-webkit-scrollbar-track {
-  background: var(--scrollbar-track-color);
-  border-radius: 4px;
-}
-
-.board-container::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb-color);
-  border-radius: 4px;
-}
-
-.board-container::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  display: none;
 }
 
 
@@ -66,18 +52,9 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Groups container scrollbar styling */
+/* Groups container scrollbar - hidden while maintaining scroll functionality */
 .groups-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.groups-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.groups-container::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb-color);
-  border-radius: 3px;
+  display: none;
 }
 
 /* Group styling */
@@ -85,7 +62,8 @@ body {
   background: var(--group-bg-color, transparent);
   border: var(--group-border, none);
   border-radius: var(--group-radius, 0);
-  padding: var(--group-padding, 0);
+  padding: var(--group-padding, var(--group-padding-default));
+  transition: all 0.2s ease;
 }
 
 /* Group header styling */
@@ -98,6 +76,30 @@ body {
   font-size: var(--group-title-size, calc(13rem / 16));
   font-weight: var(--group-title-weight, 600);
   text-transform: var(--group-title-transform, uppercase);
+}
+
+/* Dynamic styling: Switch box appearance from columns to groups when headers hidden */
+body.hide-column-headers .column {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+body.hide-column-headers .groups-container {
+  padding: 0;
+}
+
+body.hide-column-headers .group {
+  background: var(--group-bg-color, var(--column-bg-color));
+  border: 1px solid var(--group-border-color, var(--column-border-color));
+  border-radius: var(--group-radius, var(--column-radius));
+  padding: var(--group-padding, var(--groups-container-padding));
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+body.hide-column-headers .group:hover {
+  background: var(--group-bg-hover-color, var(--column-bg-hover-color, var(--column-bg-color)));
+  box-shadow: 0 4px 12px var(--shadow-hover);
 }
 
 /* Link card styling */

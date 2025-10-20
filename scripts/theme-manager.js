@@ -20,7 +20,9 @@ const THEMES = {
     '--text-muted': '#adb5bd',
     '--link-item-border-color': '#dee2e6',
     '--column-border-color': '#dee2e6',
-    '--divider-border-color': '#dee2e6',
+    '--column-bg-hover-color': '#e9ecef',
+    '--group-border-color': '#dee2e6',
+    '--group-bg-hover-color': '#e9ecef',
     '--shadow': 'rgba(0, 0, 0, 0.1)',
     '--shadow-hover': 'rgba(0, 0, 0, 0.15)',
     '--accent-color': '#0d6efd',
@@ -29,7 +31,6 @@ const THEMES = {
     '--scrollbar-track-color': '#f8f9fa',
     '--link-item-radius': '6px',
     '--column-radius': '8px',
-    '--divider-radius': '0px',
     '--base-font-size': '16px'
   },
 
@@ -42,7 +43,9 @@ const THEMES = {
     '--text-muted': '#666666',
     '--link-item-border-color': '#404040',
     '--column-border-color': '#404040',
-    '--divider-border-color': '#404040',
+    '--column-bg-hover-color': '#3a3a3a',
+    '--group-border-color': '#404040',
+    '--group-bg-hover-color': '#3a3a3a',
     '--shadow': 'rgba(0, 0, 0, 0.3)',
     '--shadow-hover': 'rgba(0, 0, 0, 0.4)',
     '--accent-color': '#4dabf7',
@@ -51,7 +54,6 @@ const THEMES = {
     '--scrollbar-track-color': '#2d2d2d',
     '--link-item-radius': '6px',
     '--column-radius': '8px',
-    '--divider-radius': '0px',
     '--base-font-size': '16px'
   }
 };
