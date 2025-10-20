@@ -72,7 +72,6 @@ class OptionsApp {
     this.templates.columnOptions = document.getElementById('column-options-template');
     this.templates.groupOptions = document.getElementById('group-options-template');
     this.templates.linkOptions = document.getElementById('link-options-template');
-    this.templates.dividerOptions = document.getElementById('divider-options-template');
     this.templates.previewModal = document.getElementById('preview-modal-template');
     this.templates.confirmModal = document.getElementById('confirm-modal-template');
     this.templates.importBackupModal = document.getElementById('import-backup-modal-template');

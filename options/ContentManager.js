@@ -1,7 +1,7 @@
 /**
  * Content Manager - Moontab Extreme Options
- * Handles all column and item operations: CRUD, drag/drop, temporary item handling
- * Supports both links and dividers
+ * Handles all column and group operations: CRUD, drag/drop, temporary item handling
+ * Manages the hierarchical structure of columns, groups, and links
  */
 
 class ContentManager {

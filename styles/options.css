@@ -2569,77 +2569,6 @@ input[type="checkbox"] {
   }
 }
 
-/* Divider options styling */
-.divider-item {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--bg-primary);
-  margin-top: 10px;
-  margin-bottom: 10px;
-  transition: all 0.2s ease;
-  overflow: hidden;
-}
-
-.divider-item.collapsed .divider-details {
-  display: none;
-}
-
-.divider-item.expanded .expand-chevron {
-  transform: rotate(180deg);
-}
-
-.divider-header-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.divider-header-bar:hover {
-  background: var(--bg-tertiary);
-}
-
-.divider-handle-section {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-muted);
-}
-
-.divider-preview {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-}
-
-.divider-title-preview {
-  font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.divider-quick-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.divider-details {
-  padding: 20px;
-  background: var(--bg-primary);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 /* Empty actions styling */
 .empty-actions {
   display: flex;
@@ -2651,19 +2580,6 @@ input[type="checkbox"] {
 .empty-actions .btn {
   flex: 1;
   min-width: 120px;
-}
-
-/* Button styling for divider buttons */
-.btn.btn-tertiary {
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
-
-.btn.btn-tertiary:hover {
-  background: var(--text-muted);
-  color: var(--bg-primary);
-  border-color: var(--text-muted);
 }
 
 .add-link-section {
