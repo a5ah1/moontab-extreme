@@ -4,9 +4,10 @@
  */
 
 class ThemeSelector {
-  constructor(data, markDirty) {
+  constructor(data, markDirty, onThemeChange = null) {
     this.data = data;
     this.markDirty = markDirty;
+    this.onThemeChange = onThemeChange;
   }
 
   /**
@@ -42,6 +43,11 @@ class ThemeSelector {
       this.data.theme = theme;
       this.updateThemeSectionVisibility();
       this.markDirty();
+
+      // Notify callback of theme change
+      if (this.onThemeChange) {
+        this.onThemeChange(theme);
+      }
 
     } catch (error) {
       console.error('Failed to update theme:', error);

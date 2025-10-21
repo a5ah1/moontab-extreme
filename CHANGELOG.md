@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.4] - 2025-10-20
+
+### Fixed
+- Fixed custom CSS editor not initializing when switching to Custom theme
+  - Custom CSS editor (Ace Editor) now initializes automatically when switching to Custom theme from another theme
+  - Previously required a page refresh to see the editor after switching to Custom theme
+  - Added theme change callback system between ThemeSelector and AppearanceManager (options/ThemeSelector.js:7, options/AppearanceManager.js:16-18, 39-44)
+
+### Changed
+- Improved dark theme contrast for better visual hierarchy
+  - Adjusted link card hover background: `#2d2d2d` → `#3b3b3b` (lighter, more visible)
+  - Adjusted column background: `#2d2d2d` → `#232323` (darker, creates separation)
+  - Adjusted column hover background: `#3a3a3a` → `#2a2a2a` (more subtle hover effect)
+  - Adjusted group hover background: `#3a3a3a` → `#2a2a2a` (matches column hover)
+  - Link cards now stand out more clearly against column/group backgrounds when hovered
+
 ## [0.4.3] - 2025-10-20
 
 ### Changed
@@ -226,7 +242,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.3...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.4...HEAD
+[0.4.4]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.3...v0.4.4
 [0.4.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.0...v0.4.1

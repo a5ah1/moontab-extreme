@@ -9,9 +9,14 @@ class AppearanceManager {
     this.uiManager = uiManager;
     this.markDirty = markDirty;
 
-    // Initialize sub-managers
-    this.themeSelector = new ThemeSelector(data, markDirty);
+    // Initialize CSS editor manager first (needed by theme selector callback)
     this.cssEditorManager = new CSSEditorManager(data, uiManager, markDirty);
+
+    // Initialize theme selector with callback to handle custom theme editor
+    this.themeSelector = new ThemeSelector(data, markDirty, (theme) => {
+      this.onThemeChanged(theme);
+    });
+
     this.backgroundManager = new BackgroundManager(data, uiManager, markDirty);
     this.animationManager = new AnimationManager(data, markDirty);
   }
@@ -25,6 +30,17 @@ class AppearanceManager {
     this.cssEditorManager.setup();
     this.backgroundManager.setup();
     this.animationManager.setup();
+  }
+
+  /**
+   * Handle theme changes
+   * @param {string} theme - New theme name
+   */
+  onThemeChanged(theme) {
+    // Initialize custom CSS editor when switching to custom theme
+    if (theme === 'custom' && !this.cssEditorManager.getEditor('custom')) {
+      setTimeout(() => this.cssEditorManager.initializeCustomEditor(), 100);
+    }
   }
 
   /**
