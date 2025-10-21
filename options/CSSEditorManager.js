@@ -12,6 +12,10 @@ class CSSEditorManager {
       custom: null,
       light: null,
       dark: null,
+      glassLight: null,
+      glassDark: null,
+      acrylicLight: null,
+      acrylicDark: null,
       browser: null
     };
     this.editorResizeObservers = [];
@@ -30,16 +34,27 @@ class CSSEditorManager {
    * Setup theme-specific CSS controls
    */
   setupThemeSpecificEditors() {
-    const themes = ['light', 'dark', 'browser'];
+    const themes = [
+      'light',
+      'dark',
+      'glass-light',
+      'glass-dark',
+      'acrylic-light',
+      'acrylic-dark',
+      'browser'
+    ];
 
     themes.forEach(theme => {
+      // Convert kebab-case to camelCase for data keys
+      const themeKey = theme.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+
       const checkbox = document.getElementById(`${theme}-css-enabled`);
       const controls = document.getElementById(`${theme}-css-controls`);
 
       if (!checkbox || !controls) return;
 
       // Set initial state
-      checkbox.checked = this.data[`${theme}CssEnabled`] || false;
+      checkbox.checked = this.data[`${themeKey}CssEnabled`] || false;
       controls.classList.toggle('show', checkbox.checked);
 
       // Handle checkbox changes
@@ -48,18 +63,18 @@ class CSSEditorManager {
         controls.classList.toggle('show', enabled);
 
         // Update data
-        this.data[`${theme}CssEnabled`] = enabled;
+        this.data[`${themeKey}CssEnabled`] = enabled;
         this.markDirty();
 
         // Initialize editor if enabled and not already created
-        if (enabled && !this.editors[theme]) {
-          setTimeout(() => this.initializeEditor(theme, `${theme}-css-editor`), 100);
+        if (enabled && !this.editors[themeKey]) {
+          setTimeout(() => this.initializeEditor(themeKey, `${theme}-css-editor`), 100);
         }
       });
 
       // Initialize editor if already enabled
       if (checkbox.checked) {
-        setTimeout(() => this.initializeEditor(theme, `${theme}-css-editor`), 100);
+        setTimeout(() => this.initializeEditor(themeKey, `${theme}-css-editor`), 100);
       }
     });
   }

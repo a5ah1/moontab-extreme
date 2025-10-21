@@ -13,16 +13,17 @@ class AppearanceManager {
     this.cssEditorManager = new CSSEditorManager(data, uiManager, markDirty);
 
     // Initialize theme selector with callback to handle custom theme editor
-    this.themeSelector = new ThemeSelector(data, markDirty, (theme) => {
-      this.onThemeChanged(theme);
+    this.themeSelector = new ThemeSelector(data, markDirty, (themeMode, selectedPreset) => {
+      this.onThemeChanged(themeMode, selectedPreset);
     });
 
     this.backgroundManager = new BackgroundManager(data, uiManager, markDirty);
     this.animationManager = new AnimationManager(data, markDirty);
+    this.displayScaleManager = new DisplayScaleManager(data, markDirty);
   }
 
   /**
-   * Setup appearance panel (themes, CSS, background, animations)
+   * Setup appearance panel (themes, CSS, background, animations, display scale)
    */
   setupAppearancePanel() {
     // Setup all sub-managers
@@ -30,15 +31,17 @@ class AppearanceManager {
     this.cssEditorManager.setup();
     this.backgroundManager.setup();
     this.animationManager.setup();
+    this.displayScaleManager.setup();
   }
 
   /**
    * Handle theme changes
-   * @param {string} theme - New theme name
+   * @param {string} themeMode - New theme mode (browser/preset/custom)
+   * @param {string} selectedPreset - Selected preset theme (if preset mode)
    */
-  onThemeChanged(theme) {
-    // Initialize custom CSS editor when switching to custom theme
-    if (theme === 'custom' && !this.cssEditorManager.getEditor('custom')) {
+  onThemeChanged(themeMode, selectedPreset) {
+    // Initialize custom CSS editor when switching to custom theme mode
+    if (themeMode === 'custom' && !this.cssEditorManager.getEditor('custom')) {
       setTimeout(() => this.cssEditorManager.initializeCustomEditor(), 100);
     }
   }
@@ -50,10 +53,10 @@ class AppearanceManager {
   onPanelSwitch(panelId) {
     // Initialize custom CSS editor if switching to appearance panel
     if (panelId === 'appearance') {
-      const currentTheme = this.themeSelector.getCurrentTheme();
+      const currentThemeMode = this.themeSelector.getCurrentThemeMode();
 
-      // Initialize custom CSS editor if custom theme is selected
-      if (currentTheme === 'custom' && !this.cssEditorManager.getEditor('custom')) {
+      // Initialize custom CSS editor if custom theme mode is selected
+      if (currentThemeMode === 'custom' && !this.cssEditorManager.getEditor('custom')) {
         setTimeout(() => this.cssEditorManager.initializeCustomEditor(), 100);
       }
     }

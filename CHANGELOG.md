@@ -7,6 +7,112 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-10-21
+
+### Added
+- **NEW: Hybrid Theme System** (In Progress - Backend Complete, UI Pending)
+  - Three theme modes: Browser (follows system), Preset Theme (dropdown), Custom CSS
+  - Six preset themes: Light, Dark, Glass Light, Glass Dark, Acrylic Light, Acrylic Dark
+  - Glass and Acrylic themes feature glassmorphism effects with backdrop blur and noise textures
+  - Per-theme CSS enhancement system: add custom CSS on top of any preset theme
+  - Preset themes support optional theme-specific CSS (variables + CSS for complex effects)
+- **NEW: Shine Effect**
+  - Subtle cursor-following glow effect on link cards and group elements
+  - Conditional rendering based on user setting and `prefers-reduced-motion`
+  - Available on all themes (Light, Dark, Browser, Glass, Acrylic), can be toggled globally
+  - Customizable via CSS variables: `--shine-color`, `--shine-opacity`, `--shine-size`, `--shine-blend-mode`, `--shine-internal`, `--shine-internal-opacity`
+  - Performance-optimized with CSS custom properties (`--mouse-x`, `--mouse-y`)
+  - Theme-appropriate colors (neutral grays for light themes, lighter grays for dark themes)
+  - Blend mode system allows darkening on light themes and lightening on dark themes
+  - Fixed positioning bug where shine tracked only with first group in container
+  - Shine effect properly contained within element boundaries via `overflow: hidden`
+- **NEW: Display Scale Settings** (Backend Ready, UI Pending)
+  - Base Font Size setting (12-24px, default 16px) - applies to all themes
+  - UI Scale setting (0.8-1.5, default 1.0) - scales all interface elements
+  - Addresses Chrome limitation: zoom unavailable on new tab pages
+  - Settings applied to `:root` before theme variables for consistency
+
+### Changed
+- **Theme System Architecture Refactored**
+  - Replaced `THEMES` with `PRESET_THEMES` registry including metadata
+  - Theme data structure: `{ name, category, description, supportsShineEffect, variables, css }`
+  - Themes grouped by category: "default" (Light/Dark), "modern" (Glass/Acrylic)
+  - Default theme changed from Light to Browser (follows system preference)
+  - Shine effect targets `.link-card` and `.group` elements (not columns)
+- **Storage Schema Enhanced**
+  - Added `themeMode` field: 'browser' | 'preset' | 'custom' (replaces legacy `theme` field)
+  - Added `selectedPresetTheme` field for preset mode selection
+  - Added `shineEffectEnabled`, `baseFontSize`, `uiScale` fields
+  - Added per-theme CSS fields for all 6 preset themes (e.g., `glassLightCss`, `acrylicDarkCss`)
+  - Import validation updated for new theme mode values
+- **ThemeManager Modernized**
+  - `init()` now takes full settings object instead of individual parameters
+  - Added `applyGlobalScaleSettings()` method for font size and UI scale
+  - Added `applyPresetTheme()` method (replaces `applyBuiltinTheme()`)
+  - Added `removePresetThemeCSS()` cleanup method
+  - Added `getPresetThemeMetadata()` and `getPresetThemesByCategory()` helpers
+  - Updated `applyBrowserTheme()` and `applyCustomTheme()` for new architecture
+  - `initializeTheming()` simplified to pass complete settings object
+- **SettingsManager Extended**
+  - Added `updateThemeMode()`, `updateSelectedPresetTheme()` methods
+  - Added `updateShineEffectEnabled()`, `updateBaseFontSize()`, `updateUiScale()` methods
+  - Removed legacy `updateTheme()` method (replaced by mode-based system)
+
+### Fixed
+- **Shine Effect Improvements**
+  - Fixed positioning bug where shine effect stayed on first group when hovering over subsequent groups
+  - Added `position: relative` and `overflow: hidden` to `.group` elements for proper pseudo-element positioning
+  - Shine effect now properly contained within element boundaries
+- **Column Minimum Height**
+  - Column minimum height now only applies to empty columns (no groups or only empty groups)
+  - Non-empty columns no longer have unnecessary minimum height constraint
+  - Added `empty-column` class detection in JavaScript for conditional styling
+
+### Technical Details
+- **Glassmorphism Implementation**
+  - Backdrop blur (12px) with saturation (140%) for depth
+  - Semi-transparent backgrounds (0.7 opacity) for see-through effect
+  - Browser fallbacks for non-supporting browsers (`@supports` queries)
+  - Z-index layering: content (z:1) > shine effect (z:2) > noise texture (z:0)
+- **Acrylic Material Implementation**
+  - Glass effect base + SVG noise texture overlay
+  - Noise generated via `feTurbulence` filter (fractal noise, 0.85 frequency, 3 octaves)
+  - Opacity tuned per theme: 0.12 (light), 0.15 (dark)
+  - Pointer events disabled on texture layer to preserve interactivity
+- **Shine Effect CSS Pattern**
+  - Uses `::before` pseudo-element for border glow on link cards and groups
+  - Additional `::after` pseudo-element for internal surface glow (all themes with shine support)
+  - Radial gradient follows cursor via CSS custom properties (`--mouse-x`, `--mouse-y`)
+  - Mask composite technique creates border-only effect on `::before`
+  - Conditional: only active when `body.shine-effect-enabled` class present
+  - Customizable via multiple CSS variables:
+    - `--shine-color`, `--shine-opacity`, `--shine-size` (border glow)
+    - `--shine-internal`, `--shine-internal-opacity`, `--shine-blend-mode` (internal glow)
+  - Blend mode system: `normal` for all themes, customizable for user CSS
+  - Internal shine uses black (0,0,0) on light themes for darkening effect
+  - Internal shine uses white (255,255,255) on dark themes for lightening effect
+  - Smooth transitions (0.3s ease) for opacity changes
+  - Applied to `.link-card` and `.group` elements only
+  - Requires `position: relative` and `overflow: hidden` on parent elements
+- **Architecture Preservation**
+  - Strict CSS cascade maintained: skeleton.css → theme variables → preset theme CSS → user CSS
+  - No build process - remains pure vanilla JavaScript/CSS
+  - All effects degradable: fallbacks for older browsers, respects accessibility preferences
+
+### Developer Notes
+- **Breaking Changes:** None (zero users, fresh start)
+- **Migration:** Not required (new architecture, no legacy data)
+- **Implementation Status:** Complete - all backend and frontend code implemented
+  - ✅ Storage schema updated with new theme system fields
+  - ✅ PRESET_THEMES registry with 6 themes (Light, Dark, Glass Light/Dark, Acrylic Light/Dark)
+  - ✅ ThemeManager refactored for hybrid mode system (browser/preset/custom)
+  - ✅ Appearance panel HTML with theme mode selector cards
+  - ✅ Display Scale settings (base font size, UI scale)
+  - ✅ Shine effect implemented on `.link-card` and `.group` elements
+  - ✅ Theme mode selector styling added (card-based layout)
+- **Testing Status:** Ready for manual testing in browser
+- **Reference:** See `.claude/TODO.md` for testing checklist
+
 ## [0.4.4] - 2025-10-20
 
 ### Fixed
@@ -242,7 +348,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.4...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.4...v0.5.0
 [0.4.4]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.3...v0.4.4
 [0.4.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.1...v0.4.2

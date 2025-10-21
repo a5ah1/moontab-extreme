@@ -377,7 +377,123 @@ label {
   min-height: 32px;
 }
 
-/* Theme selector */
+/* Theme mode selector (new hybrid system) */
+.theme-mode-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.theme-mode-option {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-mode-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.theme-mode-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.theme-mode-option:hover .theme-mode-content {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+.theme-mode-option input[type="radio"]:checked ~ .theme-mode-content {
+  border-color: var(--accent);
+  background: rgba(13, 110, 253, 0.05);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .theme-mode-option input[type="radio"]:checked ~ .theme-mode-content {
+    background: rgba(77, 171, 247, 0.1);
+    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.3);
+  }
+}
+
+.theme-mode-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-mode-header svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.theme-mode-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.theme-mode-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.theme-mode-current {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+/* Preset theme section */
+.preset-theme-section {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preset-theme-section label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.preset-theme-section select {
+  width: 100%;
+}
+
+.theme-description {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 4px 0 0 0;
+  font-style: italic;
+}
+
+/* Responsive theme mode selector */
+@media (max-width: 768px) {
+  .theme-mode-selector {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* OLD Theme selector (kept for reference/backwards compatibility) */
 .theme-selector {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

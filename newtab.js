@@ -42,15 +42,29 @@ class NewTabApp {
       if (isEmptyState) {
         // Empty state: force browser theme and bypass custom CSS
         this.themeManager = await initializeTheming({
-          theme: 'browser',
+          themeMode: 'browser',
+          selectedPresetTheme: 'light',
           customCss: '',
           // Theme-specific CSS disabled
           lightCss: '',
           lightCssEnabled: false,
           darkCss: '',
           darkCssEnabled: false,
+          glassLightCss: '',
+          glassLightCssEnabled: false,
+          glassDarkCss: '',
+          glassDarkCssEnabled: false,
+          acrylicLightCss: '',
+          acrylicLightCssEnabled: false,
+          acrylicDarkCss: '',
+          acrylicDarkCssEnabled: false,
           browserCss: '',
           browserCssEnabled: false,
+          // Display settings
+          shineEffectEnabled: this.data.shineEffectEnabled !== undefined ? this.data.shineEffectEnabled : true,
+          baseFontSize: this.data.baseFontSize || 16,
+          uiScale: this.data.uiScale || 1.0,
+          // Background settings
           backgroundDataUri: this.data.backgroundDataUri,
           backgroundSize: effectiveBackgroundSize,
           backgroundRepeat: this.data.backgroundRepeat,
@@ -60,15 +74,29 @@ class NewTabApp {
       } else {
         // Normal state: use user's theme settings
         this.themeManager = await initializeTheming({
-          theme: this.data.theme,
-          customCss: this.data.customCss,
+          themeMode: this.data.themeMode || 'browser',
+          selectedPresetTheme: this.data.selectedPresetTheme || 'light',
+          customCss: this.data.customCss || '',
           // Theme-specific CSS
-          lightCss: this.data.lightCss,
-          lightCssEnabled: this.data.lightCssEnabled,
-          darkCss: this.data.darkCss,
-          darkCssEnabled: this.data.darkCssEnabled,
-          browserCss: this.data.browserCss,
-          browserCssEnabled: this.data.browserCssEnabled,
+          lightCss: this.data.lightCss || '',
+          lightCssEnabled: this.data.lightCssEnabled || false,
+          darkCss: this.data.darkCss || '',
+          darkCssEnabled: this.data.darkCssEnabled || false,
+          glassLightCss: this.data.glassLightCss || '',
+          glassLightCssEnabled: this.data.glassLightCssEnabled || false,
+          glassDarkCss: this.data.glassDarkCss || '',
+          glassDarkCssEnabled: this.data.glassDarkCssEnabled || false,
+          acrylicLightCss: this.data.acrylicLightCss || '',
+          acrylicLightCssEnabled: this.data.acrylicLightCssEnabled || false,
+          acrylicDarkCss: this.data.acrylicDarkCss || '',
+          acrylicDarkCssEnabled: this.data.acrylicDarkCssEnabled || false,
+          browserCss: this.data.browserCss || '',
+          browserCssEnabled: this.data.browserCssEnabled || false,
+          // Display settings
+          revealHighlightEnabled: this.data.revealHighlightEnabled !== undefined ? this.data.revealHighlightEnabled : true,
+          baseFontSize: this.data.baseFontSize || 16,
+          uiScale: this.data.uiScale || 1.0,
+          // Background settings
           backgroundDataUri: this.data.backgroundDataUri,
           backgroundSize: effectiveBackgroundSize,
           backgroundRepeat: this.data.backgroundRepeat,
@@ -99,6 +127,9 @@ class NewTabApp {
       if (this.data.columnAnimationEnabled) {
         this.loadAndApplyAnimations();
       }
+
+      // Initialize shine effect if enabled
+      this.initializeShineEffect();
 
     } catch (error) {
       console.error('Failed to initialize new tab page:', error);
@@ -170,6 +201,13 @@ class NewTabApp {
 
     // Set column data
     columnEl.dataset.columnId = column.id;
+
+    // Check if column is empty (no groups or all groups are empty)
+    const isEmpty = !column.groups || column.groups.length === 0 ||
+                    column.groups.every(group => !group.links || group.links.length === 0);
+    if (isEmpty) {
+      columnEl.classList.add('empty-column');
+    }
 
     // Apply custom CSS classes if present and valid
     if (column.customClasses && typeof column.customClasses === 'string') {
@@ -555,6 +593,41 @@ class NewTabApp {
     if (typeof ColumnAnimationManager !== 'undefined') {
       ColumnAnimationManager.applyAnimations(Array.from(columns), animationSettings);
     }
+  }
+
+  /**
+   * Initialize shine effect
+   * Adds cursor-following glow effect to link cards and groups
+   */
+  initializeShineEffect() {
+    // Check if shine effect is enabled
+    const isEnabled = this.data.shineEffectEnabled !== undefined ? this.data.shineEffectEnabled : true;
+
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Only initialize if enabled and reduced motion is not preferred
+    if (!isEnabled || prefersReducedMotion) {
+      document.body.classList.remove('shine-effect-enabled');
+      return;
+    }
+
+    // Add class to body to enable shine effect CSS
+    document.body.classList.add('shine-effect-enabled');
+
+    // Track mouse position on link cards and groups
+    const elementsToTrack = document.querySelectorAll('.link-card, .group');
+
+    elementsToTrack.forEach(element => {
+      element.addEventListener('mousemove', (e) => {
+        const rect = element.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        element.style.setProperty('--mouse-x', `${x}px`);
+        element.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
   }
 }
 

@@ -128,15 +128,30 @@ const DEFAULT_DATA = {
       ]
     }
   ],
-  theme: 'browser',
-  customCss: '',
-  // Theme-specific CSS customization
+  // Theme system
+  themeMode: 'browser', // 'browser' | 'preset' | 'custom' - default follows system
+  selectedPresetTheme: 'light', // Used when themeMode === 'preset'
+  customCss: '', // Used when themeMode === 'custom'
+  // Per-theme CSS enhancements
   lightCss: '',
   lightCssEnabled: false,
   darkCss: '',
   darkCssEnabled: false,
+  glassLightCss: '',
+  glassLightCssEnabled: false,
+  glassDarkCss: '',
+  glassDarkCssEnabled: false,
+  acrylicLightCss: '',
+  acrylicLightCssEnabled: false,
+  acrylicDarkCss: '',
+  acrylicDarkCssEnabled: false,
   browserCss: '',
   browserCssEnabled: false,
+  // Display settings (apply to all themes)
+  shineEffectEnabled: true,
+  baseFontSize: 16,
+  uiScale: 1.0,
+  // Background settings
   backgroundDataUri: null,
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
@@ -249,15 +264,30 @@ class StorageManager {
       showAdvancedOptions: false,
       showIcons: true,
       showUrls: true,
-      theme: 'browser',
+      // Theme system
+      themeMode: 'browser',
+      selectedPresetTheme: 'light',
       customCss: '',
-      // Theme-specific CSS customization
+      // Per-theme CSS enhancements
       lightCss: '',
       lightCssEnabled: false,
       darkCss: '',
       darkCssEnabled: false,
+      glassLightCss: '',
+      glassLightCssEnabled: false,
+      glassDarkCss: '',
+      glassDarkCssEnabled: false,
+      acrylicLightCss: '',
+      acrylicLightCssEnabled: false,
+      acrylicDarkCss: '',
+      acrylicDarkCssEnabled: false,
       browserCss: '',
       browserCssEnabled: false,
+      // Display settings
+      shineEffectEnabled: true,
+      baseFontSize: 16,
+      uiScale: 1.0,
+      // Background settings
       backgroundDataUri: null,
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
@@ -370,9 +400,14 @@ class StorageManager {
       }
       console.log('🔍 Import Debug: Validation passed');
 
-      // Validate theme
-      if (data.theme && !['light', 'dark', 'custom', 'browser'].includes(data.theme)) {
-        throw new Error('Invalid theme specified');
+      // Validate theme mode
+      if (data.themeMode && !['browser', 'preset', 'custom'].includes(data.themeMode)) {
+        throw new Error('Invalid theme mode specified');
+      }
+
+      // Validate preset theme selection
+      if (data.selectedPresetTheme && !['light', 'dark', 'glassLight', 'glassDark', 'acrylicLight', 'acrylicDark'].includes(data.selectedPresetTheme)) {
+        throw new Error('Invalid preset theme specified');
       }
 
       // Validate background settings
@@ -754,13 +789,24 @@ class LinkManager {
 class SettingsManager {
 
   /**
-   * Update theme
-   * @param {string} theme - Theme name ('light', 'dark', 'custom')
+   * Update theme mode
+   * @param {string} themeMode - Theme mode ('browser', 'preset', 'custom')
    * @returns {Promise<void>}
    */
-  static async updateTheme(theme) {
+  static async updateThemeMode(themeMode) {
     const data = await StorageManager.load();
-    data.theme = theme;
+    data.themeMode = themeMode;
+    await StorageManager.save(data);
+  }
+
+  /**
+   * Update selected preset theme
+   * @param {string} presetTheme - Preset theme name
+   * @returns {Promise<void>}
+   */
+  static async updateSelectedPresetTheme(presetTheme) {
+    const data = await StorageManager.load();
+    data.selectedPresetTheme = presetTheme;
     await StorageManager.save(data);
   }
 
@@ -934,6 +980,39 @@ class SettingsManager {
   static async updateColumnAnimationStylesheetOnly(stylesheetOnly) {
     const data = await StorageManager.load();
     data.columnAnimationStylesheetOnly = stylesheetOnly;
+    await StorageManager.save(data);
+  }
+
+  /**
+   * Update shine effect enabled state
+   * @param {boolean} enabled - Whether shine effect is enabled
+   * @returns {Promise<void>}
+   */
+  static async updateShineEffectEnabled(enabled) {
+    const data = await StorageManager.load();
+    data.shineEffectEnabled = enabled;
+    await StorageManager.save(data);
+  }
+
+  /**
+   * Update base font size
+   * @param {number} size - Base font size in pixels
+   * @returns {Promise<void>}
+   */
+  static async updateBaseFontSize(size) {
+    const data = await StorageManager.load();
+    data.baseFontSize = size;
+    await StorageManager.save(data);
+  }
+
+  /**
+   * Update UI scale
+   * @param {number} scale - UI scale factor
+   * @returns {Promise<void>}
+   */
+  static async updateUiScale(scale) {
+    const data = await StorageManager.load();
+    data.uiScale = scale;
     await StorageManager.save(data);
   }
 }

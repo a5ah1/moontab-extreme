@@ -54,6 +54,14 @@ class GeneralManager {
     showGroupHeadersToggle.addEventListener('change', () => {
       this.updateGroupHeaderVisibility(showGroupHeadersToggle.checked);
     });
+
+    // Shine effect setting
+    const shineEffectToggle = document.getElementById('shine-effect-setting');
+    shineEffectToggle.checked = this.data.shineEffectEnabled !== undefined ? this.data.shineEffectEnabled : true;
+
+    shineEffectToggle.addEventListener('change', () => {
+      this.updateShineEffectEnabled(shineEffectToggle.checked);
+    });
   }
 
   /**
@@ -89,6 +97,15 @@ class GeneralManager {
    */
   updateGroupHeaderVisibility(showGroupHeaders) {
     this.data.showGroupHeaders = showGroupHeaders;
+    this.markDirty();
+  }
+
+  /**
+   * Update shine effect enabled setting
+   * @param {boolean} enabled - Whether shine effect is enabled
+   */
+  updateShineEffectEnabled(enabled) {
+    this.data.shineEffectEnabled = enabled;
     this.markDirty();
   }
 

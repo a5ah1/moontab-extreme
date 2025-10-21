@@ -66,11 +66,15 @@ body::-webkit-scrollbar {
   min-width: calc(300px * var(--ui-scale));
   max-width: calc(400px * var(--ui-scale));
   width: calc(320px * var(--ui-scale));
-  min-height: calc(200px * var(--ui-scale));
   display: flex;
   flex-direction: column;
   position: relative;
   cursor: default;
+}
+
+/* Minimum height only for empty columns */
+.column.empty-column {
+  min-height: calc(200px * var(--ui-scale));
 }
 
 /* Column header layout */
@@ -110,6 +114,8 @@ body::-webkit-scrollbar {
   display: flex;
   flex-direction: column;
   gap: calc(8px * var(--ui-scale));
+  position: relative;
+  overflow: hidden;
 }
 
 /* Group header layout */
