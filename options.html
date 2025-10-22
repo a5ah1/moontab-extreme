@@ -196,8 +196,9 @@
           <div class="section">
             <h3>Theme</h3>
 
-            <!-- Theme Mode Selector -->
-            <div class="theme-mode-selector">
+            <div class="section-card">
+              <!-- Theme Mode Selector -->
+              <div class="theme-mode-selector">
               <label class="theme-mode-option">
                 <input type="radio" name="themeMode" value="browser">
                 <div class="theme-mode-content">
@@ -270,6 +271,7 @@
               </select>
               <p class="theme-description" id="theme-description"></p>
             </div>
+            </div>
           </div>
 
 
@@ -282,17 +284,20 @@
                 <button id="css-reset-btn" class="btn btn-secondary">Reset</button>
               </div>
             </div>
-            <div class="css-editor-container">
-              <div id="css-editor" class="css-editor"></div>
+            <div class="section-card">
+              <div class="css-editor-container">
+                <div id="css-editor" class="css-editor"></div>
+              </div>
+              <!-- CSS variables help will be inserted here via template -->
             </div>
-            <!-- CSS variables help will be inserted here via template -->
           </div>
 
           <!-- Background section -->
           <div class="section">
             <h3>Background</h3>
 
-            <div class="background-layout">
+            <div class="section-card">
+              <div class="background-layout">
               <!-- Background Color -->
               <div class="form-group background-color-group">
                 <label>
@@ -387,6 +392,7 @@
                 </div>
               </div>
             </div>
+            </div>
           </div>
 
           <!-- Column Animations section -->
@@ -394,7 +400,8 @@
             <h3>Column Animations</h3>
             <p class="section-description">Add optional entrance animations to columns when the new tab page loads.</p>
 
-            <div class="form-group">
+            <div class="section-card">
+              <div class="form-group">
               <label>
                 <input type="checkbox" id="column-animation-enabled">
                 Enable Column Animations
@@ -470,6 +477,7 @@
                 <p class="form-help">Load only the animation stylesheet without applying programmatic animations. Allows advanced users to control animations via custom CSS classes.</p>
               </div>
             </div>
+            </div>
           </div>
 
           <!-- Display Scale section -->
@@ -477,7 +485,8 @@
             <h3>Display Scale</h3>
             <p class="section-description">Adjust the overall size of text and interface elements. These settings apply to all themes.</p>
 
-            <div class="scale-settings">
+            <div class="section-card">
+              <div class="scale-settings">
               <!-- Base Font Size -->
               <div class="form-group">
                 <label for="base-font-size">Base Font Size</label>
@@ -509,148 +518,12 @@
                 </svg>
                 <span>Changes apply in real-time. Open a new tab to see the effect.</span>
               </div>
+              </div>
             </div>
           </div>
 
-          <!-- Light Theme CSS Customization -->
-          <div id="light-theme-css-section" class="section hidden">
-            <div class="section-header">
-              <h3>Light Theme Customization</h3>
-            </div>
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="light-css-enabled">
-                Custom CSS for Light Theme
-              </label>
-              <p class="form-help">Add custom CSS to enhance the light theme</p>
-            </div>
-            <div id="light-css-controls" class="css-controls">
-              <div class="css-editor-container">
-                <div id="light-css-editor" class="css-editor"></div>
-              </div>
-              <!-- CSS variables help will be inserted here via template -->
-            </div>
-          </div>
-
-          <!-- Dark Theme CSS Customization -->
-          <div id="dark-theme-css-section" class="section hidden">
-            <div class="section-header">
-              <h3>Dark Theme Customization</h3>
-            </div>
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="dark-css-enabled">
-                Custom CSS for Dark Theme
-              </label>
-              <p class="form-help">Add custom CSS to enhance the dark theme</p>
-            </div>
-            <div id="dark-css-controls" class="css-controls">
-              <div class="css-editor-container">
-                <div id="dark-css-editor" class="css-editor"></div>
-              </div>
-              <!-- CSS variables help will be inserted here via template -->
-            </div>
-          </div>
-
-          <!-- Browser Theme CSS Customization -->
-          <div id="browser-theme-css-section" class="section hidden">
-            <div class="section-header">
-              <h3>Browser Theme Customization</h3>
-            </div>
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="browser-css-enabled">
-                Custom CSS for Browser Theme
-              </label>
-              <p class="form-help">Add custom CSS to enhance the browser theme (follows system preference)</p>
-            </div>
-            <div id="browser-css-controls" class="css-controls">
-              <div class="css-editor-container">
-                <div id="browser-css-editor" class="css-editor"></div>
-              </div>
-              <!-- CSS variables help will be inserted here via template -->
-            </div>
-          </div>
-
-          <!-- Glass Light Theme CSS Customization -->
-          <div id="glass-light-theme-css-section" class="section hidden">
-            <div class="section-header">
-              <h3>Glass Light Theme Customization</h3>
-            </div>
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="glass-light-css-enabled">
-                Custom CSS for Glass Light Theme
-              </label>
-              <p class="form-help">Add custom CSS to enhance the Glass Light theme</p>
-            </div>
-            <div id="glass-light-css-controls" class="css-controls">
-              <div class="css-editor-container">
-                <div id="glass-light-css-editor" class="css-editor"></div>
-              </div>
-              <!-- CSS variables help will be inserted here via template -->
-            </div>
-          </div>
-
-          <!-- Glass Dark Theme CSS Customization -->
-          <div id="glass-dark-theme-css-section" class="section hidden">
-            <div class="section-header">
-              <h3>Glass Dark Theme Customization</h3>
-            </div>
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="glass-dark-css-enabled">
-                Custom CSS for Glass Dark Theme
-              </label>
-              <p class="form-help">Add custom CSS to enhance the Glass Dark theme</p>
-            </div>
-            <div id="glass-dark-css-controls" class="css-controls">
-              <div class="css-editor-container">
-                <div id="glass-dark-css-editor" class="css-editor"></div>
-              </div>
-              <!-- CSS variables help will be inserted here via template -->
-            </div>
-          </div>
-
-          <!-- Acrylic Light Theme CSS Customization -->
-          <div id="acrylic-light-theme-css-section" class="section hidden">
-            <div class="section-header">
-              <h3>Acrylic Light Theme Customization</h3>
-            </div>
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="acrylic-light-css-enabled">
-                Custom CSS for Acrylic Light Theme
-              </label>
-              <p class="form-help">Add custom CSS to enhance the Acrylic Light theme</p>
-            </div>
-            <div id="acrylic-light-css-controls" class="css-controls">
-              <div class="css-editor-container">
-                <div id="acrylic-light-css-editor" class="css-editor"></div>
-              </div>
-              <!-- CSS variables help will be inserted here via template -->
-            </div>
-          </div>
-
-          <!-- Acrylic Dark Theme CSS Customization -->
-          <div id="acrylic-dark-theme-css-section" class="section hidden">
-            <div class="section-header">
-              <h3>Acrylic Dark Theme Customization</h3>
-            </div>
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="acrylic-dark-css-enabled">
-                Custom CSS for Acrylic Dark Theme
-              </label>
-              <p class="form-help">Add custom CSS to enhance the Acrylic Dark theme</p>
-            </div>
-            <div id="acrylic-dark-css-controls" class="css-controls">
-              <div class="css-editor-container">
-                <div id="acrylic-dark-css-editor" class="css-editor"></div>
-              </div>
-              <!-- CSS variables help will be inserted here via template -->
-            </div>
-          </div>
+          <!-- Theme-specific CSS Customization Sections (dynamically generated) -->
+          <div id="theme-css-sections-container"></div>
         </div>
       </div>
 
@@ -1395,6 +1268,28 @@
     </div>
   </template>
 
+  <!-- Theme CSS Section Template -->
+  <template id="theme-css-section-template">
+    <div class="section hidden" data-theme-id="">
+      <div class="section-header">
+        <h3 data-theme-name=""></h3>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" data-theme-checkbox="">
+          <span data-theme-label=""></span>
+        </label>
+        <p class="form-help" data-theme-help=""></p>
+      </div>
+      <div class="css-controls" data-theme-controls="">
+        <div class="css-editor-container">
+          <div class="css-editor" data-theme-editor=""></div>
+        </div>
+        <!-- CSS variables help will be inserted here via template -->
+      </div>
+    </div>
+  </template>
+
   <!-- Confirmation modal -->
   <template id="confirm-modal-template">
     <div class="modal-overlay">
@@ -1548,6 +1443,9 @@
   <script src="options/LinkProcessor.js"></script>
   <script src="options/ZipExportManager.js"></script>
   <script src="options/DataManager.js"></script>
+
+  <!-- Theme Configuration (loaded before appearance managers) -->
+  <script src="options/ThemeConfig.js"></script>
 
   <!-- Appearance Sub-Managers (loaded before AppearanceManager) -->
   <script src="options/ThemeSelector.js"></script>

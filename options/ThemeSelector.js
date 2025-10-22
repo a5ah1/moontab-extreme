@@ -1,6 +1,8 @@
 /**
  * Theme Selector - Moontab Extreme Options
  * Handles theme mode selection, preset theme dropdown, and theme-specific CSS section visibility
+ *
+ * Uses THEME_CONFIG for centralized theme configuration
  */
 
 class ThemeSelector {
@@ -8,16 +10,6 @@ class ThemeSelector {
     this.data = data;
     this.markDirty = markDirty;
     this.onThemeChange = onThemeChange;
-
-    // Theme metadata from PRESET_THEMES
-    this.themeMetadata = {
-      light: { name: 'Light', description: 'Clean, minimal light theme' },
-      dark: { name: 'Dark', description: 'Elegant dark theme' },
-      glassLight: { name: 'Glass Light', description: 'Glassmorphism with light colors and backdrop blur' },
-      glassDark: { name: 'Glass Dark', description: 'Glassmorphism with dark colors and backdrop blur' },
-      acrylicLight: { name: 'Acrylic Light', description: 'Glassmorphism with subtle noise texture' },
-      acrylicDark: { name: 'Acrylic Dark', description: 'Dark glassmorphism with subtle noise texture' }
-    };
   }
 
   /**
@@ -123,22 +115,24 @@ class ThemeSelector {
       customSection.classList.toggle('hidden', themeMode !== 'custom');
     }
 
-    // Show/hide theme-specific CSS sections
-    const themeCssSections = {
-      'light-theme-css-section': themeMode === 'preset' && selectedPreset === 'light',
-      'dark-theme-css-section': themeMode === 'preset' && selectedPreset === 'dark',
-      'glass-light-theme-css-section': themeMode === 'preset' && selectedPreset === 'glassLight',
-      'glass-dark-theme-css-section': themeMode === 'preset' && selectedPreset === 'glassDark',
-      'acrylic-light-theme-css-section': themeMode === 'preset' && selectedPreset === 'acrylicLight',
-      'acrylic-dark-theme-css-section': themeMode === 'preset' && selectedPreset === 'acrylicDark',
-      'browser-theme-css-section': themeMode === 'browser'
-    };
+    // Show/hide theme-specific CSS sections (dynamically generated)
+    if (!window.THEME_CONFIG) return;
 
-    Object.entries(themeCssSections).forEach(([sectionId, isVisible]) => {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.classList.toggle('hidden', !isVisible);
+    THEME_CONFIG.getCustomizableThemes().forEach(theme => {
+      const section = document.getElementById(`${theme.id}-theme-css-section`);
+      if (!section) return;
+
+      // Determine visibility based on theme mode
+      let isVisible = false;
+      if (theme.mode === 'browser') {
+        // Browser theme is visible when themeMode is 'browser'
+        isVisible = themeMode === 'browser';
+      } else if (theme.mode === 'preset') {
+        // Preset themes are visible when themeMode is 'preset' AND it's the selected theme
+        isVisible = themeMode === 'preset' && selectedPreset === theme.key;
       }
+
+      section.classList.toggle('hidden', !isVisible);
     });
   }
 
@@ -159,18 +153,18 @@ class ThemeSelector {
    */
   updateThemeDescription() {
     const descriptionEl = document.getElementById('theme-description');
-    if (descriptionEl) {
-      const themeMode = this.data.themeMode;
+    if (!descriptionEl) return;
 
-      if (themeMode === 'preset') {
-        const selectedPreset = this.data.selectedPresetTheme || 'light';
-        const metadata = this.themeMetadata[selectedPreset];
-        if (metadata) {
-          descriptionEl.textContent = metadata.description;
-        }
-      } else {
-        descriptionEl.textContent = '';
+    const themeMode = this.data.themeMode;
+
+    if (themeMode === 'preset' && window.THEME_CONFIG) {
+      const selectedPreset = this.data.selectedPresetTheme || 'light';
+      const theme = THEME_CONFIG.getThemeByKey(selectedPreset);
+      if (theme) {
+        descriptionEl.textContent = theme.description;
       }
+    } else {
+      descriptionEl.textContent = '';
     }
   }
 

@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2025-10-22
+
+### Changed
+- **Appearance Tab Layout Improvements**
+  - Added card-style visual containers (`.section-card`) for better section separation
+  - Sections now have subtle backgrounds, borders, and padding for clearer organization
+  - Redesigned section descriptions to look like helper text instead of alert messages
+  - Removed tertiary background and accent border from descriptions for cleaner appearance
+  - Display Scale settings now use two-column grid layout for more efficient space usage
+  - Increased text contrast for better readability in both light and dark modes
+  - Changed `.theme-description`, `.form-help`, and `.background-placeholder` text from muted to secondary color
+  - Added responsive breakpoint to stack Display Scale columns on smaller screens
+- **Theme CSS Customization Sections Refactored**
+  - Replaced 7 hardcoded HTML sections (~140 lines) with template-based dynamic generation
+  - Created centralized `ThemeConfig.js` as single source of truth for theme metadata
+  - `CSSEditorManager` now generates theme sections dynamically from template on page load
+  - `ThemeSelector` now uses `THEME_CONFIG` for section visibility and metadata
+  - Adding new themes now requires only 1 config entry instead of editing 4 files
+  - Reduced code duplication and improved maintainability
+  - Consistent with existing template patterns (columns, groups, links)
+
 ## [0.5.0] - 2025-10-21
 
 ### Added
@@ -348,7 +369,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.4...v0.5.0
 [0.4.4]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.3...v0.4.4
 [0.4.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.2...v0.4.3

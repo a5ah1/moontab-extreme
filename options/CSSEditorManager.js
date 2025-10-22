@@ -1,6 +1,8 @@
 /**
  * CSS Editor Manager - Moontab Extreme Options
- * Manages all CSS editors (custom, light, dark, browser)
+ * Manages all CSS editors (custom, light, dark, browser, glass, acrylic)
+ *
+ * Uses THEME_CONFIG for centralized theme configuration
  */
 
 class CSSEditorManager {
@@ -9,52 +11,106 @@ class CSSEditorManager {
     this.uiManager = uiManager;
     this.markDirty = markDirty;
     this.editors = {
-      custom: null,
-      light: null,
-      dark: null,
-      glassLight: null,
-      glassDark: null,
-      acrylicLight: null,
-      acrylicDark: null,
-      browser: null
+      custom: null
     };
     this.editorResizeObservers = [];
+
+    // Initialize editors object with all themes from config
+    if (window.THEME_CONFIG) {
+      THEME_CONFIG.getCustomizableThemes().forEach(theme => {
+        this.editors[theme.key] = null;
+      });
+    }
   }
 
   /**
    * Setup all CSS editors and controls
    */
   setup() {
+    this.generateThemeSections();
     this.setupThemeSpecificEditors();
     this.insertCSSVariablesHelp();
     this.setupCSSVariablesClickToCopy();
   }
 
   /**
+   * Generate theme CSS sections from template
+   */
+  generateThemeSections() {
+    if (!window.THEME_CONFIG) {
+      console.error('THEME_CONFIG not found');
+      return;
+    }
+
+    const container = document.getElementById('theme-css-sections-container');
+    const template = document.getElementById('theme-css-section-template');
+
+    if (!container || !template) {
+      console.error('Theme CSS container or template not found');
+      return;
+    }
+
+    // Generate a section for each customizable theme
+    THEME_CONFIG.getCustomizableThemes().forEach(theme => {
+      const section = template.content.cloneNode(true);
+      const sectionDiv = section.querySelector('.section');
+
+      // Set section ID
+      sectionDiv.id = `${theme.id}-theme-css-section`;
+      sectionDiv.setAttribute('data-theme-id', theme.id);
+
+      // Set header
+      const header = section.querySelector('[data-theme-name]');
+      header.textContent = `${theme.name} Theme Customization`;
+
+      // Set checkbox
+      const checkbox = section.querySelector('[data-theme-checkbox]');
+      checkbox.id = `${theme.id}-css-enabled`;
+      checkbox.removeAttribute('data-theme-checkbox');
+
+      // Set label
+      const label = section.querySelector('[data-theme-label]');
+      label.textContent = `Custom CSS for ${theme.name} Theme`;
+
+      // Set help text
+      const helpText = section.querySelector('[data-theme-help]');
+      helpText.textContent = `Add custom CSS to enhance the ${theme.name} theme`;
+
+      // Set controls container
+      const controls = section.querySelector('[data-theme-controls]');
+      controls.id = `${theme.id}-css-controls`;
+      controls.removeAttribute('data-theme-controls');
+
+      // Set editor div
+      const editor = section.querySelector('[data-theme-editor]');
+      editor.id = `${theme.id}-css-editor`;
+      editor.removeAttribute('data-theme-editor');
+
+      // Append to container
+      container.appendChild(section);
+    });
+  }
+
+  /**
    * Setup theme-specific CSS controls
    */
   setupThemeSpecificEditors() {
-    const themes = [
-      'light',
-      'dark',
-      'glass-light',
-      'glass-dark',
-      'acrylic-light',
-      'acrylic-dark',
-      'browser'
-    ];
+    if (!window.THEME_CONFIG) {
+      console.error('THEME_CONFIG not found');
+      return;
+    }
 
-    themes.forEach(theme => {
-      // Convert kebab-case to camelCase for data keys
-      const themeKey = theme.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+    THEME_CONFIG.getCustomizableThemes().forEach(theme => {
+      const checkbox = document.getElementById(`${theme.id}-css-enabled`);
+      const controls = document.getElementById(`${theme.id}-css-controls`);
 
-      const checkbox = document.getElementById(`${theme}-css-enabled`);
-      const controls = document.getElementById(`${theme}-css-controls`);
-
-      if (!checkbox || !controls) return;
+      if (!checkbox || !controls) {
+        console.warn(`Theme section not found for ${theme.id}`);
+        return;
+      }
 
       // Set initial state
-      checkbox.checked = this.data[`${themeKey}CssEnabled`] || false;
+      checkbox.checked = this.data[`${theme.key}CssEnabled`] || false;
       controls.classList.toggle('show', checkbox.checked);
 
       // Handle checkbox changes
@@ -63,18 +119,18 @@ class CSSEditorManager {
         controls.classList.toggle('show', enabled);
 
         // Update data
-        this.data[`${themeKey}CssEnabled`] = enabled;
+        this.data[`${theme.key}CssEnabled`] = enabled;
         this.markDirty();
 
         // Initialize editor if enabled and not already created
-        if (enabled && !this.editors[themeKey]) {
-          setTimeout(() => this.initializeEditor(themeKey, `${theme}-css-editor`), 100);
+        if (enabled && !this.editors[theme.key]) {
+          setTimeout(() => this.initializeEditor(theme.key, `${theme.id}-css-editor`), 100);
         }
       });
 
       // Initialize editor if already enabled
       if (checkbox.checked) {
-        setTimeout(() => this.initializeEditor(themeKey, `${theme}-css-editor`), 100);
+        setTimeout(() => this.initializeEditor(theme.key, `${theme.id}-css-editor`), 100);
       }
     });
   }
@@ -302,22 +358,21 @@ class CSSEditorManager {
       return;
     }
 
-    // Find all the locations where we need to insert the help
-    const insertLocations = [
-      '#light-css-controls',
-      '#dark-css-controls',
-      '#browser-css-controls',
-      '#custom-css-section'
-    ];
+    // Insert help into custom CSS section
+    const customCssSection = document.querySelector('#custom-css-section');
+    if (customCssSection && !customCssSection.querySelector('.css-help')) {
+      const helpClone = template.content.cloneNode(true);
+      customCssSection.appendChild(helpClone);
+    }
 
-    insertLocations.forEach(selector => {
-      const container = document.querySelector(selector);
-      if (container) {
-        // Check if help is already inserted
-        if (!container.querySelector('.css-help')) {
-          const helpClone = template.content.cloneNode(true);
-          container.appendChild(helpClone);
-        }
+    // Insert help into all theme CSS controls (dynamically generated)
+    if (!window.THEME_CONFIG) return;
+
+    THEME_CONFIG.getCustomizableThemes().forEach(theme => {
+      const container = document.querySelector(`#${theme.id}-css-controls`);
+      if (container && !container.querySelector('.css-help')) {
+        const helpClone = template.content.cloneNode(true);
+        container.appendChild(helpClone);
       }
     });
   }

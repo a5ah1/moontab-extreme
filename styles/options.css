@@ -257,7 +257,7 @@ label {
 
 /* Sections */
 .section {
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
 .section:last-child {
@@ -269,6 +269,15 @@ label {
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 16px;
+}
+
+/* Section card - visual container for section content */
+.section-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 16px;
 }
 
 .section-header {
@@ -480,7 +489,7 @@ label {
 
 .theme-description {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin: 4px 0 0 0;
   font-style: italic;
 }
@@ -948,15 +957,17 @@ label {
 
 .background-placeholder {
   text-align: center;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .background-placeholder svg {
   margin-bottom: 8px;
+  color: var(--text-secondary);
 }
 
 .background-placeholder p {
   font-size: 12px;
+  color: var(--text-secondary);
 }
 
 .background-settings {
@@ -1807,7 +1818,7 @@ input.empty-warning {
 
 .form-help {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-top: 4px;
 }
 
@@ -1817,18 +1828,18 @@ input.empty-warning {
 }
 
 .section-description {
-  margin-bottom: 16px;
-  padding: 12px;
-  background: var(--bg-tertiary);
-  border-radius: 6px;
-  border-left: 3px solid var(--accent);
+  margin-bottom: 12px;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .section-description p {
   margin: 0;
   font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .section-description p+p {
@@ -1842,6 +1853,90 @@ input.empty-warning {
 
 .section-warning p {
   color: var(--text-primary);
+}
+
+/* Display Scale section - two column layout */
+.scale-settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.scale-settings .form-note {
+  grid-column: 1 / -1;
+}
+
+/* Slider with value display */
+.slider-with-value {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider-with-value input[type="range"] {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-tertiary);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.slider-with-value input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.slider-with-value input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+}
+
+.slider-with-value input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.slider-with-value input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+}
+
+.slider-value {
+  min-width: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.form-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.form-note svg {
+  flex-shrink: 0;
+  color: var(--accent);
 }
 
 .icon-controls {
@@ -2644,6 +2739,11 @@ input[type="checkbox"] {
   .favicon-mode-btn,
   .favicon-remove-btn {
     min-width: 40px;
+  }
+
+  .scale-settings {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }
 
