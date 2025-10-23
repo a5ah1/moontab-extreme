@@ -281,7 +281,7 @@
               <h3>Custom CSS</h3>
               <div class="css-actions">
                 <button id="css-preview-btn" class="btn btn-secondary">Preview</button>
-                <button id="css-reset-btn" class="btn btn-secondary">Reset</button>
+                <button id="css-template-btn" class="btn btn-secondary">Insert Template</button>
               </div>
             </div>
             <div class="section-card">
@@ -1123,10 +1123,6 @@
             <div class="css-variable-section">
               <h3>Base Styles</h3>
               <dl>
-                <dt><code class="variable-code">--base-font-size</code></dt>
-                <dd>Base font size (falls back to 16px)</dd>
-                <dt><code class="variable-code">--ui-scale</code></dt>
-                <dd>UI scale factor (falls back to 1)</dd>
                 <dt><code class="variable-code">--page-bg-color</code></dt>
                 <dd>Overall page background color</dd>
                 <dt><code class="variable-code">--text-primary</code></dt>
@@ -1252,6 +1248,15 @@
               </dl>
             </div>
 
+            <div class="css-variable-section">
+              <h3>Scrollbar</h3>
+              <dl>
+                <dt><code class="variable-code">--scrollbar-thumb-color</code></dt>
+                <dd>Scrollbar thumb color</dd>
+                <dt><code class="variable-code">--scrollbar-track-color</code></dt>
+                <dd>Scrollbar track background color</dd>
+              </dl>
+            </div>
 
             <div class="css-variable-section">
               <h3>Visual Effects</h3>
@@ -1260,6 +1265,18 @@
                 <dd>Default shadow color</dd>
                 <dt><code class="variable-code">--shadow-hover</code></dt>
                 <dd>Hover shadow color</dd>
+                <dt><code class="variable-code">--shine-color</code></dt>
+                <dd>RGB values for shine border effect (e.g., '160, 170, 185')</dd>
+                <dt><code class="variable-code">--shine-opacity</code></dt>
+                <dd>Opacity for shine border (e.g., '0.3')</dd>
+                <dt><code class="variable-code">--shine-size</code></dt>
+                <dd>Size of the shine radial gradient (e.g., '400px')</dd>
+                <dt><code class="variable-code">--shine-blend-mode</code></dt>
+                <dd>Blend mode for internal shine effect (e.g., 'normal', 'screen', 'multiply')</dd>
+                <dt><code class="variable-code">--shine-internal</code></dt>
+                <dd>RGB values for internal shine (e.g., '0, 0, 0' for light themes, '255, 255, 255' for dark themes)</dd>
+                <dt><code class="variable-code">--shine-internal-opacity</code></dt>
+                <dd>Opacity for internal shine (e.g., '0.06')</dd>
               </dl>
             </div>
           </div>
@@ -1280,6 +1297,10 @@
           <span data-theme-label=""></span>
         </label>
         <p class="form-help" data-theme-help=""></p>
+      </div>
+      <div class="css-actions" data-theme-actions="">
+        <button class="theme-css-preview-btn btn btn-secondary" data-theme-preview="">Preview</button>
+        <button class="theme-css-template-btn btn btn-secondary" data-theme-template="">Insert Template</button>
       </div>
       <div class="css-controls" data-theme-controls="">
         <div class="css-editor-container">

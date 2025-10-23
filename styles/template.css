@@ -1,0 +1,327 @@
+/* Moontab Extreme - Custom CSS Template
+ *
+ * This template contains all available CSS custom properties (variables)
+ * that you can customize to style your new tab page.
+ *
+ * To use: Uncomment the variables you want to modify and set your desired values.
+ * Then copy this CSS into Settings > Custom Theme CSS or Theme-Specific CSS.
+ *
+ * Variables are organized into sections matching the CSS Variables reference
+ * in the options page for easy navigation.
+ */
+
+:root {
+  /* ================================================================
+   * BASE STYLES
+   * Core colors and page background
+   * ================================================================ */
+
+  /* Overall page background color */
+  /* --page-bg-color: #f0f0f0; */
+
+  /* Main text color */
+  /* --text-primary: #212529; */
+
+  /* Secondary text color */
+  /* --text-secondary: #6c757d; */
+
+  /* Muted text color */
+  /* --text-muted: #adb5bd; */
+
+
+  /* ================================================================
+   * COLUMNS
+   * Column container appearance
+   * ================================================================ */
+
+  /* Background color of columns */
+  /* --column-bg-color: #f8f9fa; */
+
+  /* Column background on hover (falls back to --column-bg-color) */
+  /* --column-bg-hover-color: #e9ecef; */
+
+  /* Border color for columns */
+  /* --column-border-color: #dee2e6; */
+
+  /* Corner radius for columns */
+  /* --column-radius: 8px; */
+
+  /* Column title text color (falls back to --text-primary) */
+  /* --column-title-color: #212529; */
+
+  /* Column text on hover (falls back to --text-primary) */
+  /* --column-text-hover-color: #212529; */
+
+
+  /* ================================================================
+   * GROUPS
+   * Group container appearance
+   * ================================================================ */
+
+  /* Background color of groups (falls back to transparent, or --column-bg-color when headers hidden) */
+  /* --group-bg-color: transparent; */
+
+  /* Group background on hover (falls back to --column-bg-hover-color when headers hidden) */
+  /* --group-bg-hover-color: #e9ecef; */
+
+  /* Border styling for groups (falls back to none) */
+  /* --group-border: 1px solid #dee2e6; */
+
+  /* Border color for groups (falls back to --column-border-color when headers hidden) */
+  /* --group-border-color: #dee2e6; */
+
+  /* Corner radius for groups (falls back to --column-radius when headers hidden) */
+  /* --group-radius: 6px; */
+
+  /* Internal padding of groups (falls back to 0) */
+  /* --group-padding: 8px; */
+
+  /* Spacing below group titles */
+  /* --group-title-spacing: 8px; */
+
+  /* Group title text color (falls back to --text-secondary) */
+  /* --group-title-color: #6c757d; */
+
+  /* Font size of group titles (falls back to 13px) */
+  /* --group-title-size: 13px; */
+
+  /* Font weight of group titles (falls back to 600) */
+  /* --group-title-weight: 600; */
+
+  /* Text transform for group titles (falls back to uppercase) */
+  /* --group-title-transform: uppercase; */
+
+
+  /* ================================================================
+   * LINK ITEMS
+   * Individual link card appearance
+   * ================================================================ */
+
+  /* Background color of individual links */
+  /* --link-item-bg-color: #ffffff; */
+
+  /* Background color when hovering over links */
+  /* --link-item-bg-hover-color: #f8f9fa; */
+
+  /* Border color for links */
+  /* --link-item-border-color: #dee2e6; */
+
+  /* Corner radius for links */
+  /* --link-item-radius: 6px; */
+
+  /* Link title text color (falls back to --text-primary) */
+  /* --link-title-color: #212529; */
+
+  /* Link title hover color (falls back to --link-title-color) */
+  /* --link-title-hover-color: #212529; */
+
+  /* Link URL text color (falls back to --text-secondary) */
+  /* --link-url-color: #6c757d; */
+
+  /* Link URL hover color (falls back to --link-url-color) */
+  /* --link-url-hover-color: #6c757d; */
+
+  /* Text color when hovering over links */
+  /* --link-hover-color: #212529; */
+
+
+  /* ================================================================
+   * BUTTONS
+   * General button styling
+   * ================================================================ */
+
+  /* Primary button color */
+  /* --accent-color: #0d6efd; */
+
+  /* Primary button hover color */
+  /* --accent-hover-color: #0b5ed7; */
+
+  /* General button background on hover (falls back to --link-item-bg-hover-color) */
+  /* --btn-bg-hover-color: #f8f9fa; */
+
+  /* General button text (falls back to --text-primary) */
+  /* --btn-text-color: #212529; */
+
+  /* Primary button text (falls back to white) */
+  /* --btn-primary-text-color: white; */
+
+  /* Primary button text on hover (falls back to white) */
+  /* --btn-primary-text-hover-color: white; */
+
+
+  /* ================================================================
+   * SETTINGS BUTTON
+   * Floating settings button in bottom-right corner
+   * ================================================================ */
+
+  /* Settings button background (falls back to --column-bg-color) */
+  /* --settings-btn-bg-color: #f8f9fa; */
+
+  /* Settings button background on hover (falls back to --link-item-bg-hover-color) */
+  /* --settings-btn-bg-hover-color: #e9ecef; */
+
+  /* Settings button text (falls back to --text-secondary) */
+  /* --settings-btn-text-color: #6c757d; */
+
+  /* Settings button text on hover (falls back to --text-primary) */
+  /* --settings-btn-text-hover-color: #212529; */
+
+  /* Settings button shadow (falls back to --shadow) */
+  /* --settings-btn-shadow: rgba(0, 0, 0, 0.1); */
+
+
+  /* ================================================================
+   * LOADING
+   * Loading spinner and screen
+   * ================================================================ */
+
+  /* Loading screen background (falls back to --link-item-bg-color) */
+  /* --loading-bg-color: #ffffff; */
+
+  /* Loading spinner color (falls back to --accent-color) */
+  /* --loading-spinner-color: #0d6efd; */
+
+
+  /* ================================================================
+   * SCROLLBAR
+   * Scrollbar styling (options page only)
+   * ================================================================ */
+
+  /* Scrollbar thumb color */
+  /* --scrollbar-thumb-color: #ced4da; */
+
+  /* Scrollbar track background color */
+  /* --scrollbar-track-color: #f8f9fa; */
+
+
+  /* ================================================================
+   * VISUAL EFFECTS
+   * Shadows and shine effects
+   * ================================================================ */
+
+  /* Default shadow color */
+  /* --shadow: rgba(0, 0, 0, 0.1); */
+
+  /* Hover shadow color */
+  /* --shadow-hover: rgba(0, 0, 0, 0.15); */
+
+  /* RGB values for shine border effect (e.g., '160, 170, 185') */
+  /* --shine-color: 160, 170, 185; */
+
+  /* Opacity for shine border (e.g., '0.3') */
+  /* --shine-opacity: 0.3; */
+
+  /* Size of the shine radial gradient (e.g., '400px') */
+  /* --shine-size: 400px; */
+
+  /* Blend mode for internal shine effect (e.g., 'normal', 'screen', 'multiply') */
+  /* --shine-blend-mode: normal; */
+
+  /* RGB values for internal shine (e.g., '0, 0, 0' for light themes, '255, 255, 255' for dark themes) */
+  /* --shine-internal: 0, 0, 0; */
+
+  /* Opacity for internal shine (e.g., '0.06') */
+  /* --shine-internal-opacity: 0.06; */
+}
+
+
+/* ================================================================
+ * CUSTOM STYLES
+ * Add your own custom CSS below this line.
+ * You can target any element, add custom classes, etc.
+ * Your CSS will override all theme styles.
+ * ================================================================ */
+
+/* Example: Change link card hover effect
+.link-card:hover {
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+*/
+
+/* Example: Add custom styling to specific groups
+.group.my-custom-class {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 16px;
+  border-radius: 12px;
+}
+*/
+
+/* Example: Customize column header appearance
+.column-header {
+  background: linear-gradient(to right, #f093fb 0%, #f5576c 100%);
+  border-radius: 8px 8px 0 0;
+}
+*/
+
+/* Example: Shine effect implementation
+ * Uncomment the sections below to enable the shine effect.
+ * The shine effect requires both variables (defined above) and CSS implementation (below).
+ *
+ * Note: Preset themes include shine effect automatically.
+ * Custom themes need to include this CSS manually.
+ */
+
+/*
+body.shine-effect-enabled .link-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--link-item-radius);
+  padding: 1px;
+  background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(var(--shine-color), var(--shine-opacity)),
+      transparent 40%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.shine-effect-enabled .link-card:hover::before {
+  opacity: 1;
+}
+
+body.shine-effect-enabled .link-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--link-item-radius);
+  background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(var(--shine-internal), var(--shine-internal-opacity)),
+      transparent 40%);
+  mix-blend-mode: var(--shine-blend-mode);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.shine-effect-enabled .link-card:hover::after {
+  opacity: 1;
+}
+
+body.shine-effect-enabled .shine-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--shine-surface-radius);
+  background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(var(--shine-color), calc(var(--shine-opacity) * 0.5)),
+      transparent 40%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+body.shine-effect-enabled .shine-surface:hover::before {
+  opacity: 1;
+}
+
+body.shine-effect-enabled .shine-surface > * {
+  position: relative;
+  z-index: 1;
+}
+*/

@@ -86,8 +86,27 @@ class CSSEditorManager {
       editor.id = `${theme.id}-css-editor`;
       editor.removeAttribute('data-theme-editor');
 
+      // Set up preview button
+      const previewBtn = section.querySelector('[data-theme-preview]');
+      previewBtn.id = `${theme.id}-css-preview-btn`;
+      previewBtn.removeAttribute('data-theme-preview');
+
+      // Set up template button
+      const templateBtn = section.querySelector('[data-theme-template]');
+      templateBtn.id = `${theme.id}-css-template-btn`;
+      templateBtn.removeAttribute('data-theme-template');
+
       // Append to container
       container.appendChild(section);
+
+      // Add event listeners for buttons
+      previewBtn.addEventListener('click', () => {
+        this.previewThemeCSS(theme.key);
+      });
+
+      templateBtn.addEventListener('click', () => {
+        this.insertTemplate(theme.key);
+      });
     });
   }
 
@@ -283,11 +302,11 @@ class CSSEditorManager {
   }
 
   /**
-   * Setup custom CSS editor actions (preview and reset)
+   * Setup custom CSS editor actions (preview and insert template)
    */
   setupCustomCSSActions() {
     const previewBtn = document.getElementById('css-preview-btn');
-    const resetBtn = document.getElementById('css-reset-btn');
+    const templateBtn = document.getElementById('css-template-btn');
 
     if (previewBtn) {
       previewBtn.addEventListener('click', () => {
@@ -295,9 +314,9 @@ class CSSEditorManager {
       });
     }
 
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        this.resetCustomCSS();
+    if (templateBtn) {
+      templateBtn.addEventListener('click', () => {
+        this.insertTemplate('custom');
       });
     }
   }
@@ -336,15 +355,70 @@ class CSSEditorManager {
   }
 
   /**
-   * Reset custom CSS
+   * Preview theme-specific CSS in modal
+   * @param {string} themeKey - The theme key (e.g., 'light', 'dark')
    */
-  resetCustomCSS() {
-    if (confirm('Are you sure you want to reset the custom CSS? This cannot be undone.')) {
-      this.data.customCss = '';
-      if (this.editors.custom) {
-        this.editors.custom.setValue('', -1);
+  previewThemeCSS(themeKey) {
+    const editor = this.editors[themeKey];
+    if (!editor) {
+      console.error(`Editor not found: ${themeKey}`);
+      return;
+    }
+
+    const css = editor.getValue();
+
+    // Create and show preview modal
+    const modal = this.uiManager.createModal('preview');
+    const iframe = modal.querySelector('#preview-frame');
+
+    // Apply CSS to iframe when loaded
+    iframe.addEventListener('load', () => {
+      const doc = iframe.contentDocument;
+
+      // Apply theme-specific CSS
+      const style = doc.createElement('style');
+      style.textContent = css;
+      doc.head.appendChild(style);
+    });
+
+    document.body.appendChild(modal);
+  }
+
+  /**
+   * Insert CSS template into editor
+   * @param {string} editorKey - The editor key ('custom' or theme id)
+   */
+  async insertTemplate(editorKey) {
+    const editor = this.editors[editorKey];
+    if (!editor) {
+      console.error(`Editor not found: ${editorKey}`);
+      return;
+    }
+
+    // Check if editor has content
+    const currentContent = editor.getValue().trim();
+    if (currentContent && !confirm('Replace current CSS with template?')) {
+      return;
+    }
+
+    try {
+      // Fetch the template file
+      const response = await fetch('styles/template.css');
+      if (!response.ok) {
+        throw new Error(`Failed to load template: ${response.statusText}`);
       }
+
+      const template = await response.text();
+
+      // Insert template into editor
+      editor.setValue(template, -1);
+
+      // Mark as dirty to enable save
       this.markDirty();
+
+    } catch (error) {
+      console.error('Error loading CSS template:', error);
+      alert('Failed to load CSS template. Please try again.');
     }
   }
 

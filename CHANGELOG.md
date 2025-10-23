@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.3] - 2025-10-22
+
+### Added
+- **CSS Variables Documentation Expanded**
+  - Added shine effect CSS variables to the CSS variables reference grid in options page
+  - Documented all 6 shine-related variables: `--shine-color`, `--shine-opacity`, `--shine-size`, `--shine-blend-mode`, `--shine-internal`, and `--shine-internal-opacity`
+  - Added scrollbar section documenting `--scrollbar-thumb-color` and `--scrollbar-track-color`
+  - CSS variables reference now comprehensively documents all user-facing theme variables
+  - Removed `--base-font-size` and `--ui-scale` from documentation (managed through Display Scale settings UI to maintain single source of truth)
+  - Empty state variables remain undocumented (rarely used, good fallbacks already in place)
+  - Background image variables remain undocumented (managed through settings UI)
+- **CSS Template Insert Feature**
+  - Added "Insert Template" button to Custom Theme CSS editor
+  - Added "Insert Template" and "Preview" buttons to all theme-specific CSS editors
+  - CSS template file now included in project at `styles/template.css`
+  - One-click insertion of comprehensive CSS variable reference template
+  - Confirmation prompt if editor already has content
+
+### Removed
+- **CSS Reset Button**
+  - Removed redundant "Reset" button from Custom Theme CSS editor
+  - Users can clear CSS by selecting all and deleting (standard text editor behavior)
+  - Reduces UI clutter and removes unnecessary confirmation dialog
+
 ## [0.5.2] - 2025-10-22
 
 ### Added
@@ -400,7 +424,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.4...v0.5.0
