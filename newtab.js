@@ -221,7 +221,7 @@ class NewTabApp {
       }
     }
 
-    // Handle column header visibility
+    // Handle column header visibility and shine surface
     const headerEl = columnEl.querySelector('.column-header');
     if (this.data.showColumnHeaders === false) {
       // Remove the header entirely if showColumnHeaders is false
@@ -230,6 +230,8 @@ class NewTabApp {
       // Set title if header is shown
       const titleEl = columnEl.querySelector('.column-title');
       titleEl.textContent = column.name;
+      // Add shine-surface class when column headers are shown
+      columnEl.classList.add('shine-surface');
     }
 
     // Render groups
@@ -266,6 +268,11 @@ class NewTabApp {
           }
         });
       }
+    }
+
+    // Add shine-surface class when column headers are hidden
+    if (this.data.showColumnHeaders === false) {
+      groupEl.classList.add('shine-surface');
     }
 
     // Handle group header visibility
@@ -615,8 +622,8 @@ class NewTabApp {
     // Add class to body to enable shine effect CSS
     document.body.classList.add('shine-effect-enabled');
 
-    // Track mouse position on link cards and groups
-    const elementsToTrack = document.querySelectorAll('.link-card, .group');
+    // Track mouse position on link cards and shine surfaces (columns or groups)
+    const elementsToTrack = document.querySelectorAll('.link-card, .shine-surface');
 
     elementsToTrack.forEach(element => {
       element.addEventListener('mousemove', (e) => {

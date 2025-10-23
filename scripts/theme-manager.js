@@ -8,6 +8,38 @@
 */
 
 /**
+ * Consolidated shine effect CSS
+ * Uses .shine-surface class for both columns and groups
+ * Border radius is set dynamically via CSS variable in skeleton.css
+ */
+const SHINE_CSS = `
+  /* Shine effect on surface elements (columns or groups) */
+  body.shine-effect-enabled .shine-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--shine-surface-radius);
+    background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(var(--shine-color), calc(var(--shine-opacity) * 0.5)),
+        transparent 40%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+  }
+
+  body.shine-effect-enabled .shine-surface:hover::before {
+    opacity: 1;
+  }
+
+  /* Ensure surface content appears above shine */
+  body.shine-effect-enabled .shine-surface > * {
+    position: relative;
+    z-index: 1;
+  }
+`;
+
+/**
  * Preset theme registry with metadata and styling
  */
 const PRESET_THEMES = {
@@ -86,30 +118,7 @@ const PRESET_THEMES = {
         opacity: 1;
       }
 
-      /* Shine effect on groups */
-      body.shine-effect-enabled .group::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: var(--group-radius, 6px);
-        background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(var(--shine-color), calc(var(--shine-opacity) * 0.5)),
-            transparent 40%);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 0;
-      }
-
-      body.shine-effect-enabled .group:hover::before {
-        opacity: 1;
-      }
-
-      /* Ensure group content appears above shine */
-      body.shine-effect-enabled .group > * {
-        position: relative;
-        z-index: 1;
-      }
+      ${SHINE_CSS}
     `
   },
 
@@ -187,30 +196,7 @@ const PRESET_THEMES = {
         opacity: 1;
       }
 
-      /* Shine effect on groups */
-      body.shine-effect-enabled .group::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: var(--group-radius, 6px);
-        background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(var(--shine-color), calc(var(--shine-opacity) * 0.5)),
-            transparent 40%);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 0;
-      }
-
-      body.shine-effect-enabled .group:hover::before {
-        opacity: 1;
-      }
-
-      /* Ensure group content appears above shine */
-      body.shine-effect-enabled .group > * {
-        position: relative;
-        z-index: 1;
-      }
+      ${SHINE_CSS}
     `
   },
 
@@ -311,30 +297,7 @@ const PRESET_THEMES = {
         opacity: 1;
       }
 
-      /* Shine effect on group headers */
-      body.shine-effect-enabled .group::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 6px;
-        background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(var(--shine-color), calc(var(--shine-opacity) * 0.5)),
-            transparent 40%);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 0;
-      }
-
-      body.shine-effect-enabled .group:hover::before {
-        opacity: 1;
-      }
-
-      /* Ensure group content appears above shine */
-      body.shine-effect-enabled .group > * {
-        position: relative;
-        z-index: 1;
-      }
+      ${SHINE_CSS}
     `
   },
 
@@ -432,30 +395,7 @@ const PRESET_THEMES = {
         opacity: 1;
       }
 
-      /* Shine effect on group headers */
-      body.shine-effect-enabled .group::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 6px;
-        background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(var(--shine-color), calc(var(--shine-opacity) * 0.5)),
-            transparent 40%);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 0;
-      }
-
-      body.shine-effect-enabled .group:hover::before {
-        opacity: 1;
-      }
-
-      /* Ensure group content appears above shine */
-      body.shine-effect-enabled .group > * {
-        position: relative;
-        z-index: 1;
-      }
+      ${SHINE_CSS}
     `
   },
 
@@ -548,30 +488,7 @@ const PRESET_THEMES = {
         opacity: 1;
       }
 
-      /* Shine effect on group headers */
-      body.shine-effect-enabled .group::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 6px;
-        background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(var(--shine-color), calc(var(--shine-opacity) * 0.5)),
-            transparent 40%);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 0;
-      }
-
-      body.shine-effect-enabled .group:hover::before {
-        opacity: 1;
-      }
-
-      /* Ensure group content appears above shine */
-      body.shine-effect-enabled .group > * {
-        position: relative;
-        z-index: 1;
-      }
+      ${SHINE_CSS}
     `
   },
 
@@ -661,30 +578,7 @@ const PRESET_THEMES = {
         opacity: 1;
       }
 
-      /* Shine effect on group headers */
-      body.shine-effect-enabled .group::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 6px;
-        background: radial-gradient(var(--shine-size) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(var(--shine-color), calc(var(--shine-opacity) * 0.5)),
-            transparent 40%);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 0;
-      }
-
-      body.shine-effect-enabled .group:hover::before {
-        opacity: 1;
-      }
-
-      /* Ensure group content appears above shine */
-      body.shine-effect-enabled .group > * {
-        position: relative;
-        z-index: 1;
-      }
+      ${SHINE_CSS}
     `
   }
 };
@@ -891,7 +785,7 @@ class ThemeManager {
       .map(([property, value]) => `  ${property}: ${value};`)
       .join('\n');
 
-    const css = `:root {\n${cssVariables}\n}`;
+    const css = `:root {\n${cssVariables}\n}\n\n${SHINE_CSS}`;
     this.themeStyleElement.textContent = css;
 
     // Remove custom CSS if present

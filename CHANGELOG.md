@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2025-10-22
+
+### Added
+- **Shine Effect on Browser Theme**
+  - Browser theme now includes shine effect CSS injection
+  - Automatically inherits shine variables from light/dark theme based on system preference
+  - Brings Browser theme to feature parity with preset themes
+
+### Changed
+- **Shine Effect Architecture Refactored**
+  - Shine effect now conditional based on column header visibility
+  - When column headers are ON: shine applies to columns + link cards
+  - When column headers are OFF: shine applies to groups + link cards
+  - Consolidated shine CSS using `.shine-surface` class pattern
+  - Reduced shine-related CSS by ~50% (from 36 rule blocks to 6 references)
+  - Single `SHINE_CSS` constant provides shine behavior for all themes
+  - Dynamic border radius via `--shine-surface-radius` CSS variable
+  - Themes still define custom shine colors/opacity for individual styling
+- **JavaScript Class Management**
+  - `shine-surface` class dynamically added to columns (when headers shown) or groups (when headers hidden)
+  - Mouse tracking updated to use `.shine-surface` selector instead of separate `.column, .group`
+  - Cleaner, more maintainable code with single source of truth
+
+### Technical Details
+- **Shine Surface System**
+  - skeleton.css defines dynamic border radius based on column header visibility
+  - Columns: `--shine-surface-radius: var(--column-radius, 12px)`
+  - Groups: `--shine-surface-radius: var(--group-radius, 6px)`
+  - Border radius automatically switches when toggling column headers
+  - Maintains proper visual consistency across all themes
+
 ## [0.5.1] - 2025-10-22
 
 ### Changed
@@ -369,7 +400,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.4...v0.5.0
 [0.4.4]: https://github.com/a5ah1/moontab-extreme/compare/v0.4.3...v0.4.4

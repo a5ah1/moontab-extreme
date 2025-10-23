@@ -118,6 +118,15 @@ body::-webkit-scrollbar {
   overflow: hidden;
 }
 
+/* Shine surface radius - dynamic based on column header visibility */
+body:not(.hide-column-headers) .column.shine-surface {
+  --shine-surface-radius: var(--column-radius, 12px);
+}
+
+body.hide-column-headers .group.shine-surface {
+  --shine-surface-radius: var(--group-radius, 6px);
+}
+
 /* Group header layout */
 .group-header {
   padding: calc(4px * var(--ui-scale)) 0;
