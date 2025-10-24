@@ -82,9 +82,27 @@ const SHINE_CSS = `
 
 /**
  * Preset theme registry with metadata and styling
+ *
+ * Themes are organized into categories:
+ * - default: Light and Dark base themes
+ * - modern: Glass, Acrylic, and Material Design themes
+ * - classic: Gruvbox, Monokai, and Nord themes
+ * - tailwind: Tailwind CSS color palette themes
+ *
+ * Each theme includes:
+ * - name: Display name
+ * - category: Theme category for organization
+ * - description: User-facing description
+ * - supportsShineEffect: Whether theme has shine/highlight effects
+ * - variables: CSS custom properties for theming
+ * - css: Theme-specific CSS (optional)
  */
 const PRESET_THEMES = {
-  // Default themes
+  // ============================================================================
+  // DEFAULT THEMES
+  // Base light and dark themes with clean, minimal styling
+  // ============================================================================
+
   light: {
     name: 'Light',
     category: 'default',
@@ -159,7 +177,11 @@ const PRESET_THEMES = {
     css: SHINE_CSS
   },
 
-  // Modern themes with glass effects
+  // ============================================================================
+  // MODERN THEMES
+  // Glassmorphism, Acrylic, and Material Design themes with advanced visual effects
+  // ============================================================================
+
   glassLight: {
     name: 'Glass Light',
     category: 'modern',
@@ -556,7 +578,11 @@ const PRESET_THEMES = {
     `
   },
 
-  // Classic color schemes
+  // ============================================================================
+  // CLASSIC THEMES
+  // Iconic color schemes from popular code editors and terminals
+  // ============================================================================
+
   gruvboxDark: {
     name: 'Gruvbox Dark',
     category: 'classic',
@@ -742,9 +768,14 @@ const PRESET_THEMES = {
     css: SHINE_CSS
   },
 
-  // Tailwind color schemes
+  // ============================================================================
+  // TAILWIND THEMES
+  // Tailwind CSS color palette themes with glassmorphism effects
+  // Includes Slate, Gray, Zinc, and Stone variants in light and dark modes
+  // ============================================================================
+
   tailwindSlateLight: {
-    name: 'Tailwind Slate Light',
+    name: 'Slate Light',
     category: 'tailwind',
     description: 'Tailwind slate colors with glassmorphism effects',
     supportsShineEffect: true,
@@ -781,7 +812,7 @@ const PRESET_THEMES = {
   },
 
   tailwindSlateDark: {
-    name: 'Tailwind Slate Dark',
+    name: 'Slate Dark',
     category: 'tailwind',
     description: 'Tailwind slate colors inspired by the demo with glassmorphism',
     supportsShineEffect: true,
@@ -818,7 +849,7 @@ const PRESET_THEMES = {
   },
 
   tailwindGrayLight: {
-    name: 'Tailwind Gray Light',
+    name: 'Gray Light',
     category: 'tailwind',
     description: 'Tailwind gray colors with glassmorphism effects',
     supportsShineEffect: true,
@@ -855,7 +886,7 @@ const PRESET_THEMES = {
   },
 
   tailwindGrayDark: {
-    name: 'Tailwind Gray Dark',
+    name: 'Gray Dark',
     category: 'tailwind',
     description: 'Tailwind gray colors with glassmorphism',
     supportsShineEffect: true,
@@ -892,7 +923,7 @@ const PRESET_THEMES = {
   },
 
   tailwindZincLight: {
-    name: 'Tailwind Zinc Light',
+    name: 'Zinc Light',
     category: 'tailwind',
     description: 'Tailwind zinc colors with glassmorphism effects',
     supportsShineEffect: true,
@@ -929,7 +960,7 @@ const PRESET_THEMES = {
   },
 
   tailwindZincDark: {
-    name: 'Tailwind Zinc Dark',
+    name: 'Zinc Dark',
     category: 'tailwind',
     description: 'Tailwind zinc colors with glassmorphism',
     supportsShineEffect: true,
@@ -966,7 +997,7 @@ const PRESET_THEMES = {
   },
 
   tailwindStoneLight: {
-    name: 'Tailwind Stone Light',
+    name: 'Stone Light',
     category: 'tailwind',
     description: 'Tailwind stone colors with glassmorphism effects',
     supportsShineEffect: true,
@@ -1003,7 +1034,7 @@ const PRESET_THEMES = {
   },
 
   tailwindStoneDark: {
-    name: 'Tailwind Stone Dark',
+    name: 'Stone Dark',
     category: 'tailwind',
     description: 'Tailwind stone colors with glassmorphism',
     supportsShineEffect: true,
@@ -1042,8 +1073,35 @@ const PRESET_THEMES = {
 
 /**
  * Theme Manager Class
+ *
+ * Manages the complete theming system for Moontab Extreme, including:
+ * - Application of preset, browser (system), and custom themes
+ * - CSS variable injection and management
+ * - Per-theme custom CSS support
+ * - Background image and color management
+ * - Live theme switching without page reload
+ *
+ * CSS Cascade Architecture:
+ * 1. skeleton.css - Layout foundation (no colors)
+ * 2. Theme variables - CSS custom properties from theme definitions
+ * 3. Theme-specific CSS - Optional CSS for effects (e.g., glassmorphism)
+ * 4. User theme CSS - Per-theme customizations
+ * 5. Custom CSS - Global custom CSS (custom theme mode only)
+ *
+ * The cascade ensures user customizations always have highest priority.
+ *
+ * Theme Modes:
+ * - preset: User-selected theme from PRESET_THEMES (20 available)
+ * - browser: Follows system preference (light/dark)
+ * - custom: User-defined CSS with no preset theme
+ *
+ * @class
  */
 class ThemeManager {
+  // ==========================================================================
+  // CONSTRUCTOR AND INITIALIZATION
+  // ==========================================================================
+
   constructor() {
     this.currentTheme = 'light';
     this.customCssElement = null;
@@ -1053,7 +1111,20 @@ class ThemeManager {
 
   /**
    * Initialize theme system
-   * @param {Object} settings - Complete settings object with theme config
+   *
+   * @param {Object} settings - Complete settings object with theme configuration
+   * @param {string} [settings.themeMode='preset'] - Theme mode: 'preset', 'browser', or 'custom'
+   * @param {string} [settings.selectedPresetTheme='light'] - Selected preset theme key
+   * @param {string} [settings.customCss=''] - Custom CSS (for custom theme mode)
+   * @param {number} [settings.baseFontSize=16] - Base font size in pixels
+   * @param {number} [settings.uiScale=1.0] - UI scale factor
+   * @param {string} [settings.backgroundDataUri] - Background image data URI
+   * @param {string} [settings.backgroundSize] - CSS background-size value
+   * @param {string} [settings.backgroundRepeat] - CSS background-repeat value
+   * @param {string} [settings.backgroundPosition] - CSS background-position value
+   * @param {string} [settings.pageBackgroundColor] - Page background color
+   * @param {Object} [settings.*Css] - Per-theme custom CSS (lightCss, darkCss, etc.)
+   * @param {boolean} [settings.*CssEnabled] - Per-theme CSS enabled flags
    * @returns {Promise<void>}
    */
   async init(settings = {}) {
@@ -1139,6 +1210,11 @@ class ThemeManager {
     root.style.setProperty('--base-font-size', `${baseFontSize}px`);
     root.style.setProperty('--ui-scale', uiScale);
   }
+
+  // ==========================================================================
+  // THEME APPLICATION METHODS
+  // Core methods for applying different theme modes (preset, browser, custom)
+  // ==========================================================================
 
   /**
    * Apply a preset theme
@@ -1311,6 +1387,11 @@ class ThemeManager {
   }
 
 
+  // ==========================================================================
+  // CSS MANAGEMENT METHODS
+  // Methods for applying and removing different types of CSS
+  // ==========================================================================
+
   /**
    * Apply custom CSS
    * @param {string} css - CSS string to apply
@@ -1469,6 +1550,11 @@ class ThemeManager {
     }
   }
 
+  // ==========================================================================
+  // BACKGROUND MANAGEMENT
+  // Methods for managing background images and colors
+  // ==========================================================================
+
   /**
    * Apply background image and settings
    * @param {string|null} dataUri - Background image data URI
@@ -1511,6 +1597,11 @@ class ThemeManager {
       root.style.removeProperty('--page-bg-color');
     }
   }
+
+  // ==========================================================================
+  // HELPER AND UTILITY METHODS
+  // Preview generation, getters, and other utility functions
+  // ==========================================================================
 
   /**
    * Generate CSS for live preview
@@ -1650,11 +1741,17 @@ async function initializeTheming(settings = {}) {
   return manager;
 }
 
-// Export for use in other modules
+// Export for use in other modules (browser global and CommonJS)
+if (typeof window !== 'undefined') {
+  window.PRESET_THEMES = PRESET_THEMES;
+  window.SHINE_CSS = SHINE_CSS;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     ThemeManager,
     PRESET_THEMES,
+    SHINE_CSS,
     getThemeManager,
     initializeTheming
   };

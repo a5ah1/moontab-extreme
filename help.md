@@ -60,11 +60,43 @@ Organize links within columns using groups:
 
 ### Themes
 
-Choose from several built-in themes:
-- **Light**: Clean, bright interface
-- **Dark**: Comfortable dark mode
-- **Browser**: Follows your system preference
-- **Custom**: Create your own theme with CSS
+Moontab Extreme offers three theme modes:
+
+**Browser Mode:**
+- Automatically follows your system preference (light or dark)
+- Seamlessly switches when your system theme changes
+
+**Preset Themes:**
+Choose from 22 curated preset themes organized into categories:
+
+*Default Themes:*
+- **Light**: Clean, bright interface with soft shadows
+- **Dark**: Comfortable dark mode with subtle accents
+
+*Modern Themes:*
+- **Glass Light/Dark**: Translucent frosted glass aesthetic
+- **Acrylic Light/Dark**: Smooth acrylic material design
+- **Material Light/Dark**: Google Material Design inspired
+
+*Classic Themes:*
+- **Gruvbox Light/Dark**: Retro warm color palette
+- **Monokai**: Popular code editor theme
+- **Nord Light/Dark**: Arctic-inspired cool tones
+
+*Tailwind Themes:*
+- **Slate Light/Dark**: Tailwind CSS Slate palette
+- **Gray Light/Dark**: Tailwind CSS Gray palette
+- **Zinc Light/Dark**: Tailwind CSS Zinc palette
+- **Stone Light/Dark**: Tailwind CSS Stone palette
+
+**Custom CSS Mode:**
+- Create your own theme from scratch with complete CSS control
+- Full CSS editor with syntax highlighting and live preview
+
+**Per-Theme CSS Enhancements:**
+- Any preset theme can have custom CSS applied to it
+- Enhance themes without replacing them entirely
+- Enable/disable per-theme CSS independently
 
 ### Background Customization
 
@@ -81,46 +113,74 @@ Choose from several built-in themes:
 
 ### Custom CSS
 
-For advanced users, the Custom theme allows complete visual control:
+**Custom CSS Mode:**
+For advanced users who want complete visual control from scratch:
 - Full CSS editor with syntax highlighting
 - Live preview functionality
 - Dark/light editor theme follows system preference
 - CSS is automatically sanitized for security
+
+**Per-Theme CSS Enhancements:**
+Enhance any preset theme with custom CSS without replacing it:
+- Available for all 22 preset themes plus Browser mode
+- Add custom styling while preserving the base theme
+- Enable/disable independently for each theme
+- Perfect for small tweaks like custom fonts, spacing, or colors
+- Each theme's CSS can be edited separately
 
 **CSS Tips:**
 - Use CSS custom properties (variables) for consistent styling
 - Target specific elements with existing classes
 - Test changes with the preview feature
 - Back up your CSS before making major changes
+- Per-theme CSS applies on top of the base theme styles
 
 ## Data Management
 
 ### Export Options
 
+Moontab Extreme offers three export options to suit different needs:
+
 **Content Export:**
 - Export only your columns, groups, and links
-- Perfect for sharing collections or content-only backups
+- Perfect for sharing link collections or content-only backups
 - Preserves group structure and organization
-- File format: `moontab-extreme-content-YYYY-MM-DD_HH-MM-SS.json`
+- Does NOT include themes, custom CSS, backgrounds, or display settings
+- File format: ZIP containing `data.json`
 
-**Complete Theme Export:**
-- Export everything: content, themes, CSS, backgrounds, settings
-- Ideal for full backups or sharing complete setups
-- File format: `moontab-extreme-theme-YYYY-MM-DD_HH-MM-SS.json`
+**Appearance Export:**
+- Export only your theme settings and styling
+- Includes: theme mode, selected preset theme, all per-theme CSS customizations, custom CSS, background images, background color, and display preferences
+- Does NOT include content organization (columns, groups, links)
+- Perfect for sharing theme configurations or appearance-only backups
+- File format: ZIP containing `data.json` and separate CSS files for each theme
+
+**Complete Export:**
+- Export everything: content AND appearance
+- Includes all columns, groups, links, themes, CSS, backgrounds, and settings
+- Ideal for full backups, device migration, or sharing complete setups
+- File format: ZIP containing `data.json` and all CSS files
 
 ### Import Features
 
 **Smart Import:**
-- Automatically detects file format and validates structure
+- Automatically detects file format (ZIP or JSON) and validates structure
+- Determines import type (content, appearance, or complete) automatically
 - Supports legacy formats with automatic migration
-- Cross-compatibility between content and theme files
-- Safety prompts suggest backups before importing
+- Cross-compatibility: complete exports can be imported as content-only or appearance-only
+- Handles both modern ZIP exports and legacy JSON exports
+
+**Import Types:**
+- **Content Import**: Restores columns, groups, and links only
+- **Appearance Import**: Restores theme settings, CSS, backgrounds, and display preferences only
+- **Complete Import**: Replaces everything with the exported data
 
 **Import Safety:**
-- Always create a backup before importing
-- Confirmation dialogs for destructive operations
+- Backup suggestions before destructive operations
+- Confirmation dialogs explain what will be replaced
 - File validation prevents corrupt imports
-- Legacy compatibility handles old export formats
+- Legacy compatibility handles old export formats seamlessly
+- Per-theme CSS preserved and restored correctly
 
 ### Storage Information
 
@@ -269,22 +329,80 @@ Monitor your extension's storage usage:
 
 ### CSS Custom Properties
 
-Available CSS variables for theming:
-- `--bg-primary`: Primary background color
-- `--bg-secondary`: Secondary background color
-- `--text-primary`: Primary text color
-- `--text-secondary`: Secondary text color
-- `--accent`: Accent color for links and buttons
-- `--border-color`: Border color for elements
+Moontab Extreme uses an extensive system of CSS custom properties (variables) for theming. These variables allow you to customize every aspect of the interface consistently.
 
-**Group-specific variables:**
-- `--group-spacing`: Spacing between groups
-- `--group-title-color`: Color of group titles
+**Base Styles:**
+- `--page-bg-color`: Overall page background color
+- `--text-primary`: Main text color
+- `--text-secondary`: Secondary text color
+- `--text-muted`: Muted text color
+
+**Columns:**
+- `--column-bg-color`: Background color of columns
+- `--column-bg-hover-color`: Column background on hover
+- `--column-border-color`: Border color for columns
+- `--column-radius`: Corner radius for columns
+- `--column-title-color`: Column title text color
+- `--column-text-hover-color`: Column text on hover
+
+**Groups:**
+- `--group-bg-color`: Background color of groups
+- `--group-bg-hover-color`: Group background on hover
+- `--group-border`: Border styling for groups
+- `--group-border-color`: Border color for groups
+- `--group-radius`: Corner radius for groups
+- `--group-padding`: Internal padding of groups
+- `--group-title-spacing`: Spacing below group titles
+- `--group-title-color`: Group title text color
 - `--group-title-size`: Font size of group titles
 - `--group-title-weight`: Font weight of group titles
-- `--group-background`: Background color for groups
-- `--group-border`: Border styling for groups
-- `--group-padding`: Internal padding of groups
+- `--group-title-transform`: Text transform for group titles
+
+**Link Items:**
+- `--link-item-bg-color`: Background color of individual links
+- `--link-item-bg-hover-color`: Background color when hovering over links
+- `--link-item-border-color`: Border color for links
+- `--link-item-radius`: Corner radius for links
+- `--link-title-color`: Link title text color
+- `--link-title-hover-color`: Link title hover color
+- `--link-url-color`: Link URL text color
+- `--link-url-hover-color`: Link URL hover color
+- `--link-hover-color`: Text color when hovering over links
+
+**Buttons:**
+- `--accent-color`: Primary button color
+- `--accent-hover-color`: Primary button hover color
+- `--btn-bg-hover-color`: General button background on hover
+- `--btn-text-color`: General button text
+- `--btn-primary-text-color`: Primary button text
+- `--btn-primary-text-hover-color`: Primary button text on hover
+
+**Settings Button:**
+- `--settings-btn-bg-color`: Settings button background
+- `--settings-btn-bg-hover-color`: Settings button background on hover
+- `--settings-btn-text-color`: Settings button text
+- `--settings-btn-text-hover-color`: Settings button text on hover
+- `--settings-btn-shadow`: Settings button shadow
+
+**Visual Effects:**
+- `--shadow`: Default shadow color
+- `--shadow-hover`: Hover shadow color
+- `--shine-color`: RGB values for shine border effect
+- `--shine-opacity`: Opacity for shine border
+- `--shine-size`: Size of the shine radial gradient
+- `--shine-blend-mode`: Blend mode for internal shine effect
+- `--shine-internal`: RGB values for internal shine
+- `--shine-internal-opacity`: Opacity for internal shine
+
+**Scrollbar:**
+- `--scrollbar-thumb-color`: Scrollbar thumb color
+- `--scrollbar-track-color`: Scrollbar track background color
+
+**Loading:**
+- `--loading-bg-color`: Loading screen background
+- `--loading-spinner-color`: Loading spinner color
+
+**Note:** Many variables have fallback values, allowing you to override only the specific properties you want to customize. Click any variable in the CSS editor help section to copy it to your clipboard.
 
 ### Keyboard Shortcuts
 
@@ -324,7 +442,7 @@ Moontab Extreme is open source and welcomes contributions:
 
 ### Version Information
 
-Current version: 0.5.4
+Current version: 0.5.5
 - Chrome Manifest V3 compatible
 - Regular updates and improvements
 - Group-based architecture for better organization
@@ -400,4 +518,4 @@ Copyright (c) 2019 All contributors to Sortable
 
 ---
 
-*Last updated: Version 0.5.4*
+*Last updated: Version 0.5.5*

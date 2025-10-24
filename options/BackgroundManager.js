@@ -1,9 +1,35 @@
 /**
  * Background Manager - Moontab Extreme Options
- * Handles page background color and background image uploads
+ *
+ * Manages all background-related functionality for the new tab page:
+ * - Page background color (independent of theme)
+ * - Background image uploads with data URI storage
+ * - Background image positioning and sizing controls
+ * - Live preview of background settings
+ *
+ * Background Color System:
+ * - Sets `--page-bg-color` CSS variable
+ * - Works with any theme (preset, browser, or custom)
+ * - Can be enabled/disabled independently
+ * - Overrides theme's default background when active
+ *
+ * Background Image System:
+ * - Stores images as data URIs (max 5MB)
+ * - Supports standard CSS background properties:
+ *   - Size: cover, contain, auto, or custom dimensions
+ *   - Repeat: no-repeat, repeat, repeat-x, repeat-y
+ *   - Position: center, top, bottom, left, right, combinations
+ * - Custom size support with width/height inputs (e.g., "50% auto")
+ * - Real-time preview in options page
+ *
+ * @class
  */
-
 class BackgroundManager {
+  /**
+   * @param {Object} data - Settings data object
+   * @param {Object} uiManager - UI manager for error/success messages
+   * @param {Function} markDirty - Callback to mark settings as dirty
+   */
   constructor(data, uiManager, markDirty) {
     this.data = data;
     this.uiManager = uiManager;

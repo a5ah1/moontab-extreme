@@ -11,6 +11,27 @@ class DataManager {
   }
 
   /**
+   * Get all theme keys that support per-theme CSS customization
+   * Includes all preset themes + browser theme
+   * @returns {Array<string>} Array of theme keys
+   */
+  getCustomizableThemeKeys() {
+    if (typeof window !== 'undefined' && window.PRESET_THEMES) {
+      // Include all preset themes + browser theme
+      return [...Object.keys(window.PRESET_THEMES), 'browser'];
+    }
+    // Fallback for older exports or if PRESET_THEMES not loaded
+    return [
+      'light', 'dark', 'glassLight', 'glassDark',
+      'acrylicLight', 'acrylicDark', 'materialLight', 'materialDark',
+      'gruvboxLight', 'gruvboxDark', 'monokai', 'nordLight', 'nordDark',
+      'tailwindSlateLight', 'tailwindSlateDark', 'tailwindGrayLight', 'tailwindGrayDark',
+      'tailwindZincLight', 'tailwindZincDark', 'tailwindStoneLight', 'tailwindStoneDark',
+      'browser'
+    ];
+  }
+
+  /**
    * Setup data management (import/export/reset)
    */
   setupDataManagement() {
@@ -891,8 +912,8 @@ class DataManager {
       totalCssSize += new Blob([data.customCss]).size;
     }
 
-    // Add theme-specific CSS sizes
-    const themes = ['light', 'dark', 'browser'];
+    // Add theme-specific CSS sizes (for ALL themes dynamically)
+    const themes = this.getCustomizableThemeKeys();
     themes.forEach(theme => {
       const cssField = `${theme}Css`;
       if (data[cssField]) {

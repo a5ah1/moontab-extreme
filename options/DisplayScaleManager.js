@@ -1,9 +1,37 @@
 /**
  * Display Scale Manager - Moontab Extreme Options
- * Handles base font size and UI scale settings
+ *
+ * Manages display scale and typography settings for the new tab page:
+ * - Base font size configuration (affects all text sizing)
+ * - UI scale multiplier (affects overall interface size)
+ * - Reset controls for both settings
+ *
+ * Base Font Size:
+ * - Default: 16px (browser standard)
+ * - Range: 12px - 24px
+ * - Affects all typography through CSS rem units
+ * - Useful for accessibility and user preference
+ *
+ * UI Scale:
+ * - Default: 1.0 (100%)
+ * - Range: 0.8 (80%) to 1.2 (120%)
+ * - Applies CSS transform scaling to entire interface
+ * - Allows users to zoom the entire UI proportionally
+ * - Useful for high-DPI displays or user preference
+ *
+ * Implementation:
+ * - Base font size sets document root font-size
+ * - UI scale applies transform: scale() to root element
+ * - Both settings work independently and can be combined
+ * - Changes persist across browser sessions
+ *
+ * @class
  */
-
 class DisplayScaleManager {
+  /**
+   * @param {Object} data - Settings data object
+   * @param {Function} markDirty - Callback to mark settings as dirty
+   */
   constructor(data, markDirty) {
     this.data = data;
     this.markDirty = markDirty;

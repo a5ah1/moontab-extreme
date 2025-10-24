@@ -10,6 +10,42 @@ const MAX_GROUPS_PER_COLUMN = 50;
 const MAX_LINKS_PER_GROUP = 200;
 
 /**
+ * Generate theme-specific storage fields dynamically
+ * Returns CSS and enabled fields for all themes in PRESET_THEMES + browser theme
+ * @returns {Object} Theme storage fields
+ */
+function getThemeStorageFields() {
+  const fields = {};
+
+  if (typeof window !== 'undefined' && window.PRESET_THEMES) {
+    // Generate fields for all preset themes + browser theme
+    const allThemes = [...Object.keys(window.PRESET_THEMES), 'browser'];
+
+    allThemes.forEach(themeKey => {
+      fields[`${themeKey}Css`] = '';
+      fields[`${themeKey}CssEnabled`] = false;
+    });
+  } else {
+    // Fallback for initialization before PRESET_THEMES is loaded
+    // Include all known themes as of this version
+    const fallbackThemes = [
+      'light', 'dark', 'glassLight', 'glassDark',
+      'acrylicLight', 'acrylicDark', 'materialLight', 'materialDark',
+      'gruvboxLight', 'gruvboxDark', 'monokai', 'nordLight', 'nordDark',
+      'tailwindSlateLight', 'tailwindSlateDark', 'tailwindGrayLight', 'tailwindGrayDark',
+      'tailwindZincLight', 'tailwindZincDark', 'tailwindStoneLight', 'tailwindStoneDark',
+      'browser'
+    ];
+    fallbackThemes.forEach(theme => {
+      fields[`${theme}Css`] = '';
+      fields[`${theme}CssEnabled`] = false;
+    });
+  }
+
+  return fields;
+}
+
+/**
  * Default data structure
  */
 const DEFAULT_DATA = {
@@ -132,21 +168,8 @@ const DEFAULT_DATA = {
   themeMode: 'browser', // 'browser' | 'preset' | 'custom' - default follows system
   selectedPresetTheme: 'light', // Used when themeMode === 'preset'
   customCss: '', // Used when themeMode === 'custom'
-  // Per-theme CSS enhancements
-  lightCss: '',
-  lightCssEnabled: false,
-  darkCss: '',
-  darkCssEnabled: false,
-  glassLightCss: '',
-  glassLightCssEnabled: false,
-  glassDarkCss: '',
-  glassDarkCssEnabled: false,
-  acrylicLightCss: '',
-  acrylicLightCssEnabled: false,
-  acrylicDarkCss: '',
-  acrylicDarkCssEnabled: false,
-  browserCss: '',
-  browserCssEnabled: false,
+  // Per-theme CSS enhancements (dynamically generated for all themes)
+  ...getThemeStorageFields(),
   // Display settings (apply to all themes)
   shineEffectEnabled: true,
   baseFontSize: 16,
@@ -268,21 +291,8 @@ class StorageManager {
       themeMode: 'browser',
       selectedPresetTheme: 'light',
       customCss: '',
-      // Per-theme CSS enhancements
-      lightCss: '',
-      lightCssEnabled: false,
-      darkCss: '',
-      darkCssEnabled: false,
-      glassLightCss: '',
-      glassLightCssEnabled: false,
-      glassDarkCss: '',
-      glassDarkCssEnabled: false,
-      acrylicLightCss: '',
-      acrylicLightCssEnabled: false,
-      acrylicDarkCss: '',
-      acrylicDarkCssEnabled: false,
-      browserCss: '',
-      browserCssEnabled: false,
+      // Per-theme CSS enhancements (dynamically generated for all themes)
+      ...getThemeStorageFields(),
       // Display settings
       shineEffectEnabled: true,
       baseFontSize: 16,
@@ -406,8 +416,16 @@ class StorageManager {
       }
 
       // Validate preset theme selection
-      if (data.selectedPresetTheme && !['light', 'dark', 'glassLight', 'glassDark', 'acrylicLight', 'acrylicDark'].includes(data.selectedPresetTheme)) {
-        throw new Error('Invalid preset theme specified');
+      if (data.selectedPresetTheme) {
+        // Get valid theme keys from PRESET_THEMES (dynamically)
+        const validThemes = typeof window !== 'undefined' && window.PRESET_THEMES
+          ? Object.keys(window.PRESET_THEMES)
+          : ['light', 'dark']; // Fallback if PRESET_THEMES not loaded yet
+
+        if (!validThemes.includes(data.selectedPresetTheme)) {
+          console.warn(`Unknown preset theme "${data.selectedPresetTheme}", falling back to 'light'`);
+          data.selectedPresetTheme = 'light'; // Graceful degradation instead of throwing error
+        }
       }
 
       // Validate background settings

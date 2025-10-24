@@ -9,6 +9,27 @@ class ZipExportManager {
   }
 
   /**
+   * Get all theme keys that support per-theme CSS customization
+   * Includes all preset themes + browser theme
+   * @returns {Array<string>} Array of theme keys
+   */
+  getCustomizableThemeKeys() {
+    if (typeof window !== 'undefined' && window.PRESET_THEMES) {
+      // Include all preset themes + browser theme
+      return [...Object.keys(window.PRESET_THEMES), 'browser'];
+    }
+    // Fallback for older exports or if PRESET_THEMES not loaded
+    return [
+      'light', 'dark', 'glassLight', 'glassDark',
+      'acrylicLight', 'acrylicDark', 'materialLight', 'materialDark',
+      'gruvboxLight', 'gruvboxDark', 'monokai', 'nordLight', 'nordDark',
+      'tailwindSlateLight', 'tailwindSlateDark', 'tailwindGrayLight', 'tailwindGrayDark',
+      'tailwindZincLight', 'tailwindZincDark', 'tailwindStoneLight', 'tailwindStoneDark',
+      'browser'
+    ];
+  }
+
+  /**
    * Check if JSZip is available
    * @throws {Error} If JSZip is not loaded
    */
@@ -66,7 +87,8 @@ class ZipExportManager {
 
     // Process background image
     const appearanceData = {
-      theme: data.theme,
+      themeMode: data.themeMode || 'browser',
+      selectedPresetTheme: data.selectedPresetTheme || 'light',
       pageBackgroundColor: data.pageBackgroundColor
     };
 
@@ -77,8 +99,8 @@ class ZipExportManager {
     } else {
     }
 
-    // Add theme-specific CSS files if they exist
-    const themes = ['light', 'dark', 'browser'];
+    // Add theme-specific CSS files if they exist (for ALL themes dynamically)
+    const themes = this.getCustomizableThemeKeys();
     themes.forEach(theme => {
       const cssField = `${theme}Css`;
       const enabledField = `${theme}CssEnabled`;
@@ -160,7 +182,8 @@ class ZipExportManager {
 
     // Process appearance data
     const appearanceData = {
-      theme: data.theme,
+      themeMode: data.themeMode || 'browser',
+      selectedPresetTheme: data.selectedPresetTheme || 'light',
       pageBackgroundColor: data.pageBackgroundColor
     };
 
@@ -170,8 +193,8 @@ class ZipExportManager {
       appearanceData.customCss = 'custom.css'; // Reference to the file
     }
 
-    // Add theme-specific CSS files if they exist
-    const themes = ['light', 'dark', 'browser'];
+    // Add theme-specific CSS files if they exist (for ALL themes dynamically)
+    const themes = this.getCustomizableThemeKeys();
     themes.forEach(theme => {
       const cssField = `${theme}Css`;
       const enabledField = `${theme}CssEnabled`;
@@ -488,8 +511,8 @@ class ZipExportManager {
       }
     }
 
-    // Process theme-specific CSS files
-    const themes = ['light', 'dark', 'browser'];
+    // Process theme-specific CSS files (for ALL themes dynamically)
+    const themes = this.getCustomizableThemeKeys();
     for (const theme of themes) {
       const cssField = `${theme}Css`;
       const fileName = `${theme}-theme.css`;
@@ -570,11 +593,24 @@ class ZipExportManager {
 
     if (exportType === 'appearance' || exportType === 'complete') {
       newData.appearance = {};
-      if (legacyData.theme) newData.appearance.theme = legacyData.theme;
+
+      // Handle theme field - convert legacy "theme" to new themeMode/selectedPresetTheme
+      if (legacyData.themeMode) {
+        newData.appearance.themeMode = legacyData.themeMode;
+      } else if (legacyData.theme) {
+        // Legacy support: map old "theme" field to new structure
+        newData.appearance.themeMode = 'preset';
+        newData.appearance.selectedPresetTheme = legacyData.theme;
+      }
+
+      if (legacyData.selectedPresetTheme) {
+        newData.appearance.selectedPresetTheme = legacyData.selectedPresetTheme;
+      }
+
       if (legacyData.customCss) newData.appearance.customCss = legacyData.customCss;
 
-      // Map theme-specific CSS fields
-      const themes = ['light', 'dark', 'browser'];
+      // Map theme-specific CSS fields (for ALL themes dynamically)
+      const themes = this.getCustomizableThemeKeys();
       themes.forEach(theme => {
         const cssField = `${theme}Css`;
         const enabledField = `${theme}CssEnabled`;

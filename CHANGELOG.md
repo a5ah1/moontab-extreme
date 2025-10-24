@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.5] - 2025-10-24
+
+### Changed
+- **Import/Export System Refactoring**
+  - **Dynamic Theme Support**: Import/export now handles ALL preset themes automatically
+    - Fixed critical bug: Theme validation now accepts all 22 preset themes (was rejecting 16 valid themes)
+    - Per-theme CSS now exported/imported for all themes (glass, acrylic, gruvbox, tailwind, etc.)
+    - Previously only 3 themes (light, dark, browser) had CSS export support
+    - New themes added to `PRESET_THEMES` automatically work in import/export
+  - **Storage Schema Improvements**: Theme fields now generated dynamically
+    - Added `getThemeStorageFields()` helper for automatic field generation
+    - `DEFAULT_DATA` and `migrate()` function now use dynamic theme list
+    - Eliminates need to manually update storage.js when adding themes
+  - **Standardized Field Names**: Export format now uses consistent theme structure
+    - Exports use `themeMode` and `selectedPresetTheme` (new standard)
+    - Legacy `theme` field automatically converted on import for backward compatibility
+    - Graceful fallback for unknown themes (warns and defaults to 'light')
+  - **Code Deduplication**: Removed hardcoded theme lists from 8+ locations
+    - Single source of truth: `PRESET_THEMES` in `theme-manager.js`
+    - Added `getCustomizableThemeKeys()` helper to ZipExportManager and DataManager
+    - Storage metrics calculation now dynamic
+  - No breaking changes - all existing exports remain importable
+- **Appearance Tab Refactoring**
+  - **Dynamic Theme Dropdown**: Theme selector dropdown now auto-generated from `THEME_CONFIG`
+    - Eliminated ~30 lines of hardcoded HTML options in `options.html`
+    - Dropdown options, categories, and names stay synchronized with theme definitions automatically
+    - Adding new themes now requires editing only 1 file (`theme-manager.js`) instead of 2
+  - **Tailwind Theme Naming**: Removed redundant "Tailwind" prefix from theme display names
+    - Updated all 8 Tailwind themes: "Tailwind Slate Light" → "Slate Light", etc.
+    - Prefix unnecessary since themes already grouped under "Tailwind" optgroup
+    - Improves readability in dropdown and CSS editor sections
+    - Internal theme keys unchanged (still `tailwindSlateLight`, etc.)
+  - **Documentation Improvements**: Added comprehensive JSDoc to all Appearance manager classes
+    - `BackgroundManager`: Documents background color/image system, data URI storage, positioning controls
+    - `AnimationManager`: Documents animation modes, timing, stylesheet-only mode
+    - `DisplayScaleManager`: Documents font size and UI scale settings, implementation details
+    - Consistent with `ThemeManager` documentation style
+  - No breaking changes - all existing functionality preserved
+- **Theme System Refactoring**
+  - Consolidated theme metadata into single source of truth (`PRESET_THEMES` in `theme-manager.js`)
+  - `ThemeConfig.js` now derives data from `PRESET_THEMES` instead of duplicating it
+  - Eliminated ~170 lines of duplicate theme metadata
+  - Theme category information now automatically included in `ThemeConfig`
+  - Adding new themes now only requires updating `theme-manager.js`
+  - Added comprehensive documentation and organization:
+    - Section comments organizing themes by category (Default, Modern, Classic, Tailwind)
+    - Detailed JSDoc for `ThemeManager` class documenting CSS cascade architecture
+    - Method sections for better code navigation
+  - Exported `PRESET_THEMES` and `SHINE_CSS` as browser globals for reuse
+  - No breaking changes - all existing functionality preserved
+- **Help Documentation Updates**
+  - Updated theme section to document all 22 preset themes organized by category
+  - Added comprehensive documentation of per-theme CSS enhancement feature
+  - Expanded import/export section to explain three export types (Content, Appearance, Complete)
+  - Added complete CSS custom properties reference with 50+ documented variables
+  - Updated README.md to reflect 22 available preset themes
+
 ## [0.5.4] - 2025-10-24
 
 ### Added
@@ -489,7 +546,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.4...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.5...HEAD
+[0.5.5]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.1...v0.5.2

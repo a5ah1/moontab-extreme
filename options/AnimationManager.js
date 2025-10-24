@@ -1,9 +1,39 @@
 /**
  * Animation Manager - Moontab Extreme Options
- * Handles column animation configuration
+ *
+ * Manages column animation configuration for the new tab page:
+ * - Enable/disable column animations on page load
+ * - Configure animation styles (fade-in, slide-in, scale-in, etc.)
+ * - Control animation timing and sequencing
+ * - Support for both managed and stylesheet-only modes
+ *
+ * Animation System:
+ * - Applied to columns when new tab page loads
+ * - Provides visual feedback as columns appear
+ * - Configurable timing: duration (0.1-2s), delay (0-0.5s), stagger (0.1-0.5s)
+ *
+ * Animation Modes:
+ * - all-at-once: All columns animate simultaneously
+ * - sequential: Columns animate one after another with stagger delay
+ *
+ * Animation Styles:
+ * - fade-in: Opacity transition
+ * - slide-in: Slide from top/bottom/left/right
+ * - scale-in: Scale from small to normal size
+ * - And more (defined in settings UI)
+ *
+ * Stylesheet-Only Mode:
+ * - Allows CSS-only animation control via custom CSS
+ * - Disables JavaScript animation configuration
+ * - Gives advanced users full control over animations
+ *
+ * @class
  */
-
 class AnimationManager {
+  /**
+   * @param {Object} data - Settings data object
+   * @param {Function} markDirty - Callback to mark settings as dirty
+   */
   constructor(data, markDirty) {
     this.data = data;
     this.markDirty = markDirty;

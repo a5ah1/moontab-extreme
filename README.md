@@ -2,7 +2,7 @@
 
 A privacy-focused, highly customizable new tab page for Chrome
 
-[![Version](https://img.shields.io/badge/version-0.5.4-blue.svg)](manifest.json)
+[![Version](https://img.shields.io/badge/version-0.5.5-blue.svg)](manifest.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
@@ -14,7 +14,7 @@ Built with vanilla JavaScript and zero external dependencies, Moontab Extreme pr
 ## ✨ Features
 
 - 🏗️ **Organize links in customizable columns** – Create, reorder, and manage columns to match your workflow
-- 🎨 **Multiple themes** – Choose from Light, Dark, Glass, Acrylic, Browser (system), or create your own with custom CSS
+- 🎨 **Multiple themes** – Choose from 22 preset themes (including Light, Dark, Glass, Material, Gruvbox, Nord, Tailwind palettes), Browser (system), or create your own with custom CSS
 - 🔒 **Privacy-focused** – All data stored locally with no external servers or analytics
 - 📦 **Import/Export** – Full backup and restore functionality with theme packages
 - 🎯 **Drag & drop** – Intuitive organization with smooth drag-and-drop support

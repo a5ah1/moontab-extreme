@@ -33,6 +33,9 @@ class ThemeSelector {
       });
     });
 
+    // Populate theme dropdown dynamically
+    this.populateThemeDropdown();
+
     // Setup preset theme dropdown
     const presetThemeSelect = document.getElementById('preset-theme-select');
     if (presetThemeSelect) {
@@ -51,6 +54,56 @@ class ThemeSelector {
 
     // Show/hide appropriate sections
     this.updateSectionVisibility();
+  }
+
+  /**
+   * Populate theme dropdown from THEME_CONFIG
+   * Dynamically generates optgroups and options based on theme categories
+   */
+  populateThemeDropdown() {
+    const presetThemeSelect = document.getElementById('preset-theme-select');
+    if (!presetThemeSelect || !window.THEME_CONFIG) {
+      console.error('Cannot populate theme dropdown - missing element or THEME_CONFIG');
+      return;
+    }
+
+    // Clear existing options
+    presetThemeSelect.innerHTML = '';
+
+    // Get all preset themes
+    const themes = THEME_CONFIG.getPresetThemes();
+
+    // Group themes by category
+    const categoryMap = {
+      'default': { label: 'Default', themes: [] },
+      'modern': { label: 'Modern', themes: [] },
+      'classic': { label: 'Classic', themes: [] },
+      'tailwind': { label: 'Tailwind', themes: [] }
+    };
+
+    // Organize themes by category
+    themes.forEach(theme => {
+      if (categoryMap[theme.category]) {
+        categoryMap[theme.category].themes.push(theme);
+      }
+    });
+
+    // Create optgroups and options
+    Object.entries(categoryMap).forEach(([categoryKey, categoryData]) => {
+      if (categoryData.themes.length === 0) return;
+
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = categoryData.label;
+
+      categoryData.themes.forEach(theme => {
+        const option = document.createElement('option');
+        option.value = theme.key;
+        option.textContent = theme.name;
+        optgroup.appendChild(option);
+      });
+
+      presetThemeSelect.appendChild(optgroup);
+    });
   }
 
   /**
