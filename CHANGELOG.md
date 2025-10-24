@@ -7,6 +7,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.4] - 2025-10-24
+
+### Added
+- **Nord Themes**
+  - Added Nord Dark and Nord Light themes to "Classic" category
+  - Arctic, north-bluish clean and elegant color scheme
+  - Features frost blue shine effects matching the Nord aesthetic
+  - Nord Dark: darkest polar night colors (nord0-nord3) with snow storm text (nord4-nord6)
+  - Nord Light: brightest snow storm colors (nord4-nord6) with polar night text (nord0-nord3)
+  - Accent colors use Nord's signature frost blue (nord8, nord10)
+- **Monokai Theme**
+  - Added Monokai dark theme to "Classic" category
+  - Iconic dark theme with vibrant syntax colors based on One Monokai
+  - Features blue accent shine effects
+  - Color palette: dark backgrounds (#21252b, #282c34) with vibrant accent colors
+- **Material Design Themes**
+  - Added Material Light and Material Dark themes to "Modern" category
+  - Google Material Design 3 color palette with elevation-based shadows
+  - Removes borders in favor of authentic Material Design shadow system
+  - Material Light: #fafafa base with white surfaces and proper elevation shadows
+  - Material Dark: #121212 base with elevated surfaces following Material Design dark theme guidelines
+  - Uses Material Design 3 color roles for text and accents
+  - 12px border radius for modern Material Design 3 style
+- **Tailwind Color Themes**
+  - Added new "Tailwind" category for Tailwind CSS color palette themes
+  - 8 new themes featuring glassmorphism effects with shine
+  - **Slate**: Light (#f1f5f9 → #f8fafc) and Dark (#020617 → #0f172a)
+  - **Gray**: Light (#f3f4f6 → #f9fafb) and Dark (#030712 → #111827)
+  - **Zinc**: Light (#f4f4f5 → #fafafa) and Dark (#09090b → #18181b)
+  - **Stone**: Light (#f5f5f4 → #fafaf9) and Dark (#0c0a09 → #1c1917)
+  - All Tailwind themes use appropriate shine colors (e.g., slate-400, gray-400, zinc-400, stone-400)
+  - 3px link radius and 7px column radius matching demo implementation
+  - Dark themes use white internal glow (0.05 opacity) for subtle depth
+- **Gruvbox Themes**
+  - Added Gruvbox Dark and Gruvbox Light themes to "Classic" category
+  - Warm, retro groove color scheme inspired by the iconic Gruvbox vim theme
+  - Features warm-toned shine effects matching the gruvbox aesthetic
+  - Color palette based on original gruvbox.vim by morhetz
+  - Gruvbox Dark: warm browns and soft earth tones with bright accents
+  - Gruvbox Light: inverted palette with light warm backgrounds
+
+### Changed
+- **Shine Effect CSS Standardized**
+  - Expanded global `SHINE_CSS` constant to include all shine effects (surface elements + link cards)
+  - Removed ~195 lines of duplicate shine CSS from all 6 preset themes
+  - Light and Dark themes now reference `SHINE_CSS` directly (no embedded CSS)
+  - Glass and Acrylic themes retain only theme-specific CSS (backdrop-filter, noise texture) + `SHINE_CSS` reference
+  - Single source of truth for shine effect implementation improves maintainability
+  - Theme-specific visual effects (glassmorphism, acrylic texture) preserved
+  - No functional changes - all themes work exactly as before
+- **Glass and Acrylic Theme Backgrounds**
+  - Changed default backgrounds from blue-tinted to neutral grayscale
+  - Glass Light: `#e0e7ef` → `#e8e8e8`, Glass Dark: `#0a0f1a` → `#0d0d0d`
+  - Acrylic Light: `#dce4ec` → `#e5e5e5`, Acrylic Dark: `#0c111c` → `#0d0d0d`
+  - Backgrounds now match the grayscale color scheme of the rest of the theme
+- **Shine Effect Colors**
+  - Converted all shine colors from blue-tinted to neutral grayscale
+  - Light, Dark, Glass, and Acrylic themes now use pure gray shine effects
+  - Maintains visual consistency with the grayscale aesthetic
+- **Acrylic Texture Fixed**
+  - Acrylic noise texture now applies to `.shine-surface` instead of `.column`
+  - Texture dynamically applies to columns (when headers shown) or groups (when headers hidden)
+  - Fixes issue where texture was visible between groups when column headers were turned off
+  - Border radius now uses `--shine-surface-radius` for correct sizing in both contexts
+
 ## [0.5.3] - 2025-10-22
 
 ### Added
@@ -424,7 +489,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.4...HEAD
+[0.5.4]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.0...v0.5.1

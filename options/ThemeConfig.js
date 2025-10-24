@@ -61,6 +61,111 @@ const THEME_CONFIG = {
       name: 'Acrylic Dark',
       description: 'Dark glassmorphism with subtle noise texture',
       mode: 'preset'
+    },
+    {
+      id: 'material-light',
+      key: 'materialLight',
+      name: 'Material Light',
+      description: 'Google Material Design 3 light theme with elevation-based shadows',
+      mode: 'preset'
+    },
+    {
+      id: 'material-dark',
+      key: 'materialDark',
+      name: 'Material Dark',
+      description: 'Google Material Design 3 dark theme with elevation-based surfaces',
+      mode: 'preset'
+    },
+    {
+      id: 'gruvbox-dark',
+      key: 'gruvboxDark',
+      name: 'Gruvbox Dark',
+      description: 'Warm, retro groove color scheme inspired by the iconic Gruvbox theme',
+      mode: 'preset'
+    },
+    {
+      id: 'gruvbox-light',
+      key: 'gruvboxLight',
+      name: 'Gruvbox Light',
+      description: 'Warm, retro groove color scheme in light mode',
+      mode: 'preset'
+    },
+    {
+      id: 'monokai',
+      key: 'monokai',
+      name: 'Monokai',
+      description: 'Iconic dark theme with vibrant syntax colors',
+      mode: 'preset'
+    },
+    {
+      id: 'nord-dark',
+      key: 'nordDark',
+      name: 'Nord Dark',
+      description: 'Arctic, north-bluish clean and elegant dark theme',
+      mode: 'preset'
+    },
+    {
+      id: 'nord-light',
+      key: 'nordLight',
+      name: 'Nord Light',
+      description: 'Arctic, north-bluish clean and elegant light theme',
+      mode: 'preset'
+    },
+    {
+      id: 'tailwind-slate-light',
+      key: 'tailwindSlateLight',
+      name: 'Tailwind Slate Light',
+      description: 'Tailwind slate colors with glassmorphism effects',
+      mode: 'preset'
+    },
+    {
+      id: 'tailwind-slate-dark',
+      key: 'tailwindSlateDark',
+      name: 'Tailwind Slate Dark',
+      description: 'Tailwind slate colors inspired by the demo with glassmorphism',
+      mode: 'preset'
+    },
+    {
+      id: 'tailwind-gray-light',
+      key: 'tailwindGrayLight',
+      name: 'Tailwind Gray Light',
+      description: 'Tailwind gray colors with glassmorphism effects',
+      mode: 'preset'
+    },
+    {
+      id: 'tailwind-gray-dark',
+      key: 'tailwindGrayDark',
+      name: 'Tailwind Gray Dark',
+      description: 'Tailwind gray colors with glassmorphism',
+      mode: 'preset'
+    },
+    {
+      id: 'tailwind-zinc-light',
+      key: 'tailwindZincLight',
+      name: 'Tailwind Zinc Light',
+      description: 'Tailwind zinc colors with glassmorphism effects',
+      mode: 'preset'
+    },
+    {
+      id: 'tailwind-zinc-dark',
+      key: 'tailwindZincDark',
+      name: 'Tailwind Zinc Dark',
+      description: 'Tailwind zinc colors with glassmorphism',
+      mode: 'preset'
+    },
+    {
+      id: 'tailwind-stone-light',
+      key: 'tailwindStoneLight',
+      name: 'Tailwind Stone Light',
+      description: 'Tailwind stone colors with glassmorphism effects',
+      mode: 'preset'
+    },
+    {
+      id: 'tailwind-stone-dark',
+      key: 'tailwindStoneDark',
+      name: 'Tailwind Stone Dark',
+      description: 'Tailwind stone colors with glassmorphism',
+      mode: 'preset'
     }
   ],
 

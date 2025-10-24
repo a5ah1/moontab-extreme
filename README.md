@@ -2,7 +2,7 @@
 
 A privacy-focused, highly customizable new tab page for Chrome
 
-[![Version](https://img.shields.io/badge/version-0.5.3-blue.svg)](manifest.json)
+[![Version](https://img.shields.io/badge/version-0.5.4-blue.svg)](manifest.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
