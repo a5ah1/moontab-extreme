@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Moontab Extreme",
-  "version": "1.0.0",
-  "description": "Turn your new tab into a quick launch page with customizable columns of links",
+  "version": "1.0.1",
+  "description": "Transform your new tab into a customizable link dashboard with organized columns, groups, and themes",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },

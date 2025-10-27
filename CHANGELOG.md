@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2025-10-27
+
+### Changed
+- Updated manifest description to better highlight key features: columns, groups, and themes
+
 ## [1.0.0] - 2025-10-27
 
 ### Changed
@@ -583,7 +588,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/a5ah1/moontab-extreme/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.6...v1.0.0
 [0.5.6]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.4...v0.5.5

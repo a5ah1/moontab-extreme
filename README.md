@@ -4,7 +4,7 @@
 
 Hey, you! Tired of that vanilla Chrome new tab? Meet Moontab Extreme—your privacy-obsessed, super-customizable dashboard that turns it into a link-organizing powerhouse. No fluff, just pure awesomeness.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](manifest.json)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](manifest.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
