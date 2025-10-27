@@ -1,13 +1,15 @@
+![Moontab Extreme](/img/marquee.jpeg)
+
 # Moontab Extreme
 
-Hey, you! Tired of that vanilla Chrome new tab staring back at you like a blank canvas? Meet Moontab Extreme—your privacy-obsessed, super-customizable dashboard that turns it into a link-organizing powerhouse. No fluff, just pure awesomeness.
+Hey, you! Tired of that vanilla Chrome new tab? Meet Moontab Extreme—your privacy-obsessed, super-customizable dashboard that turns it into a link-organizing powerhouse. No fluff, just pure awesomeness.
 
-[![Version](https://img.shields.io/badge/version-0.5.6-blue.svg)](manifest.json)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](manifest.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
 
-Picture this: Moontab Extreme hijacks your new tab and hands you the reins to build a slick, column-based hub for all your go-to sites. Drag, drop, theme it up—it's like playing Tetris with your bookmarks, but way more satisfying.
+Picture this: Moontab Extreme takes your new tab and hands you the reins to build a slick, column-based hub for all your go-to sites. Drag, drop, theme it up—it's like playing Tetris with your bookmarks, but way more satisfying.
 
 We built this bad boy with straight-up vanilla JS, zero sneaky dependencies, and a fierce commitment to your privacy. Everything stays locked on your device—no accounts, no creepy cloud stuff, no "hey, can we track you?" nonsense. It's quick, it's yours, and it's ready to rock without the drama.
 
@@ -24,7 +26,7 @@ We built this bad boy with straight-up vanilla JS, zero sneaky dependencies, and
 
 ## 📸 Screenshots
 
-[![Moontab Extreme screenshots](screenshots/screenshots-github.jpeg)](screenshots/screenshots-github.jpeg)
+[![Moontab Extreme screenshots](/img/all-screenshots.jpeg)](/img/all-screenshots.jpeg)
 
 Top left: The starter pack—default columns, groups, and links rocking the light theme. Cute, right?
 
@@ -35,6 +37,14 @@ Bottom left: A wild custom theme with a fancy background. Go nuts!
 Bottom right: Peeking into the Appearance panel on the options page. Where the magic happens.
 
 ## 🚀 Installation
+
+### From Chrome Web Store
+
+**Coming Soon!** Moontab Extreme will be available on the Chrome Web Store. Once published, you'll be able to install it with a single click:
+
+1. Visit the [Chrome Web Store listing](#) (link will be added after publication)
+2. Click "Add to Chrome"
+3. Open a new tab and start customizing!
 
 ### For Development
 
@@ -58,7 +68,7 @@ Bottom right: Peeking into the Appearance panel on the options page. Where the m
 2. Spot the settings gear (⚙️) in the top right? Click it, or sneak in via Chrome's extension options.
 3. Smash that "Add Column" button to kick things off.
 4. Toss in links with snazzy titles, URLs, and maybe a custom icon for flair.
-5. Pimp out the looks with themes, pics, and CSS hacks.
+5. Customize the looks with themes, pics, and CSS hacks.
 
 Wanna dive deeper? The options page has a built-in help guide that's basically your new best friend.
 
@@ -100,7 +110,7 @@ moontab-extreme/
 │   ├── jszip/             # ZIP zippers
 │   └── animate/           # Slick CSS animations
 ├── assets/icons/          # Icon stash
-└── screenshots/           # Pic proof
+└── img/                   # Images for README
 ```
 
 ### Technologies
@@ -148,5 +158,3 @@ Big shoutout to the open-source heroes we borrowed from:
 - [Marked](https://github.com/markedjs/marked/) - Markdown parsing
 - [JSZip](https://github.com/Stuk/jszip) - ZIP file handling
 - [Animate.css](https://github.com/animate-css/animate.css) - CSS animations
-
-You all rock!

@@ -1,6 +1,6 @@
 # Privacy Policy for Moontab Extreme
 
-**Effective Date:** 18 July 2025
+**Effective Date:** 27 October 2025
 
 ## Overview
 
@@ -47,4 +47,4 @@ If we update this privacy policy, we will post the new version in this repositor
 
 ---
 
-*Last updated: 18 July 2025*
+*Last updated: 27 October 2025*

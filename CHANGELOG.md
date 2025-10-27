@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-10-27
+
+### Changed
+- **Project Structure**
+  - Replaced `screenshots/` directory with `img/` directory for README images
+  - Updated screenshots and extension icons with refreshed visuals
+- **Pre-Publication Cleanup**
+  - Updated Privacy Policy effective date to October 27, 2025
+  - Cleaned up debug logging in `scripts/utils.js` validation function (~60 debug statements removed)
+  - Removed unused `scripts/debug.js` file and its reference in `options.html`
+  - Added "From Chrome Web Store" installation section to README with placeholder link
+
+### Notes
+- **First Public Release** - Moontab Extreme is now ready for Chrome Web Store publication
+
 ## [0.5.6] - 2025-10-26
 
 ### Added
@@ -568,7 +583,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.6...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.6...v1.0.0
 [0.5.6]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.3...v0.5.4
