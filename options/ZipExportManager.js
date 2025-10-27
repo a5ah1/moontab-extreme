@@ -147,6 +147,10 @@ class ZipExportManager {
         showUrls: data.showUrls,
         showColumnHeaders: data.showColumnHeaders,
         showGroupHeaders: data.showGroupHeaders,
+        // Display scale and layout settings
+        baseFontSize: data.baseFontSize,
+        uiScale: data.uiScale,
+        columnWidthBase: data.columnWidthBase,
         // Column animation settings (global settings, not theme-specific)
         columnAnimationEnabled: data.columnAnimationEnabled,
         columnAnimationStyle: data.columnAnimationStyle,
@@ -244,6 +248,10 @@ class ZipExportManager {
         showUrls: data.showUrls,
         showColumnHeaders: data.showColumnHeaders,
         showGroupHeaders: data.showGroupHeaders,
+        // Display scale and layout settings
+        baseFontSize: data.baseFontSize,
+        uiScale: data.uiScale,
+        columnWidthBase: data.columnWidthBase,
         // Column animation settings (global settings, not theme-specific)
         columnAnimationEnabled: data.columnAnimationEnabled,
         columnAnimationStyle: data.columnAnimationStyle,

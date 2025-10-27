@@ -442,7 +442,7 @@ Moontab Extreme is open source and welcomes contributions:
 
 ### Version Information
 
-Current version: 0.5.5
+Current version: 0.5.6
 - Chrome Manifest V3 compatible
 - Regular updates and improvements
 - Group-based architecture for better organization
@@ -518,4 +518,4 @@ Copyright (c) 2019 All contributors to Sortable
 
 ---
 
-*Last updated: Version 0.5.5*
+*Last updated: Version 0.5.6*

@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.6] - 2025-10-26
+
+### Added
+- **Column Width Customization**
+  - Added configurable column width setting (250px - 500px range, default: 320px)
+  - New slider control in "Interface Scale & Layout" section (renamed from "Display Scale")
+  - Column width scales with UI Scale setting for proportional layout
+  - Dynamic min/max width constraints maintain flexibility around base width
+  - Simplified responsive breakpoints (desktop-focused extension)
+  - Reset button to restore default 320px width
+
+### Changed
+- **Appearance Tab Reorganization**
+  - Renamed "Display Scale" section to "Interface Scale & Layout"
+  - Moved section above "Column Animations" for better organization
+  - Updated section to display three controls side-by-side: Base Font Size, UI Scale, Column Width
+  - Enhanced section description to reflect all layout and scale settings
+- **Export/Import Enhancement**
+  - Added `baseFontSize`, `uiScale`, and `columnWidthBase` to exported settings
+  - Both "Appearance" and "Complete" exports now include display scale and layout settings
+  - Import automatically applies these settings when importing theme packages
+
 ## [0.5.5] - 2025-10-24
 
 ### Changed
@@ -546,7 +568,8 @@ Initial public release with core functionality:
 - Drag & drop organization
 - Google favicon integration
 
-[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.5...HEAD
+[Unreleased]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.6...HEAD
+[0.5.6]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/a5ah1/moontab-extreme/compare/v0.5.2...v0.5.3

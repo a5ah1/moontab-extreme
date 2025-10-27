@@ -174,6 +174,7 @@ const DEFAULT_DATA = {
   shineEffectEnabled: true,
   baseFontSize: 16,
   uiScale: 1.0,
+  columnWidthBase: 320,
   // Background settings
   backgroundDataUri: null,
   backgroundSize: 'cover',
@@ -297,6 +298,7 @@ class StorageManager {
       shineEffectEnabled: true,
       baseFontSize: 16,
       uiScale: 1.0,
+      columnWidthBase: 320,
       // Background settings
       backgroundDataUri: null,
       backgroundSize: 'cover',

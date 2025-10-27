@@ -1,10 +1,11 @@
 /**
  * Display Scale Manager - Moontab Extreme Options
  *
- * Manages display scale and typography settings for the new tab page:
+ * Manages display scale, typography, and layout settings for the new tab page:
  * - Base font size configuration (affects all text sizing)
  * - UI scale multiplier (affects overall interface size)
- * - Reset controls for both settings
+ * - Column width (affects layout density)
+ * - Reset controls for all settings
  *
  * Base Font Size:
  * - Default: 16px (browser standard)
@@ -14,15 +15,23 @@
  *
  * UI Scale:
  * - Default: 1.0 (100%)
- * - Range: 0.8 (80%) to 1.2 (120%)
- * - Applies CSS transform scaling to entire interface
+ * - Range: 0.8 (80%) to 1.5 (150%)
+ * - Applies scaling to entire interface
  * - Allows users to zoom the entire UI proportionally
  * - Useful for high-DPI displays or user preference
  *
+ * Column Width:
+ * - Default: 320px
+ * - Range: 250px - 500px
+ * - Sets base column width at 100% UI scale
+ * - Actual width scales with UI scale setting
+ * - Allows users to customize layout density
+ *
  * Implementation:
  * - Base font size sets document root font-size
- * - UI scale applies transform: scale() to root element
- * - Both settings work independently and can be combined
+ * - UI scale applies scaling to all interface elements
+ * - Column width sets CSS custom property --column-width-base
+ * - All settings work together and can be combined
  * - Changes persist across browser sessions
  *
  * @class
@@ -43,6 +52,7 @@ class DisplayScaleManager {
   setup() {
     this.setupBaseFontSize();
     this.setupUIScale();
+    this.setupColumnWidth();
   }
 
   /**
@@ -113,6 +123,50 @@ class DisplayScaleManager {
 
         if (valueDisplay) {
           valueDisplay.textContent = '100%';
+        }
+
+        this.markDirty();
+      });
+    }
+  }
+
+  /**
+   * Setup column width slider
+   */
+  setupColumnWidth() {
+    const slider = document.getElementById('column-width');
+    const valueDisplay = document.getElementById('column-width-value');
+    const resetBtn = document.getElementById('reset-column-width-btn');
+
+    if (!slider) return;
+
+    // Set initial value
+    const initialValue = this.data.columnWidthBase || 320;
+    slider.value = initialValue;
+    if (valueDisplay) {
+      valueDisplay.textContent = `${initialValue}px`;
+    }
+
+    // Handle slider changes
+    slider.addEventListener('input', () => {
+      const width = parseInt(slider.value, 10);
+      this.data.columnWidthBase = width;
+
+      if (valueDisplay) {
+        valueDisplay.textContent = `${width}px`;
+      }
+
+      this.markDirty();
+    });
+
+    // Handle reset button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        slider.value = 320;
+        this.data.columnWidthBase = 320;
+
+        if (valueDisplay) {
+          valueDisplay.textContent = '320px';
         }
 
         this.markDirty();

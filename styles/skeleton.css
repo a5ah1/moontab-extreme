@@ -12,6 +12,7 @@
 :root {
   font-size: var(--base-font-size, 16px);
   --ui-scale: 1;
+  --column-width-base: 320px;
 
   /* Dynamic padding for column/group box switching */
   --groups-container-padding: calc(8px * var(--ui-scale));
@@ -63,9 +64,9 @@ body::-webkit-scrollbar {
 
 /* Individual column layout */
 .column {
-  min-width: calc(300px * var(--ui-scale));
-  max-width: calc(400px * var(--ui-scale));
-  width: calc(320px * var(--ui-scale));
+  min-width: calc((var(--column-width-base) - 50px) * var(--ui-scale));
+  max-width: calc((var(--column-width-base) + 100px) * var(--ui-scale));
+  width: calc(var(--column-width-base) * var(--ui-scale));
   display: flex;
   flex-direction: column;
   position: relative;
@@ -407,36 +408,15 @@ body.hide-column-headers .group.shine-surface {
 }
 
 /* Responsive design - layout adjustments only */
+/* Simplified for desktop-focused extension */
 @media (max-width: 768px) {
   .board-container {
     padding: calc(12px * var(--ui-scale));
     gap: calc(12px * var(--ui-scale));
   }
 
-  .column {
-    min-width: calc(280px * var(--ui-scale));
-    width: calc(300px * var(--ui-scale));
-  }
-
-  .quick-settings {
-    width: calc(100vw - calc(40px * var(--ui-scale)));
-    right: calc(20px * var(--ui-scale));
-  }
-
   .settings-toggle {
     bottom: calc(12px * var(--ui-scale));
     right: calc(12px * var(--ui-scale));
-  }
-}
-
-@media (max-width: 480px) {
-  .column {
-    min-width: calc(260px * var(--ui-scale));
-    width: calc(280px * var(--ui-scale));
-  }
-
-  .board-container {
-    padding: calc(8px * var(--ui-scale));
-    gap: calc(8px * var(--ui-scale));
   }
 }

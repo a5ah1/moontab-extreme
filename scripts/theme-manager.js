@@ -1118,6 +1118,7 @@ class ThemeManager {
    * @param {string} [settings.customCss=''] - Custom CSS (for custom theme mode)
    * @param {number} [settings.baseFontSize=16] - Base font size in pixels
    * @param {number} [settings.uiScale=1.0] - UI scale factor
+   * @param {number} [settings.columnWidthBase=320] - Base column width in pixels
    * @param {string} [settings.backgroundDataUri] - Background image data URI
    * @param {string} [settings.backgroundSize] - CSS background-size value
    * @param {string} [settings.backgroundRepeat] - CSS background-repeat value
@@ -1151,7 +1152,8 @@ class ThemeManager {
     // 1. Apply global scale settings FIRST (before any theme)
     this.applyGlobalScaleSettings(
       settings.baseFontSize || 16,
-      settings.uiScale || 1.0
+      settings.uiScale || 1.0,
+      settings.columnWidthBase || 320
     );
 
     // 2. Apply theme based on mode
@@ -1204,11 +1206,13 @@ class ThemeManager {
    * Apply global scale settings (before theme application)
    * @param {number} baseFontSize - Base font size in pixels
    * @param {number} uiScale - UI scale factor
+   * @param {number} columnWidthBase - Base column width in pixels
    */
-  applyGlobalScaleSettings(baseFontSize, uiScale) {
+  applyGlobalScaleSettings(baseFontSize, uiScale, columnWidthBase) {
     const root = document.documentElement;
     root.style.setProperty('--base-font-size', `${baseFontSize}px`);
     root.style.setProperty('--ui-scale', uiScale);
+    root.style.setProperty('--column-width-base', `${columnWidthBase}px`);
   }
 
   // ==========================================================================

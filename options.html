@@ -386,6 +386,59 @@
             </div>
           </div>
 
+          <!-- Interface Scale & Layout section -->
+          <div class="section">
+            <h3>Interface Scale & Layout</h3>
+            <p class="section-description">Adjust the overall size of text, interface elements, and column width. These settings apply to all themes.</p>
+
+            <div class="section-card">
+              <div class="scale-settings">
+              <!-- Base Font Size -->
+              <div class="form-group">
+                <label for="base-font-size">Base Font Size</label>
+                <div class="input-with-unit">
+                  <input type="number" id="base-font-size" min="12" max="24" step="1" value="16">
+                  <span class="input-unit">px</span>
+                </div>
+                <p class="form-help">Default: 16px. Affects all text sizes proportionally.</p>
+                <button id="reset-font-size-btn" class="btn btn-sm btn-secondary">Reset to Default</button>
+              </div>
+
+              <!-- UI Scale -->
+              <div class="form-group">
+                <label for="ui-scale">UI Scale</label>
+                <div class="slider-with-value">
+                  <input type="range" id="ui-scale" min="0.8" max="1.5" step="0.1" value="1.0">
+                  <span class="slider-value" id="ui-scale-value">100%</span>
+                </div>
+                <p class="form-help">Default: 100%. Scales all interface elements including spacing, borders, and sizes.</p>
+                <button id="reset-ui-scale-btn" class="btn btn-sm btn-secondary">Reset to Default</button>
+              </div>
+
+              <!-- Column Width -->
+              <div class="form-group">
+                <label for="column-width">Column Width</label>
+                <div class="slider-with-value">
+                  <input type="range" id="column-width" min="250" max="500" step="10" value="320">
+                  <span class="slider-value" id="column-width-value">320px</span>
+                </div>
+                <p class="form-help">Default: 320px. Sets base column width at 100% UI scale. Actual width scales with UI Scale setting.</p>
+                <button id="reset-column-width-btn" class="btn btn-sm btn-secondary">Reset to Default</button>
+              </div>
+
+              <!-- Live Preview Note -->
+              <div class="form-note">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                <span>Changes apply in real-time. Open a new tab to see the effect.</span>
+              </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Column Animations section -->
           <div class="section">
             <h3>Column Animations</h3>
@@ -468,48 +521,6 @@
                 <p class="form-help">Load only the animation stylesheet without applying programmatic animations. Allows advanced users to control animations via custom CSS classes.</p>
               </div>
             </div>
-            </div>
-          </div>
-
-          <!-- Display Scale section -->
-          <div class="section">
-            <h3>Display Scale</h3>
-            <p class="section-description">Adjust the overall size of text and interface elements. These settings apply to all themes.</p>
-
-            <div class="section-card">
-              <div class="scale-settings">
-              <!-- Base Font Size -->
-              <div class="form-group">
-                <label for="base-font-size">Base Font Size</label>
-                <div class="input-with-unit">
-                  <input type="number" id="base-font-size" min="12" max="24" step="1" value="16">
-                  <span class="input-unit">px</span>
-                </div>
-                <p class="form-help">Default: 16px. Affects all text sizes proportionally.</p>
-                <button id="reset-font-size-btn" class="btn btn-sm btn-secondary">Reset to Default</button>
-              </div>
-
-              <!-- UI Scale -->
-              <div class="form-group">
-                <label for="ui-scale">UI Scale</label>
-                <div class="slider-with-value">
-                  <input type="range" id="ui-scale" min="0.8" max="1.5" step="0.1" value="1.0">
-                  <span class="slider-value" id="ui-scale-value">100%</span>
-                </div>
-                <p class="form-help">Default: 100%. Scales all interface elements including spacing, borders, and sizes.</p>
-                <button id="reset-ui-scale-btn" class="btn btn-sm btn-secondary">Reset to Default</button>
-              </div>
-
-              <!-- Live Preview Note -->
-              <div class="form-note">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="12" y1="16" x2="12" y2="12"/>
-                  <line x1="12" y1="8" x2="12.01" y2="8"/>
-                </svg>
-                <span>Changes apply in real-time. Open a new tab to see the effect.</span>
-              </div>
-              </div>
             </div>
           </div>
 

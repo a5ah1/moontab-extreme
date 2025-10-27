@@ -64,6 +64,7 @@ class NewTabApp {
           shineEffectEnabled: this.data.shineEffectEnabled !== undefined ? this.data.shineEffectEnabled : true,
           baseFontSize: this.data.baseFontSize || 16,
           uiScale: this.data.uiScale || 1.0,
+          columnWidthBase: this.data.columnWidthBase || 320,
           // Background settings
           backgroundDataUri: this.data.backgroundDataUri,
           backgroundSize: effectiveBackgroundSize,
@@ -96,6 +97,7 @@ class NewTabApp {
           revealHighlightEnabled: this.data.revealHighlightEnabled !== undefined ? this.data.revealHighlightEnabled : true,
           baseFontSize: this.data.baseFontSize || 16,
           uiScale: this.data.uiScale || 1.0,
+          columnWidthBase: this.data.columnWidthBase || 320,
           // Background settings
           backgroundDataUri: this.data.backgroundDataUri,
           backgroundSize: effectiveBackgroundSize,
